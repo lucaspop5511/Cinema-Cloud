@@ -1,24 +1,23 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './components/Header';
-import HomePage from './pages/HomePage';
-import CategoriesPage from './pages/CategoriesPage';
-import CinemaPage from './pages/CinemaPage';
-import './App.css';
+import { Routes, Route } from 'react-router-dom'
+import Home from './pages/Home'
+import Cinema from './pages/Cinema'
+import Header from './components/Header'
+import Footer from './components/Footer'
+import './styles/App.css'
 
 function App() {
   return (
-    <Router>
-      <div className="app-container min-h-screen bg-gray-900 text-white">
-        <Header />
+    <div className="app">
+      <Header />
+      <main className="main-content">
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/categories" element={<CategoriesPage />} />
-          <Route path="/cinema" element={<CinemaPage />} />
+          <Route path="/" element={<Home />} />
+          <Route path="/cinema" element={<Cinema />} />
         </Routes>
-      </div>
-    </Router>
-  );
+      </main>
+      <Footer />
+    </div>
+  )
 }
 
-export default App;
+export default App
