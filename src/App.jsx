@@ -1,22 +1,24 @@
 import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './components/Header';
-import Hero from './components/Hero';
-import Content from './components/Content';
-import Footer from './components/Footer';
-
-import './App.css'
+import HomePage from './pages/HomePage';
+import CategoriesPage from './pages/CategoriesPage';
+import CinemaPage from './pages/CinemaPage';
+import './App.css';
 
 function App() {
   return (
-    <div className="min-h-screen flex flex-col">
-      <Header />
-      <main className="flex-grow">
-        <Hero />
-        <Content />
-      </main>
-      <Footer />
-    </div>
+    <Router>
+      <div className="app-container min-h-screen bg-gray-900 text-white">
+        <Header />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/categories" element={<CategoriesPage />} />
+          <Route path="/cinema" element={<CinemaPage />} />
+        </Routes>
+      </div>
+    </Router>
   );
 }
 
-export default App
+export default App;
