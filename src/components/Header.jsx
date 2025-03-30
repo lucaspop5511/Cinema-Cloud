@@ -1,17 +1,28 @@
 import { Link } from 'react-router-dom'
-import GenreDropdown from './GenreDropdown'
 
-function Header() {
+function Header({ togglePanel, isPanelOpen }) {
   return (
     <header className="header">
       <div className="header-content">
-        <Link to="/" className="logo">
-          <div className="logo-text">Cinema Cloud</div>
-        </Link>
-        <nav className="nav-links">
-          <GenreDropdown />
+        <div className="left-section">
+          <button 
+            type="button"
+            className="genre-button" 
+            onClick={togglePanel}
+          >
+            {isPanelOpen ? 'Categories ◄' : 'Categories ►'}
+          </button>
+        </div>
+        
+        <div className="center-section">
+          <Link to="/" className="logo">
+            <div className="logo-text">Cinema Cloud</div>
+          </Link>
+        </div>
+        
+        <div className="right-section">
           <Link to="/cinema" className="nav-link">Cinema</Link>
-        </nav>
+        </div>
       </div>
     </header>
   )

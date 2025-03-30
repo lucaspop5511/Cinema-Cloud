@@ -9,7 +9,7 @@ import './styles/App.css'
 import './styles/Header.css'
 import './styles/Footer.css'
 import './styles/SearchBar.css'
-import './styles/GenreDropdown.css'
+import './styles/GenrePanel.css'
 import './styles/Home.css'
 import './styles/Cinema.css'
 
