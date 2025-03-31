@@ -23,6 +23,9 @@
   top: 0;
   background-color: #fff;
   z-index: 1;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .genre-panel-header h2 {
@@ -30,6 +33,14 @@
   font-weight: bold;
   color: #3498db;
   margin: 0;
+}
+
+.selected-count {
+  font-size: 14px;
+  color: #666;
+  background-color: #f0f0f0;
+  padding: 4px 8px;
+  border-radius: 12px;
 }
 
 .genre-panel-content {

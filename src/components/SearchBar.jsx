@@ -1,17 +1,43 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 
-function SearchBar() {
+function SearchBar({ searchQuery, setSearchQuery, isRaised }) {
   const [searchType, setSearchType] = useState('movie')
-  const [searchQuery, setSearchQuery] = useState('')
+  const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery)
+  const searchTimeout = useRef(null)
+  const initialRender = useRef(true)
+  
+  // Synchronize local state with parent state
+  useEffect(() => {
+    if (initialRender.current) {
+      initialRender.current = false;
+      return;
+    }
+    setLocalSearchQuery(searchQuery);
+  }, [searchQuery]);
   
   const handleSearch = (e) => {
     e.preventDefault()
-    // Handle search logic here
-    console.log(`Searching for ${searchType}: ${searchQuery}`)
+    setSearchQuery(localSearchQuery)
+    console.log(`Searching for ${searchType}: ${localSearchQuery}`)
   }
-
+  
+  const handleInputChange = (e) => {
+    const newValue = e.target.value
+    setLocalSearchQuery(newValue)
+    
+    // Clear any existing timeout
+    if (searchTimeout.current) {
+      clearTimeout(searchTimeout.current)
+    }
+    
+    // Set a new timeout to update the parent state after typing stops
+    searchTimeout.current = setTimeout(() => {
+      setSearchQuery(newValue)
+    }, 500) // 500ms delay
+  }
+  
   return (
-    <div className="search-container">
+    <div className={`search-container ${isRaised ? 'raised' : ''}`}>
       <form className="search-bar" onSubmit={handleSearch}>
         <div className="search-type">
           <button 
@@ -33,8 +59,8 @@ function SearchBar() {
           type="text" 
           className="search-input"
           placeholder={`Search for ${searchType === 'movie' ? 'movies' : 'TV shows'}...`}
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          value={localSearchQuery}
+          onChange={handleInputChange}
         />
         <button type="submit" className="search-submit">Search</button>
       </form>

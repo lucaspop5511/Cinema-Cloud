@@ -1,6 +1,8 @@
-import { useEffect, useRef } from 'react'
+import { useEffect, useRef, useContext } from 'react'
+import { AppContext } from '../App'
 
-function GenrePanel({ isOpen, selectedGenres, toggleGenre }) {
+function GenrePanel({ isOpen }) {
+  const { selectedGenres, toggleGenre } = useContext(AppContext)
   const panelRef = useRef(null)
   
   const genres = [
@@ -29,6 +31,11 @@ function GenrePanel({ isOpen, selectedGenres, toggleGenre }) {
     <div className={`genre-panel ${isOpen ? 'open' : ''}`} ref={panelRef}>
       <div className="genre-panel-header">
         <h2>Categories</h2>
+        {selectedGenres.length > 0 && (
+          <div className="selected-count">
+            {selectedGenres.length} selected
+          </div>
+        )}
       </div>
       <div className="genre-panel-content">
         {genres.map((genre) => (

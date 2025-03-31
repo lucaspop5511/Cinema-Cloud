@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, createContext } from 'react'
 import { Routes, Route } from 'react-router-dom'
 import Home from './pages/Home'
 import Cinema from './pages/Cinema'
@@ -6,6 +6,9 @@ import Header from './components/Header'
 import GenrePanel from './components/GenrePanel'
 import Footer from './components/Footer'
 import './styles/App.css'
+
+// Create a context to share state across components
+export const AppContext = createContext(null)
 
 function App() {
   const [isPanelOpen, setIsPanelOpen] = useState(false)
@@ -23,24 +26,34 @@ function App() {
     )
   }
 
+  // Context value
+  const contextValue = {
+    isPanelOpen,
+    selectedGenres,
+    togglePanel,
+    toggleGenre
+  }
+
   return (
-    <div className={`app ${isPanelOpen ? 'panel-open' : ''}`}>
-      <GenrePanel 
-        isOpen={isPanelOpen} 
-        selectedGenres={selectedGenres} 
-        toggleGenre={toggleGenre} 
-      />
-      <div className="content-wrapper">
-        <Header togglePanel={togglePanel} isPanelOpen={isPanelOpen} />
-        <main className="main-content">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/cinema" element={<Cinema />} />
-          </Routes>
-        </main>
-        <Footer />
+    <AppContext.Provider value={contextValue}>
+      <div className={`app ${isPanelOpen ? 'panel-open' : ''}`}>
+        <GenrePanel 
+          isOpen={isPanelOpen} 
+          selectedGenres={selectedGenres} 
+          toggleGenre={toggleGenre} 
+        />
+        <div className="content-wrapper">
+          <Header togglePanel={togglePanel} isPanelOpen={isPanelOpen} />
+          <main className="main-content">
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/cinema" element={<Cinema />} />
+            </Routes>
+          </main>
+          <Footer />
+        </div>
       </div>
-    </div>
+    </AppContext.Provider>
   )
 }
 
