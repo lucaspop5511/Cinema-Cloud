@@ -1,19 +1,9 @@
-import { useState, useRef, useEffect } from 'react'
+import { useState, useRef } from 'react'
 
-function SearchBar({ searchQuery, setSearchQuery, isRaised }) {
+function SearchBar({ searchQuery, setSearchQuery }) {
   const [searchType, setSearchType] = useState('movie')
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery)
   const searchTimeout = useRef(null)
-  const initialRender = useRef(true)
-  
-  // Synchronize local state with parent state
-  useEffect(() => {
-    if (initialRender.current) {
-      initialRender.current = false;
-      return;
-    }
-    setLocalSearchQuery(searchQuery);
-  }, [searchQuery]);
   
   const handleSearch = (e) => {
     e.preventDefault()
@@ -37,7 +27,7 @@ function SearchBar({ searchQuery, setSearchQuery, isRaised }) {
   }
   
   return (
-    <div className={`search-container ${isRaised ? 'raised' : ''}`}>
+    <div className="search-container">
       <form className="search-bar" onSubmit={handleSearch}>
         <div className="search-type">
           <button 
