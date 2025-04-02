@@ -1,5 +1,8 @@
+/* Add these styles to your existing App.css */
+
 .app {
   display: flex;
+  flex-direction: row;
   min-height: 100vh;
 }
 
@@ -7,26 +10,36 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
-  transition: margin-left 0.3s ease;
+  width: 100%;
 }
 
-.app.panel-open .content-wrapper {
-  margin-left: 250px;
+.content-wrapper.with-sidebar {
+  margin-left: 250px; /* Same as genre panel width */
+  width: calc(100% - 250px);
 }
 
 .main-content {
   flex: 1;
   padding: 20px;
-  display: flex;
-  flex-direction: column;
 }
 
-/* Mobile responsive adjustments */
-@media (max-width: 768px) {
+/* Mobile styles */
+@media (max-width: 767px) {
   .app.panel-open .content-wrapper {
+    position: relative;
     margin-left: 0;
-    opacity: 0.5;
-    pointer-events: none;
+  }
+  
+  /* This prevents scrolling of content when panel is open on mobile */
+  .app.panel-open .content-wrapper::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 999; /* Just below the panel z-index */
+    cursor: pointer; /* Makes it clear it's clickable */
   }
 }

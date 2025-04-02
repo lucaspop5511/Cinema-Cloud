@@ -1,6 +1,6 @@
 import { Link, useLocation } from 'react-router-dom'
 
-function Header({ togglePanel, isPanelOpen }) {
+function Header({ openPanel, isPanelOpen, isMobile }) {
   const location = useLocation();
   const isHome = location.pathname === '/';
   const isCinema = location.pathname === '/cinema';
@@ -9,14 +9,15 @@ function Header({ togglePanel, isPanelOpen }) {
     <header className="header">
       <div className="header-content">
         <div className="left-section">
-          <button 
-            type="button"
-            className={`genre-button ${isPanelOpen ? 'active' : ''}`}
-            onClick={togglePanel}
-          >
-            <span className="genre-button-text">Categories</span>
-            <span className="genre-button-icon">{isPanelOpen ? '◄' : '►'}</span>
-          </button>
+          {isMobile && !isPanelOpen && (
+            <button 
+              type="button"
+              className="genre-button"
+              onClick={openPanel}
+            >
+              <span className="genre-button-text">Filter</span>
+            </button>
+          )}
         </div>
         
         <div className="center-section">
