@@ -1,7 +1,6 @@
 import { useState, useRef } from 'react'
 
-function SearchBar({ searchQuery, setSearchQuery }) {
-  const [searchType, setSearchType] = useState('movie')
+function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery)
   const searchTimeout = useRef(null)
   
