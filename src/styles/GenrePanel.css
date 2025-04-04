@@ -302,11 +302,11 @@
 }
 
 .min-slider {
-  z-index: 1;
+  z-index: 5;
 }
 
 .max-slider {
-  z-index: 2;
+  z-index: 5;
 }
 
 /* Search button style */

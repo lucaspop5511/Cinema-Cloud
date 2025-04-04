@@ -77,7 +77,6 @@ function Home() {
         
         {selectedGenres.length > 0 && !searchQuery && (
           <div className="genre-results">
-            <h2 className="results-title">Selected Categories:</h2>
             <div className="genre-tags">
               {selectedGenres.map(genre => (
                 <span key={genre} className="genre-tag">{genre}</span>
