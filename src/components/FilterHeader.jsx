@@ -1,6 +1,6 @@
 import { useContext } from 'react';
 import { AppContext } from '../App';
-import '../styles/FilterHeader.css';
+import '../styles/panels/FilterHeader.css';
 
 function FilterHeader() {
   const { 
@@ -11,7 +11,8 @@ function FilterHeader() {
     maxRuntime,
     contentRatings,
     clearFilters,
-    isFilterActive
+    isFilterActive,
+    searchType
   } = useContext(AppContext);
 
   // Format runtime for display
@@ -29,9 +30,9 @@ function FilterHeader() {
 
   // Check if we have any active filters
   const hasActiveFilters = selectedGenres.length > 0 || 
-                          minYear !== 1900 || 
+                          minYear !== 1990 || 
                           maxYear !== new Date().getFullYear() ||
-                          minRuntime !== 30 ||
+                          minRuntime !== 0 ||
                           maxRuntime !== 240 ||
                           contentRatings.length > 0;
 
@@ -50,16 +51,18 @@ function FilterHeader() {
               </div>
             )}
             
-            {(minYear !== 1900 || maxYear !== new Date().getFullYear()) && (
+            {(minYear !== 1990 || maxYear !== new Date().getFullYear()) && (
               <div className="filter-tag-group">
                 <span className="filter-tag-label">Year:</span>
                 <span className="filter-tag">{minYear} - {maxYear}</span>
               </div>
             )}
             
-            {(minRuntime !== 30 || maxRuntime !== 240) && (
+            {(minRuntime !== 0 || maxRuntime !== 240) && (
               <div className="filter-tag-group">
-                <span className="filter-tag-label">Runtime:</span>
+                <span className="filter-tag-label">
+                  {searchType === 'tv' ? 'Episode Runtime:' : 'Runtime:'}
+                </span>
                 <span className="filter-tag">{formatRuntime(minRuntime)} - {formatRuntime(maxRuntime)}</span>
               </div>
             )}

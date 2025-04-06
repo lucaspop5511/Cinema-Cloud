@@ -1,0 +1,37 @@
+/* Filter item button styles (used for genres and ratings) */
+.genre-grid,
+.rating-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.genre-item {
+  color: #e0e0e0;
+  padding: 8px 12px;
+  text-decoration: none;
+  display: inline-block;
+  transition: background-color 0.2s;
+  font-size: 13px;
+  text-align: center;
+  background-color: #242424;
+  border-radius: 4px;
+  position: relative;
+  overflow: hidden;
+  white-space: nowrap;
+  flex-grow: 1;
+  max-width: fit-content;
+  border: none;
+  margin: 0;
+  cursor: pointer;
+}
+
+.genre-item:hover {
+  background-color: #525d60;
+}
+
+.genre-item.active {
+  background-color: #1e3a4f;
+  color: #3498db;
+  font-weight: 500;
+}

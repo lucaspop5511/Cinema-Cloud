@@ -5,7 +5,7 @@ import Cinema from './pages/Cinema'
 import Header from './components/Header'
 import GenrePanel from './components/GenrePanel'
 import Footer from './components/Footer'
-import { getGenreMapping } from './services/tmdbApi'
+import { getGenreMapping } from './services/api'
 import './styles/App.css'
 
 // Create a context to share state across components
@@ -17,10 +17,10 @@ function App() {
   const [selectedGenres, setSelectedGenres] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [searchType, setSearchType] = useState('movie')
-  const [previousSearchType, setPreviousSearchType] = useState(null) // Track previous search type
-  const [minYear, setMinYear] = useState(1900)
+  const [previousSearchType, setPreviousSearchType] = useState(null)
+  const [minYear, setMinYear] = useState(1990) // Updated from 1900 to 1990
   const [maxYear, setMaxYear] = useState(new Date().getFullYear())
-  const [minRuntime, setMinRuntime] = useState(30)
+  const [minRuntime, setMinRuntime] = useState(0) // Updated from 30 to 0
   const [maxRuntime, setMaxRuntime] = useState(240)
   const [contentRatings, setContentRatings] = useState([])
   const [isFilterActive, setIsFilterActive] = useState(false)
@@ -97,9 +97,9 @@ function App() {
 
   const clearFilters = () => {
     setSelectedGenres([]);
-    setMinYear(1900);
+    setMinYear(1990); // Reset to new default of 1990
     setMaxYear(new Date().getFullYear());
-    setMinRuntime(30);
+    setMinRuntime(0); // Reset to new default of 0
     setMaxRuntime(240);
     setContentRatings([]);
     setIsFilterActive(false);

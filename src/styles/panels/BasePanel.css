@@ -1,0 +1,189 @@
+/* Base styles for panel components */
+.genre-panel {
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    top: 0;
+    left: 0;
+    background-color: #1a1a1a;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    z-index: 90;
+    display: flex;
+    flex-direction: column;
+    z-index: 1000;
+  }
+  
+  /* Responsive styles for mobile */
+  @media (max-width: 767px) {
+    .genre-panel {
+      width: 0;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0);
+      transition: width 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .genre-panel.open {
+      width: 250px;
+      overflow: visible;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+    
+    /* Ensure content doesn't overflow hidden container when closed */
+    .genre-panel:not(.open) .genre-panel-content,
+    .genre-panel:not(.open) .genre-panel-header,
+    .genre-panel:not(.open) .genre-panel-footer {
+      opacity: 0;
+      visibility: hidden;
+    }
+    
+    .genre-panel.open .genre-panel-content,
+    .genre-panel.open .genre-panel-header,
+    .genre-panel.open .genre-panel-footer {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 0.2s ease 0.1s;
+    }
+  }
+  
+  /* Header and footer styles */
+  .genre-panel-header,
+  .genre-panel-footer {
+    padding: 20px;
+    background-color: #1a1a1a;
+    z-index: 1;
+  }
+  
+  .genre-panel-header {
+    border-bottom: 1px solid #333;
+    position: sticky;
+    top: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .genre-panel-footer {
+    border-top: 1px solid #333;
+    position: sticky;
+    bottom: 0;
+  }
+  
+  .genre-panel-header h2 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #3498db;
+    margin: 0;
+  }
+  
+  .close-panel-btn {
+    background: none;
+    border: none;
+    color: #e0e0e0;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 4px;
+    padding: 0;
+    transition: background-color 0.2s, color 0.2s;
+  }
+  
+  .close-panel-btn:hover {
+    background-color: #333;
+    color: #3498db;
+  }
+  
+  /* Panel content area */
+  .genre-panel-content {
+    overflow-y: auto;
+    flex-grow: 1;
+    scrollbar-width: thin;  /* Firefox */
+    scrollbar-color: #333 transparent;  /* Firefox */
+    padding: 0 10px 10px 10px;
+  }
+  
+  .genre-panel-content h3 {
+    color: #5f9cc4;
+  }
+  
+  /* Webkit browsers scrollbar styling (Chrome, Safari, Edge) */
+  .genre-panel-content::-webkit-scrollbar {
+    width: 4px;  /* Very thin scrollbar */
+  }
+  
+  .genre-panel-content::-webkit-scrollbar-track {
+    background: transparent;  /* Transparent background */
+  }
+  
+  .genre-panel-content::-webkit-scrollbar-thumb {
+    background-color: #333;  /* Dark scrollbar thumb */
+    border-radius: 2px;  /* Slightly rounded corners */
+  }
+  
+  .genre-panel-content::-webkit-scrollbar-thumb:hover {
+    background-color: #444;  /* Slightly lighter on hover for better usability */
+  }
+  
+  /* Filter section styles */
+  .filter-section {
+    margin-bottom: 20px;
+  }
+  
+  .filter-section-title {
+    font-size: 18px;
+    margin: 15px 0 10px 0;
+    font-weight: 500;
+  }
+  
+  /* Search button styles with simplified states */
+.search-button {
+    width: 100%;
+    background-color: #3498db;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    padding: 12px;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+  }
+  
+  /* Default hover state */
+  .search-button:hover {
+    background-color: #2980b9;
+  }
+  
+  .search-button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.5);
+  }
+  
+  /* Active/pressed state - button has been clicked */
+  .search-button.active {
+    background-color: #1f6da9; /* Darker version of the original blue */
+    box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.3); /* Inset shadow for pressed effect */
+    transform: translateY(1px); /* Slight downward movement for pressed effect */
+  }
+  
+  /* Modified state - subtle indication */
+  .search-button.modified {
+    border: 1px solid rgba(255, 255, 255, 0.5);
+  }
+  
+  /* Subtle pulse animation for modified state */
+  @keyframes pulse {
+    0% {
+      box-shadow: 0 0 0 0 rgba(230, 126, 34, 0.7);
+    }
+    70% {
+      box-shadow: 0 0 0 5px rgba(230, 126, 34, 0);
+    }
+    100% {
+      box-shadow: 0 0 0 0 rgba(230, 126, 34, 0);
+    }
+  }

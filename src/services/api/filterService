@@ -5,6 +5,64 @@ import { searchMovies, searchTvShows } from './searchService';
 import { mapGenreNamesToIds } from './genreService';
 
 /**
+ * Get additional details for a movie/show to get runtime
+ * @param {string} mediaType - 'movie' or 'tv'
+ * @param {number} id - Movie or TV show ID
+ * @returns {Promise} - Promise with detailed item data
+ */
+const getItemDetails = async (mediaType, id) => {
+  try {
+    return await fetchFromApi(`/${mediaType}/${id}`);
+  } catch (error) {
+    console.error(`Error getting ${mediaType} details:`, error);
+    return null;
+  }
+};
+
+/**
+ * Enhance search results with runtime information
+ * @param {Array} results - The search results to enhance
+ * @param {string} mediaType - 'movie' or 'tv'
+ * @returns {Promise<Array>} - Promise with enhanced results
+ */
+const enhanceResultsWithRuntime = async (results, mediaType) => {
+  if (!results || results.length === 0) return [];
+  
+  // Only process the first 20 items to avoid API rate limits
+  const itemsToProcess = results.slice(0, 20);
+  
+  // Fetch runtime details for each item
+  const detailedItems = await Promise.all(
+    itemsToProcess.map(async (item) => {
+      try {
+        const details = await getItemDetails(mediaType, item.id);
+        
+        if (!details) return item; // Return original item if details not available
+        
+        // Get runtime based on media type
+        let runtime;
+        if (mediaType === 'movie') {
+          runtime = details.runtime || 0;
+        } else {
+          // For TV shows, use average episode runtime
+          runtime = details.episode_run_time && details.episode_run_time.length > 0
+            ? Math.max(...details.episode_run_time) // Use the longest episode runtime
+            : 0;
+        }
+        
+        // Add runtime to the item
+        return { ...item, runtime };
+      } catch (error) {
+        console.error(`Error enhancing item ${item.id}:`, error);
+        return item; // Return original item on error
+      }
+    })
+  );
+  
+  return detailedItems;
+};
+
+/**
  * Get movie or TV show by filters
  * @param {Object} filters - Filter options
  * @param {string} filters.mediaType - 'movie' or 'tv'
@@ -41,7 +99,7 @@ export const getFilteredContent = async (filters, page = 1) => {
         searchResults = await searchTvShows(filters.query, page);
       }
       
-      // Filter the search results client-side
+      // Initial filtering (without runtime)
       let filteredResults = searchResults.results || [];
       
       if (filteredResults.length > 0) {
@@ -64,6 +122,21 @@ export const getFilteredContent = async (filters, page = 1) => {
             
             return item.genre_ids.some(genreId => genreIds.includes(genreId));
           });
+        }
+        
+        // Always enhance search results with runtime details
+        const enhancedResults = await enhanceResultsWithRuntime(filteredResults, filters.mediaType);
+        
+        // If runtime filtering is active, apply it
+        if (filters.minRuntime > 0 || filters.maxRuntime < 240) {
+          // Filter by runtime using enhanced results
+          filteredResults = enhancedResults.filter(item => {
+            if (!item.runtime && item.runtime !== 0) return false;
+            return item.runtime >= filters.minRuntime && item.runtime <= filters.maxRuntime;
+          });
+        } else {
+          // Otherwise just use the enhanced results
+          filteredResults = enhancedResults;
         }
         
         // Sort by popularity (based on vote_count)
@@ -121,12 +194,16 @@ export const getFilteredContent = async (filters, page = 1) => {
     
     // Apply additional content filtering
     if (data.results && Array.isArray(data.results)) {
-      data.results = filterContent(data.results, {
+      let filteredResults = filterContent(data.results, {
         excludeTalkShows: filters.mediaType === 'tv' // Explicitly exclude talk shows for TV
       });
       
-      // Update total_results count
-      data.total_results = data.results.length;
+      // Enhance results with runtime information
+      filteredResults = await enhanceResultsWithRuntime(filteredResults, filters.mediaType);
+      
+      // Update data results
+      data.results = filteredResults;
+      data.total_results = filteredResults.length;
     }
     
     return data;

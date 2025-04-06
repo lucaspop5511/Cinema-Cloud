@@ -1,6 +1,6 @@
 import { useEffect, useRef, useContext, useState } from 'react'
 import { AppContext } from '../App'
-import '../styles/GenrePanel.css'
+import '../styles/panels/GenrePanel.css'
 
 function GenrePanel({ isOpen, closePanel }) {
   const { 
@@ -8,8 +8,8 @@ function GenrePanel({ isOpen, closePanel }) {
     toggleGenre, 
     setSelectedGenres,
     minYear, 
-    maxYear, 
     setMinYear, 
+    maxYear, 
     setMaxYear,
     minRuntime, 
     maxRuntime, 
@@ -17,7 +17,10 @@ function GenrePanel({ isOpen, closePanel }) {
     setMaxRuntime,
     contentRatings, 
     setContentRatings,
-    applyFilters
+    applyFilters,
+    searchType,
+    isFilterActive,
+    filterCounter
   } = useContext(AppContext)
   
   const panelRef = useRef(null)
@@ -27,6 +30,82 @@ function GenrePanel({ isOpen, closePanel }) {
     left: '0%',
     width: '0%'
   })
+  
+  // Track if filters have been modified since last search
+  const [filtersModified, setFiltersModified] = useState(false)
+  
+  // Store initial filter states to detect changes
+  const [initialFilters, setInitialFilters] = useState({
+    genres: [],
+    minYear: 1990,
+    maxYear: currentYear,
+    minRuntime: 0,
+    maxRuntime: 240,
+    contentRatings: [],
+    searchType: 'movie'
+  })
+  
+  // Update initial filters when search is performed
+  useEffect(() => {
+    if (isFilterActive) {
+      setInitialFilters({
+        genres: [...selectedGenres],
+        minYear,
+        maxYear,
+        minRuntime,
+        maxRuntime,
+        contentRatings: [...contentRatings],
+        searchType
+      })
+      setFiltersModified(false)
+    }
+  }, [filterCounter])
+  
+  // Detect changes to any filter
+  useEffect(() => {
+    // Function to check if any filter has changed
+    const checkForChanges = () => {
+      // Check if genres changed
+      if (selectedGenres.length !== initialFilters.genres.length) {
+        return true
+      }
+      
+      for (const genre of selectedGenres) {
+        if (!initialFilters.genres.includes(genre)) {
+          return true
+        }
+      }
+      
+      // Check other filters
+      if (minYear !== initialFilters.minYear ||
+          maxYear !== initialFilters.maxYear ||
+          minRuntime !== initialFilters.minRuntime ||
+          maxRuntime !== initialFilters.maxRuntime ||
+          searchType !== initialFilters.searchType ||
+          contentRatings.length !== initialFilters.contentRatings.length) {
+        return true
+      }
+      
+      // Check content ratings
+      for (const rating of contentRatings) {
+        if (!initialFilters.contentRatings.includes(rating)) {
+          return true
+        }
+      }
+      
+      return false
+    }
+    
+    setFiltersModified(checkForChanges())
+  }, [
+    selectedGenres, 
+    minYear, 
+    maxYear, 
+    minRuntime, 
+    maxRuntime, 
+    contentRatings,
+    searchType
+  ])
   
   const genres = [
     'Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 
@@ -53,7 +132,7 @@ function GenrePanel({ isOpen, closePanel }) {
     }
   }, [isOpen, closePanel])
 
-  // Handle year input validation
+  // Handle year input validation and step adjustment
   const handleMinYearChange = (e) => {
     setMinYear(e.target.value)
   }
@@ -65,7 +144,7 @@ function GenrePanel({ isOpen, closePanel }) {
   const validateMinYear = () => {
     let validatedValue = parseInt(minYear)
     if (isNaN(validatedValue) || validatedValue < 1900) {
-      validatedValue = 1900
+      validatedValue = 1990 // Default to 1990 instead of 1900
     } else if (validatedValue > parseInt(maxYear)) {
       validatedValue = parseInt(maxYear)
     }
@@ -80,6 +159,19 @@ function GenrePanel({ isOpen, closePanel }) {
       validatedValue = parseInt(minYear)
     }
     setMaxYear(validatedValue)
+  }
+  
+  // Year increment/decrement with 5-year steps
+  const incrementYear = (setter, currentValue) => {
+    // Round up to nearest multiple of 5
+    const nextValue = Math.ceil((parseInt(currentValue) + 1) / 5) * 5;
+    setter(nextValue > currentYear ? currentYear : nextValue);
+  }
+  
+  const decrementYear = (setter, currentValue) => {
+    // Round down to nearest multiple of 5
+    const nextValue = Math.floor((parseInt(currentValue) - 1) / 5) * 5;
+    setter(nextValue < 1900 ? 1900 : nextValue);
   }
   
   // Handle runtime changes
@@ -166,6 +258,11 @@ function GenrePanel({ isOpen, closePanel }) {
       closePanel();
     }
   }
+  
+  // Simplified search button class - just active or not
+  const getSearchButtonClass = () => {
+    return isFilterActive && !filtersModified ? "search-button active" : "search-button";
+  }
 
   return (
     <div className={`genre-panel ${isOpen ? 'open' : ''}`} ref={panelRef}>
@@ -205,34 +302,76 @@ function GenrePanel({ isOpen, closePanel }) {
           <div className="year-inputs">
             <div className="input-group">
               <label htmlFor="min-year">From</label>
-              <input 
-                id="min-year"
-                type="number" 
-                min="1900" 
-                max={currentYear}
-                value={minYear}
-                onChange={handleMinYearChange}
-                onBlur={validateMinYear}
-              />
+              <div className="year-input-container">
+                <input 
+                  id="min-year"
+                  type="number" 
+                  min="1900" 
+                  max={currentYear}
+                  value={minYear}
+                  onChange={handleMinYearChange}
+                  onBlur={validateMinYear}
+                />
+                <div className="year-controls">
+                  <button 
+                    type="button" 
+                    className="year-control-btn up"
+                    onClick={() => incrementYear(setMinYear, minYear)}
+                    aria-label="Increase minimum year"
+                  >
+                    <span className="arrow-up">&#9650;</span>
+                  </button>
+                  <button 
+                    type="button" 
+                    className="year-control-btn down"
+                    onClick={() => decrementYear(setMinYear, minYear)}
+                    aria-label="Decrease minimum year"
+                  >
+                    <span className="arrow-down">&#9660;</span>
+                  </button>
+                </div>
+              </div>
             </div>
             <div className="year-separator">-</div>
             <div className="input-group">
               <label htmlFor="max-year">To</label>
-              <input 
-                id="max-year"
-                type="number" 
-                min="1900" 
-                max={currentYear} 
-                value={maxYear}
-                onChange={handleMaxYearChange}
-                onBlur={validateMaxYear}
-              />
+              <div className="year-input-container">
+                <input 
+                  id="max-year"
+                  type="number" 
+                  min="1900" 
+                  max={currentYear} 
+                  value={maxYear}
+                  onChange={handleMaxYearChange}
+                  onBlur={validateMaxYear}
+                />
+                <div className="year-controls">
+                  <button 
+                    type="button" 
+                    className="year-control-btn up"
+                    onClick={() => incrementYear(setMaxYear, maxYear)}
+                    aria-label="Increase maximum year"
+                  >
+                    <span className="arrow-up">&#9650;</span>
+                  </button>
+                  <button 
+                    type="button" 
+                    className="year-control-btn down"
+                    onClick={() => decrementYear(setMaxYear, maxYear)}
+                    aria-label="Decrease maximum year"
+                  >
+                    <span className="arrow-down">&#9660;</span>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </section>
         
         <section className="filter-section">
-          <h3 className="filter-section-title">Runtime</h3>
+          <h3 className="filter-section-title">
+            {searchType === 'tv' ? 'Episode Runtime' : 'Runtime'}
+          </h3>
           <div className="runtime-slider-container">
             <div className="runtime-labels">
               <span>{formatRuntime(minRuntime)}</span>
@@ -286,7 +425,7 @@ function GenrePanel({ isOpen, closePanel }) {
       <div className="genre-panel-footer">
         <button 
           type="button"
-          className="search-button"
+          className={getSearchButtonClass()}
           onClick={handleSearch}
         >
           Search
