@@ -1,6 +1,12 @@
-import { useState, useRef } from 'react'
+import { useState, useRef, useContext } from 'react'
+import { AppContext } from '../App'
 
 function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
+  const { 
+    isFilterActive, 
+    applyFilters 
+  } = useContext(AppContext)
+  
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery)
   const searchTimeout = useRef(null)
   
@@ -19,6 +25,21 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
     }, 500) // 500ms delay
   }
   
+  // Handle media type switch
+  const handleMediaTypeChange = (type) => {
+    if (type !== searchType) {
+      setSearchType(type)
+      
+      // If filters are active, automatically apply them when switching media type
+      if (isFilterActive) {
+        // Use a small timeout to ensure the type change happens first
+        setTimeout(() => {
+          applyFilters()
+        }, 100)
+      }
+    }
+  }
+  
   return (
     <div className="search-container">
       <div className="search-bar">
@@ -26,14 +47,14 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
           <button 
             type="button"
             className={`search-type-button ${searchType === 'movie' ? 'active' : ''}`}
-            onClick={() => setSearchType('movie')}
+            onClick={() => handleMediaTypeChange('movie')}
           >
             Movies
           </button>
           <button 
             type="button"
             className={`search-type-button ${searchType === 'tv' ? 'active' : ''}`}
-            onClick={() => setSearchType('tv')}
+            onClick={() => handleMediaTypeChange('tv')}
           >
             TV Shows
           </button>

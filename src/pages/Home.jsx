@@ -21,7 +21,10 @@ function Home() {
     setIsFilterActive,
     genreIdMapping,
     filterCounter,
-    clearFiltersCounter
+    clearFiltersCounter,
+    applyFilters,
+    previousSearchType,
+    setPreviousSearchType
   } = useContext(AppContext)
   
   const [results, setResults] = useState([])
@@ -99,6 +102,22 @@ function Home() {
   useEffect(() => {
     fetchContent();
   }, [searchQuery, searchType, filterCounter, clearFiltersCounter]);
+
+  // Handle media type changes when filters are active
+  useEffect(() => {
+    // Only run if we've changed media type and have active filters
+    if (
+      previousSearchType && 
+      previousSearchType !== searchType && 
+      isFilterActive
+    ) {
+      // Automatically apply filters when switching media types
+      applyFilters();
+    }
+    
+    // Update previous search type for next comparison
+    setPreviousSearchType(searchType);
+  }, [searchType]);
 
   return (
     <div className="home-container">

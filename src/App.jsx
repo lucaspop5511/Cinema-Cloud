@@ -17,6 +17,7 @@ function App() {
   const [selectedGenres, setSelectedGenres] = useState([])
   const [searchQuery, setSearchQuery] = useState('')
   const [searchType, setSearchType] = useState('movie')
+  const [previousSearchType, setPreviousSearchType] = useState(null) // Track previous search type
   const [minYear, setMinYear] = useState(1900)
   const [maxYear, setMaxYear] = useState(new Date().getFullYear())
   const [minRuntime, setMinRuntime] = useState(30)
@@ -48,7 +49,7 @@ function App() {
     return () => window.removeEventListener('resize', checkIfMobile)
   }, [])
 
-  // Load genre mappings
+  // Load genre mappings when search type changes
   useEffect(() => {
     const loadGenreMappings = async () => {
       try {
@@ -124,6 +125,8 @@ function App() {
     setSearchQuery,
     searchType,
     setSearchType,
+    previousSearchType,
+    setPreviousSearchType,
     minYear,
     setMinYear,
     maxYear,

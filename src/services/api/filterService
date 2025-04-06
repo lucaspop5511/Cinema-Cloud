@@ -1,0 +1,137 @@
+// Filter Service for TMDb API
+import { fetchFromApi } from './baseApi';
+import { filterContent } from './contentFilters';
+import { searchMovies, searchTvShows } from './searchService';
+import { mapGenreNamesToIds } from './genreService';
+
+/**
+ * Get movie or TV show by filters
+ * @param {Object} filters - Filter options
+ * @param {string} filters.mediaType - 'movie' or 'tv'
+ * @param {Array} filters.genres - Array of genre names or IDs
+ * @param {number} filters.minYear - Minimum release year
+ * @param {number} filters.maxYear - Maximum release year
+ * @param {number} filters.minRuntime - Minimum runtime in minutes
+ * @param {number} filters.maxRuntime - Maximum runtime in minutes
+ * @param {Array} filters.contentRatings - Array of content ratings
+ * @param {string} filters.query - Optional search query to combine with filters
+ * @param {number} page - Page number (default: 1)
+ * @returns {Promise} - Promise with results
+ */
+export const getFilteredContent = async (filters, page = 1) => {
+  try {
+    // Convert year to TMDB date format
+    const minDate = `${filters.minYear}-01-01`;
+    const maxDate = `${filters.maxYear}-12-31`;
+    
+    // Convert genre names to IDs if they're not already IDs
+    const genreIds = Array.isArray(filters.genres) ? 
+      (typeof filters.genres[0] === 'string' ? 
+        mapGenreNamesToIds(filters.genres, filters.mediaType) : 
+        filters.genres) : 
+      [];
+    
+    // If there's a search query, we need to handle it in a special way
+    if (filters.query) {
+      // First get search results
+      let searchResults;
+      if (filters.mediaType === 'movie') {
+        searchResults = await searchMovies(filters.query, page);
+      } else {
+        searchResults = await searchTvShows(filters.query, page);
+      }
+      
+      // Filter the search results client-side
+      let filteredResults = searchResults.results || [];
+      
+      if (filteredResults.length > 0) {
+        // Filter by year
+        filteredResults = filteredResults.filter(item => {
+          const releaseDate = filters.mediaType === 'movie' 
+            ? item.release_date 
+            : item.first_air_date;
+          
+          if (!releaseDate) return false;
+          
+          const releaseYear = new Date(releaseDate).getFullYear();
+          return releaseYear >= filters.minYear && releaseYear <= filters.maxYear;
+        });
+        
+        // Filter by genre if needed
+        if (genreIds.length > 0) {
+          filteredResults = filteredResults.filter(item => {
+            if (!item.genre_ids || item.genre_ids.length === 0) return false;
+            
+            return item.genre_ids.some(genreId => genreIds.includes(genreId));
+          });
+        }
+        
+        // Sort by popularity (based on vote_count)
+        filteredResults.sort((a, b) => b.vote_count - a.vote_count);
+      }
+      
+      return {
+        results: filteredResults,
+        total_results: filteredResults.length,
+        page: 1,
+        total_pages: 1
+      };
+    }
+    
+    // Build query parameters for direct API call (no search query)
+    let queryParams = [
+      `page=${page}`,
+      'language=en-US',
+      'include_adult=false',
+      `with_runtime.gte=${filters.minRuntime}`,
+      `with_runtime.lte=${filters.maxRuntime}`,
+      'sort_by=popularity.desc', // Always sort by popularity
+      'vote_count.gte=10' // Require at least some votes to filter out obscure content
+    ];
+    
+    // Date filter depends on media type
+    if (filters.mediaType === 'movie') {
+      queryParams.push(`primary_release_date.gte=${minDate}`);
+      queryParams.push(`primary_release_date.lte=${maxDate}`);
+    } else {
+      queryParams.push(`first_air_date.gte=${minDate}`);
+      queryParams.push(`first_air_date.lte=${maxDate}`);
+      
+      // For TV shows, exclude talk shows
+      queryParams.push(`without_genres=10767`); // Talk Show genre ID
+    }
+    
+    // Add genres if selected
+    if (genreIds.length > 0) {
+      queryParams.push(`with_genres=${genreIds.join(',')}`);
+    }
+    
+    // Add certification filter if provided
+    if (filters.contentRatings && filters.contentRatings.length > 0) {
+      if (filters.mediaType === 'movie') {
+        queryParams.push(`certification_country=US`);
+        queryParams.push(`certification.in=${filters.contentRatings.join('|')}`);
+      }
+    }
+    
+    const queryString = queryParams.join('&');
+    const data = await fetchFromApi(
+      `/discover/${filters.mediaType}?${queryString}`
+    );
+    
+    // Apply additional content filtering
+    if (data.results && Array.isArray(data.results)) {
+      data.results = filterContent(data.results, {
+        excludeTalkShows: filters.mediaType === 'tv' // Explicitly exclude talk shows for TV
+      });
+      
+      // Update total_results count
+      data.total_results = data.results.length;
+    }
+    
+    return data;
+  } catch (error) {
+    console.error(`Error getting filtered content:`, error);
+    throw error;
+  }
+};
