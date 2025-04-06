@@ -1,7 +1,8 @@
 import { getImageUrl } from '../services/tmdbApi'
 
-function SearchResults({ results, searchType, searchQuery }) {
-  const MINIMUM_VOTE_COUNT = 100; // threshold
+function SearchResults({ results, searchType, searchQuery, totalResults = 0 }) {
+  const MINIMUM_VOTE_COUNT = 10; // Lower threshold to show more results
+  
   // Get release year from date string
   const getYear = (dateString) => {
     if (!dateString) return '';
@@ -35,7 +36,8 @@ function SearchResults({ results, searchType, searchQuery }) {
   return (
     <div className="results-container">
       <h2 className="results-title">
-        Results for: {searchQuery} ({filteredResults.length} {searchType === 'movie' ? 'movies' : 'TV shows'} found)
+        {searchQuery} ({filteredResults.length} {searchType === 'movie' ? 'movies' : 'TV shows'} found
+        {totalResults > filteredResults.length ? ` of ${totalResults} total` : ''})
       </h2>
       
       <div className="results-grid">

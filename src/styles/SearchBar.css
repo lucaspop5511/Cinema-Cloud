@@ -48,22 +48,10 @@
   background-color: #1f1f1f;
   color: #e0e0e0;
   caret-color: #3498db;
+  border-top-right-radius: 30px;
+  border-bottom-right-radius: 30px;
 }
 
 .search-input::placeholder {
   color: #666;
-}
-
-.search-submit {
-  padding: 12px 20px;
-  background-color: #3498db;
-  color: white;
-  border: none;
-  font-size: 16px;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.search-submit:hover {
-  background-color: #2980b9;
 }

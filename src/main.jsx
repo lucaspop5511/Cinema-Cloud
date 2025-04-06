@@ -13,6 +13,7 @@ import './styles/GenrePanel.css'
 import './styles/Home.css'
 import './styles/Cinema.css'
 import './styles/SearchResults.css'
+import './styles/FilterHeader.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

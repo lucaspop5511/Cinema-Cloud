@@ -4,12 +4,6 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery)
   const searchTimeout = useRef(null)
   
-  const handleSearch = (e) => {
-    e.preventDefault()
-    setSearchQuery(localSearchQuery)
-    console.log(`Searching for ${searchType}: ${localSearchQuery}`)
-  }
-  
   const handleInputChange = (e) => {
     const newValue = e.target.value
     setLocalSearchQuery(newValue)
@@ -27,7 +21,7 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
   
   return (
     <div className="search-container">
-      <form className="search-bar" onSubmit={handleSearch}>
+      <div className="search-bar">
         <div className="search-type">
           <button 
             type="button"
@@ -51,8 +45,7 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
           value={localSearchQuery}
           onChange={handleInputChange}
         />
-        <button type="submit" className="search-submit">Search</button>
-      </form>
+      </div>
     </div>
   )
 }

@@ -1,0 +1,65 @@
+.filter-header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    padding: 15px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #333;
+  }
+  
+  .active-filters {
+    flex: 1;
+  }
+  
+  .active-filters h3 {
+    font-size: 16px;
+    margin-bottom: 10px;
+    color: #3498db;
+  }
+  
+  .filter-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  
+  .filter-tag-group {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 5px;
+    background-color: #1e1e1e;
+    padding: 5px 10px;
+    border-radius: 20px;
+  }
+  
+  .filter-tag-label {
+    color: #999;
+    font-size: 14px;
+    margin-right: 5px;
+  }
+  
+  .filter-tag {
+    background-color: #1e3a4f;
+    color: #3498db;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 13px;
+    font-weight: 500;
+  }
+  
+  .clear-filters-btn {
+    background-color: rgba(231, 76, 60, 0.2);
+    color: #e74c3c;
+    border: 1px solid #e74c3c;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  
+  .clear-filters-btn:hover {
+    background-color: rgba(231, 76, 60, 0.3);
+  }

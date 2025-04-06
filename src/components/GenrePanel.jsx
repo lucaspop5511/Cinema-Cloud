@@ -3,25 +3,30 @@ import { AppContext } from '../App'
 import '../styles/GenrePanel.css'
 
 function GenrePanel({ isOpen, closePanel }) {
-  const { selectedGenres, toggleGenre } = useContext(AppContext)
+  const { 
+    selectedGenres, 
+    toggleGenre, 
+    setSelectedGenres,
+    minYear, 
+    maxYear, 
+    setMinYear, 
+    setMaxYear,
+    minRuntime, 
+    maxRuntime, 
+    setMinRuntime, 
+    setMaxRuntime,
+    contentRatings, 
+    setContentRatings,
+    applyFilters
+  } = useContext(AppContext)
+  
   const panelRef = useRef(null)
   const currentYear = new Date().getFullYear()
   
-  // Year filter state
-  const [minYear, setMinYear] = useState(1900)
-  const [maxYear, setMaxYear] = useState(currentYear)
-  
-  // Runtime filter state (in minutes)
-  const [minRuntime, setMinRuntime] = useState(30) // 30 minutes
-  const [maxRuntime, setMaxRuntime] = useState(240) // 4 hours
-
   const [sliderRangeStyle, setSliderRangeStyle] = useState({
     left: '0%',
     width: '0%'
   })
-  
-  // Content rating state
-  const [selectedRatings, setSelectedRatings] = useState([])
   
   const genres = [
     'Action', 'Adventure', 'Animation', 'Comedy', 'Crime', 
@@ -30,7 +35,7 @@ function GenrePanel({ isOpen, closePanel }) {
     'Thriller', 'War', 'Western'
   ].sort();
   
-  const contentRatings = [
+  const contentRatingOptions = [
     'G', 'PG', 'PG-13', 'R'
   ];
   
@@ -126,31 +131,39 @@ function GenrePanel({ isOpen, closePanel }) {
       width: `${rangeWidth}%`
     })
   }
+  
   useEffect(() => {
     updateSliderRangeStyle()
   }, [minRuntime, maxRuntime])
   
   // Toggle content rating selection
   const toggleRating = (rating) => {
-    setSelectedRatings(prevRatings => 
+    setContentRatings(prevRatings => 
       prevRatings.includes(rating)
         ? prevRatings.filter(r => r !== rating)
         : [...prevRatings, rating]
     )
   }
   
+  // Limit genre selection to 3
+  const handleGenreToggle = (genre) => {
+    if (selectedGenres.includes(genre)) {
+      // If genre is already selected, remove it
+      toggleGenre(genre);
+    } else if (selectedGenres.length < 3) {
+      // If less than 3 genres are selected, add the genre
+      toggleGenre(genre);
+    }
+    // If 3 genres are already selected and trying to add another, do nothing
+  }
+  
   // Handle search button click
   const handleSearch = () => {
-    // This would implement your search logic using all the filters
-    console.log('Searching with filters:', {
-      genres: selectedGenres,
-      yearRange: [minYear, maxYear],
-      runtimeRange: [minRuntime, maxRuntime],
-      contentRatings: selectedRatings
-    })
+    applyFilters();
+    
     // Close panel on mobile after search
     if (window.innerWidth < 768) {
-      closePanel()
+      closePanel();
     }
   }
 
@@ -172,14 +185,14 @@ function GenrePanel({ isOpen, closePanel }) {
       
       <div className="genre-panel-content">
         <section className="filter-section">
-          <h3 className="filter-section-title">Categories</h3>
+          <h3 className="filter-section-title">Categories (max 3)</h3>
           <div className="genre-grid">
             {genres.map((genre) => (
               <button 
                 key={genre} 
                 type="button"
                 className={`genre-item ${selectedGenres.includes(genre) ? 'active' : ''}`}
-                onClick={() => toggleGenre(genre)}
+                onClick={() => handleGenreToggle(genre)}
               >
                 {genre}
               </button>
@@ -256,11 +269,11 @@ function GenrePanel({ isOpen, closePanel }) {
         <section className="filter-section">
           <h3 className="filter-section-title">Content Rating</h3>
           <div className="rating-grid">
-            {contentRatings.map((rating) => (
+            {contentRatingOptions.map((rating) => (
               <button 
                 key={rating} 
                 type="button"
-                className={`genre-item ${selectedRatings.includes(rating) ? 'active' : ''}`}
+                className={`genre-item ${contentRatings.includes(rating) ? 'active' : ''}`}
                 onClick={() => toggleRating(rating)}
               >
                 {rating}

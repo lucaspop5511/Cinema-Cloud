@@ -14,6 +14,52 @@
 .cinema-description {
   color: #999;
   margin-bottom: 30px;
+  font-size: 16px;
+  line-height: 1.6;
 }
 
-/* Empty state for now, will add more styles as content is developed */
+.cinema-intro {
+  background-color: #1e1e1e;
+  border-radius: 8px;
+  padding: 30px;
+  margin-top: 20px;
+}
+
+.cinema-instructions {
+  margin-top: 20px;
+}
+
+.cinema-instructions h3 {
+  color: #3498db;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.cinema-instructions ol {
+  list-style-type: decimal;
+  padding-left: 25px;
+  color: #e0e0e0;
+}
+
+.cinema-instructions li {
+  margin-bottom: 10px;
+  line-height: 1.5;
+}
+
+.no-results {
+  background-color: #242424;
+  border-radius: 6px;
+  padding: 30px;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.no-results h2 {
+  color: #e0e0e0;
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+}
+
+.no-results p {
+  color: #999;
+}

@@ -1,49 +1,104 @@
 import { useState, useContext, useEffect } from 'react'
 import SearchBar from '../components/SearchBar'
 import SearchResults from '../components/SearchResults'
+import FilterHeader from '../components/FilterHeader'
 import { AppContext } from '../App'
-import { searchMovies, searchTvShows } from '../services/tmdbApi'
+import { searchMovies, searchTvShows, getFilteredContent } from '../services/tmdbApi'
 
 function Home() {
-  const { selectedGenres } = useContext(AppContext)
-  const [searchQuery, setSearchQuery] = useState('')
-  const [searchType, setSearchType] = useState('movie')
+  const { 
+    selectedGenres,
+    searchQuery, 
+    setSearchQuery,
+    searchType, 
+    setSearchType,
+    minYear,
+    maxYear,
+    minRuntime,
+    maxRuntime,
+    contentRatings,
+    isFilterActive,
+    setIsFilterActive,
+    genreIdMapping,
+    filterCounter,
+    clearFiltersCounter
+  } = useContext(AppContext)
+  
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
+  const [totalResults, setTotalResults] = useState(0)
 
-  useEffect(() => {
-    const fetchResults = async () => {
-      if (searchQuery.trim() === '') {
+  // Function to fetch content based on current state
+  const fetchContent = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      let data;
+      const hasFilters = selectedGenres.length > 0 || 
+                         minYear !== 1900 || 
+                         maxYear !== new Date().getFullYear() ||
+                         minRuntime !== 30 ||
+                         maxRuntime !== 240 ||
+                         contentRatings.length > 0;
+
+      // Convert selected genre names to IDs
+      const genreIds = selectedGenres.map(genre => genreIdMapping[genre]).filter(id => id);
+      
+      // Prepare filters object
+      const filterParams = {
+        mediaType: searchType,
+        genres: genreIds,
+        minYear,
+        maxYear,
+        minRuntime,
+        maxRuntime,
+        contentRatings,
+        sortBy: 'popularity' // Always sort by popularity
+      };
+
+      // Determine which API to call based on search query and filters
+      if (searchQuery.trim().length >= 2) {
+        // If we have a search query, use search API
+        if (hasFilters) {
+          // Combine search with filters
+          filterParams.query = searchQuery;
+          data = await getFilteredContent(filterParams);
+        } else {
+          // Just search without filters
+          if (searchType === 'movie') {
+            data = await searchMovies(searchQuery);
+          } else {
+            data = await searchTvShows(searchQuery);
+          }
+        }
+      } else if (hasFilters) {
+        // If we have filters but no search query, use discover API
+        data = await getFilteredContent(filterParams);
+      } else {
+        // No search, no filters - clear results
         setResults([]);
+        setTotalResults(0);
+        setLoading(false);
         return;
       }
 
-      setLoading(true);
-      setError(null);
-
-      try {
-        let data;
-        if (searchType === 'movie') {
-          data = await searchMovies(searchQuery);
-        } else {
-          data = await searchTvShows(searchQuery);
-        }
-
-        setResults(data.results || []);
-      } catch (err) {
-        setError('Failed to fetch results. Please try again.');
-        console.error('Search error:', err);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    // If search query is at least 3 characters, fetch results
-    if (searchQuery.trim().length >= 3) {
-      fetchResults();
+      // Update state with results
+      setResults(data.results || []);
+      setTotalResults(data.total_results || 0);
+    } catch (err) {
+      setError('Failed to fetch results. Please try again.');
+      console.error('Fetch error:', err);
+    } finally {
+      setLoading(false);
     }
-  }, [searchQuery, searchType]);
+  };
+
+  // Fetch content whenever search, filters change
+  useEffect(() => {
+    fetchContent();
+  }, [searchQuery, searchType, filterCounter, clearFiltersCounter]);
 
   return (
     <div className="home-container">
@@ -55,6 +110,9 @@ function Home() {
       />
       
       <div className="search-results">
+        {/* Filter header with active filters - no sort options */}
+        <FilterHeader />
+        
         {loading && (
           <div className="loading-indicator">
             <p>Loading results...</p>
@@ -67,25 +125,23 @@ function Home() {
           </div>
         )}
         
-        {!loading && !error && searchQuery.trim() !== '' && (
+        {!loading && !error && results.length > 0 && (
           <SearchResults 
             results={results} 
             searchType={searchType}
-            searchQuery={searchQuery}
+            searchQuery={searchQuery || 'Filtered Results'}
+            totalResults={totalResults}
           />
         )}
         
-        {selectedGenres.length > 0 && !searchQuery && (
-          <div className="genre-results">
-            <div className="genre-tags">
-              {selectedGenres.map(genre => (
-                <span key={genre} className="genre-tag">{genre}</span>
-              ))}
-            </div>
-            {/* We'll implement genre-based results later */}
-            <div className="placeholder-results">
-              <p>Category browsing will be implemented in the next phase.</p>
-            </div>
+        {!loading && !error && results.length === 0 && (searchQuery || isFilterActive) && (
+          <div className="no-results">
+            <h2>No Results Found</h2>
+            <p>
+              {searchQuery 
+                ? `No ${searchType === 'movie' ? 'movies' : 'TV shows'} found matching "${searchQuery}"` 
+                : 'Try adjusting your filters to see more content.'}
+            </p>
           </div>
         )}
       </div>
