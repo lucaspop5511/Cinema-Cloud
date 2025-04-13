@@ -4,8 +4,8 @@
 const ADULT_CONTENT_KEYWORDS = [
     'sex', 'xxx', 'adult', 'porn', 'erotic', 'erotica', 'nude', 'nudity', 
     'naked', 'sexologist', 'sexual', 'intercourse', 'nsfw', '18+', 'x-rated',
-    'desire', 'torture', 'skin', 'young mother', 'fetish', 'lust', 'virgin',
-    'horny', 'kinky', 'orgasm', 'sensual', 'seduction', 'provocative', 'brothel',
+    'desire', 'torture', 'skin', 'young mother', 'fetish', 'lust', 'virgin', 'hot girls',
+    'horny', 'kinky', 'orgasm', 'sensual', 'seduction','clitoris', 'provocative', 'brothel',
     'hentai', 'motel', 'lover', 'escort', 'immoral', 'taboo', 'pleasure', 'carnal'
   ];
   
