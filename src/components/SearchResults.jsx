@@ -168,6 +168,12 @@ const getOverview = (item) => {
               
               <div className="result-details">
                 <span className="result-year">{getYear(getReleaseDate(item))}</span>
+                •
+                {hasValidRuntime(item) && (
+                <div className="result-runtime-display">
+                  {getFormattedRuntime(item)}
+                </div>
+              )}
               </div>
               
               <div className="result-rating">
@@ -181,12 +187,6 @@ const getOverview = (item) => {
             <div className="result-info-expanded">
               <h3 className="result-title">{getTitle(item)}</h3>
               
-              {hasValidRuntime(item) && (
-                <div className="result-runtime-display">
-                  {getFormattedRuntime(item)}
-                </div>
-              )}
-              
               <p className="result-overview">
                 {getOverview(item)}
                 <a href={`#/details/${item.id}`} className="see-more-button-inline">
@@ -194,9 +194,14 @@ const getOverview = (item) => {
                 </a>
               </p>
               
-              
               <div className="result-details">
                 <span className="result-year">{getYear(getReleaseDate(item))}</span>
+                •
+                {hasValidRuntime(item) && (
+                <div className="result-runtime-display">
+                  {getFormattedRuntime(item)}
+                </div>
+              )}
               </div>
               
               <div className="result-rating">
