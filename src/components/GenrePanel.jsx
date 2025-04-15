@@ -267,7 +267,7 @@ function GenrePanel({ isOpen, closePanel }) {
   return (
     <div className={`genre-panel ${isOpen ? 'open' : ''}`} ref={panelRef}>
       <div className="genre-panel-header">
-        <h2>Filter</h2>
+        <h2>Browse</h2>
         {window.innerWidth < 768 && isOpen && (
           <button 
             type="button"
