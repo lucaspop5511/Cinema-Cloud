@@ -1,3 +1,4 @@
+/* Main container styles remain the same */
 .results-container {
   background-color: #1e1e1e;
   border-radius: 8px;
@@ -46,6 +47,8 @@
   height: 100%;
   display: flex;
   flex-direction: column;
+  /* Ensure proper positioning for absolutely positioned children */
+  min-height: 370px;
 }
 
 .result-card:hover {
@@ -61,7 +64,8 @@
   overflow: hidden;
   flex-shrink: 0;
   z-index: 1;
-  transition: opacity 0.3s ease;
+  width: 100%;
+  height: 100%;
 }
 
 .result-poster img {
@@ -82,39 +86,37 @@
   font-size: 14px;
 }
 
-/* Info section with fixed height */
+/* 
+  NEW ANIMATION APPROACH:
+  Info section that expands upward over the image on hover
+*/
 .result-info {
   padding: 12px;
-  flex-grow: 1;
   display: flex;
   flex-direction: column;
   background-color: #242424;
-  position: relative;
-  z-index: 2;
-  transition: transform 0.3s ease 0.2s;
-  height: auto;
-  min-height: 100px; /* Ensure some minimum height */
-}
-
-/* Setup for the hover expanded state */
-.result-info-expanded {
   position: absolute;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: rgba(36, 36, 36, 0.98);
-  padding: 12px;
-  z-index: 5;
-  display: flex;
-  flex-direction: column;
-  height: calc(70%); /* Adjust to control how far it expands upward */
-  transform: translateY(100%);
-  transition: transform 0.3s ease 0.2s;
-  overflow-y: auto;
-  border-top: 1px solid #333;
+  z-index: 2;
+  min-height: 100px;
+  max-height: 100px; /* Initial height */
+  overflow: hidden;
+  transition: max-height 0.3s ease-out;
 }
 
-/* Basic info styles */
+/* On hover, expand the info section upward */
+.result-card:hover .result-info {
+  max-height: 85%; /* Expand to cover most of the card */
+}
+
+/* Pin the basic info to the top */
+.result-info-header {
+  margin-bottom: 8px;
+}
+
+/* Title styles */
 .result-title {
   font-size: 16px;
   color: #e0e0e0;
@@ -125,29 +127,14 @@
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-bottom: 8px;
 }
 
-/* Movie description styles */
-.result-overview {
-  font-size: 12px;
-  color: #999;
-  margin: 8px 0;
-  line-height: 1.4;
-}
-
-/* Runtime display */
-.result-runtime-display {
-  font-size: 13px;
-  color: #3498db;
-  font-weight: 400;
-  margin-left: 5px;
-}
-
-/* Details area */
+/* Details row with year and runtime */
 .result-details {
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 10px;
   font-size: 14px;
   color: #999;
 }
@@ -156,9 +143,59 @@
   margin-right: 5px;
 }
 
-.result-detail-separator {
-  margin: 0 5px;
-  font-size: 10px;
+/* Add a divider between header and content */
+.result-content-divider {
+  height: 1px;
+  background-color: #333;
+  margin: 8px 0;
+  width: 100%;
+}
+
+/* Movie description styles */
+.result-overview {
+  font-size: 12px;
+  color: #999;
+  margin: 8px 0;
+  line-height: 1.4;
+  /* Hide the overview initially */
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
+  /* Ensure the text has proper spacing */
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+/* Show the overview on hover */
+.result-card:hover .result-overview {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Scrollbar styling for overview text */
+.result-overview::-webkit-scrollbar {
+  width: 4px;
+}
+
+.result-overview::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.result-overview::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 2px;
+}
+
+.result-overview::-webkit-scrollbar-thumb:hover {
+  background-color: #444;
+}
+
+/* Runtime display */
+.result-runtime-display {
+  font-size: 13px;
+  color: #3498db;
+  font-weight: 400;
+  margin-left: 5px;
 }
 
 /* Inline See More button */
@@ -181,16 +218,21 @@
   margin-top: auto;
   display: flex;
   align-items: center;
+  /* Hide the rating initially */
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
+}
+
+/* Show the rating on hover */
+.result-card:hover .result-rating {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 .rating-value {
   color: #3498db;
   font-weight: 500;
-}
-
-/* Hover animation */
-.result-card:hover .result-info-expanded {
-  transform: translateY(0);
 }
 
 .loading-indicator, 

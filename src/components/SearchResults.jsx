@@ -19,23 +19,23 @@ function SearchResults({ results, searchType, searchQuery, totalResults = 0 }) {
     return searchType === 'movie' ? item.release_date : item.first_air_date;
   };
   
-// Get and format overview text with character limit for all cards
-const getOverview = (item) => {
-  if (!item.overview || item.overview.trim() === '') {
-    return searchType === 'movie' 
-      ? 'No description available for this movie.' 
-      : 'No description available for this TV show.';
-  }
-  
-  // Limit to 150 characters for all descriptions
-  const CHARACTER_LIMIT = 200;
-  
-  // Always truncate to ensure consistent look with "see more" button
-  const lastSpace = item.overview.lastIndexOf(' ', CHARACTER_LIMIT);
-  const cutPoint = lastSpace > 0 ? lastSpace : CHARACTER_LIMIT;
-  
-  return item.overview.substring(0, cutPoint) + (item.overview.length > CHARACTER_LIMIT ? '...' : '');
-};
+  // Get and format overview text with character limit for all cards
+  const getOverview = (item) => {
+    if (!item.overview || item.overview.trim() === '') {
+      return searchType === 'movie' 
+        ? 'No description available for this movie.' 
+        : 'No description available for this TV show.';
+    }
+    
+    // Limit to 150 characters for all descriptions
+    const CHARACTER_LIMIT = 200;
+    
+    // Always truncate to ensure consistent look with "see more" button
+    const lastSpace = item.overview.lastIndexOf(' ', CHARACTER_LIMIT);
+    const cutPoint = lastSpace > 0 ? lastSpace : CHARACTER_LIMIT;
+    
+    return item.overview.substring(0, cutPoint) + (item.overview.length > CHARACTER_LIMIT ? '...' : '');
+  };
   
   // Format runtime information
   const formatRuntime = (runtime) => {
@@ -162,47 +162,34 @@ const getOverview = (item) => {
               )}
             </div>
             
-            {/* Static info section (always visible) */}
+            {/* Single expandable info section that overlays the image */}
             <div className="result-info">
-              <h3 className="result-title">{getTitle(item)}</h3>
-              
-              <div className="result-details">
-                <span className="result-year">{getYear(getReleaseDate(item))}</span>
-                •
-                {hasValidRuntime(item) && (
-                <div className="result-runtime-display">
-                  {getFormattedRuntime(item)}
+              {/* Static header info (always visible) */}
+              <div className="result-info-header">
+                <h3 className="result-title">{getTitle(item)}</h3>
+                <div className="result-details">
+                  <span className="result-year">{getYear(getReleaseDate(item))}</span>
+                  {hasValidRuntime(item) && (
+                    <>
+                      •
+                      <div className="result-runtime-display">
+                        {getFormattedRuntime(item)}
+                      </div>
+                    </>
+                  )}
                 </div>
-              )}
               </div>
               
-              <div className="result-rating">
-                <span className="rating-value">
-                  {item.vote_average ? (item.vote_average.toFixed(1) + '/10') : 'No rating'}
-                </span>
-              </div>
-            </div>
-            
-            {/* Expanded info section (appears on hover) */}
-            <div className="result-info-expanded">
-              <h3 className="result-title">{getTitle(item)}</h3>
+              {/* Divider line */}
+              <div className="result-content-divider"></div>
               
+              {/* Content that appears on hover */}
               <p className="result-overview">
                 {getOverview(item)}
                 <a href={`#/details/${item.id}`} className="see-more-button-inline">
                   see more
                 </a>
               </p>
-              
-              <div className="result-details">
-                <span className="result-year">{getYear(getReleaseDate(item))}</span>
-                •
-                {hasValidRuntime(item) && (
-                <div className="result-runtime-display">
-                  {getFormattedRuntime(item)}
-                </div>
-              )}
-              </div>
               
               <div className="result-rating">
                 <span className="rating-value">
