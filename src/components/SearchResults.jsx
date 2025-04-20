@@ -190,7 +190,9 @@ function SearchResults({ results, searchType, searchQuery, totalResults = 0 }) {
                   see more
                 </a>
               </p>
-              
+              <div className="result-id" style={{ fontSize: '10px', color: '#666', marginTop: '4px' }}>
+                ID: {item.id}
+              </div>
               <div className="result-rating">
                 <span className="rating-value">
                   {item.vote_average ? (item.vote_average.toFixed(1) + '/10') : 'No rating'}
