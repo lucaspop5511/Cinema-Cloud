@@ -63,7 +63,7 @@
 /* Poster container with fixed aspect ratio */
 .result-poster {
   position: relative;
-  aspect-ratio: 2/3;
+  aspect-ratio: 3/6;
   overflow: hidden;
   flex-shrink: 0;
   z-index: 1;
@@ -89,7 +89,7 @@
   font-size: 14px;
 }
 
-/* Info section that's always visible at the bottom */
+/* Info section - always visible at the bottom */
 .result-info {
   padding: 12px;
   display: flex;
@@ -100,8 +100,8 @@
   left: 0;
   right: 0;
   z-index: 2;
-  min-height: 140px; /* Increased to accommodate rating */
-  max-height: 140px; /* Initial height - now includes rating */
+  min-height: 120px; /* Increased to accommodate rating */
+  max-height: 120px; /* Initial height */
   overflow: hidden;
   transition: max-height 0.3s ease-out;
 }
@@ -134,7 +134,7 @@
 .result-details {
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 0px;
   font-size: 14px;
   color: #999;
   flex-wrap: wrap;
@@ -149,7 +149,7 @@
 .result-rating {
   display: flex;
   align-items: center;
-  margin-bottom: 8px;
+  margin-bottom: 0px;
   /* Remove the hide/show transition */
   opacity: 1;
   transform: none;
@@ -165,7 +165,7 @@
 .result-content-divider {
   height: 1px;
   background-color: #333;
-  margin: 8px 0;
+  margin: 5px 0;
   width: 100%;
 }
 
