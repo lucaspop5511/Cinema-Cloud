@@ -1,11 +1,14 @@
 import { useState, createContext, useEffect } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import Cinema from './pages/Cinema'
+import MovieDetail from './components/MovieDetail'
+import TvDetail from './components/TvDetail'
 import Header from './components/Header'
 import GenrePanel from './components/GenrePanel'
+import DetailPanel from './components/DetailPanel'
 import Footer from './components/Footer'
-import { getGenreMapping } from './services/api'
+import { getGenreMapping, fetchFromApi } from './services/api'
 import './styles/App.css'
 
 // Create a context to share state across components
@@ -27,6 +30,49 @@ function App() {
   const [genreIdMapping, setGenreIdMapping] = useState({})
   const [filterCounter, setFilterCounter] = useState(0) // Track filter changes
   const [clearFiltersCounter, setClearFiltersCounter] = useState(0) // Track clear filter events
+  
+  // Detail page state
+  const [detailItem, setDetailItem] = useState(null)
+  const [isDetailPage, setIsDetailPage] = useState(false)
+  
+  const location = useLocation()
+
+  // Debug current location
+  useEffect(() => {
+    console.log('Current route:', location.pathname);
+  }, [location.pathname]);
+
+  // Check if current route is a detail page
+  useEffect(() => {
+    const isDetail = location.pathname.includes('/movie/') || location.pathname.includes('/tv/')
+    setIsDetailPage(isDetail)
+    
+    console.log('Is detail page:', isDetail, 'Route:', location.pathname);
+    
+    // Fetch detail item data when on detail page
+    if (isDetail) {
+      const pathParts = location.pathname.split('/')
+      const mediaType = pathParts[1] // 'movie' or 'tv'
+      const id = pathParts[2]
+      
+      console.log('Fetching detail item - MediaType:', mediaType, 'ID:', id);
+      
+      const fetchDetailItem = async () => {
+        try {
+          const data = await fetchFromApi(`/${mediaType}/${id}?language=en-US`)
+          console.log('Detail item fetched:', data);
+          setDetailItem(data)
+        } catch (error) {
+          console.error('Error fetching detail item:', error)
+          setDetailItem(null)
+        }
+      }
+      
+      fetchDetailItem()
+    } else {
+      setDetailItem(null)
+    }
+  }, [location.pathname])
 
   // Check if the device is mobile on mount and when window resizes
   useEffect(() => {
@@ -80,7 +126,7 @@ function App() {
   const handleOverlayClick = (e) => {
     if (isMobile && isPanelOpen) {
       // Check if the click was outside the panel
-      const panelElement = document.querySelector('.genre-panel');
+      const panelElement = document.querySelector('.genre-panel, .detail-panel');
       if (panelElement && !panelElement.contains(e.target)) {
         closePanel();
       }
@@ -143,23 +189,40 @@ function App() {
     applyFilters,
     genreIdMapping,
     filterCounter,
-    clearFiltersCounter
+    clearFiltersCounter,
+    detailItem,
+    isDetailPage
   }
+
+  console.log('App rendering - isDetailPage:', isDetailPage, 'Current route:', location.pathname);
 
   return (
     <AppContext.Provider value={contextValue}>
       <div className={`app ${isPanelOpen ? 'panel-open' : ''}`}
        onClick={handleOverlayClick}>
-        <GenrePanel 
-          isOpen={isPanelOpen} 
-          closePanel={closePanel}
-        />
+        {/* Render appropriate panel based on current page */}
+        {isDetailPage ? (
+          <DetailPanel 
+            item={detailItem}
+            isOpen={isPanelOpen} 
+            closePanel={closePanel}
+            mediaType={location.pathname.includes('/movie/') ? 'movie' : 'tv'}
+          />
+        ) : (
+          <GenrePanel 
+            isOpen={isPanelOpen} 
+            closePanel={closePanel}
+          />
+        )}
+        
         <div className={`content-wrapper ${!isMobile && 'with-sidebar'}`}>
           <Header openPanel={openPanel} isPanelOpen={isPanelOpen} isMobile={isMobile} />
           <main className="main-content">
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/cinema" element={<Cinema />} />
+              <Route path="/movie/:id" element={<MovieDetail />} />
+              <Route path="/tv/:id" element={<TvDetail />} />
             </Routes>
           </main>
           <Footer />

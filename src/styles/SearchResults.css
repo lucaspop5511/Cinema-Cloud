@@ -49,6 +49,9 @@
   flex-direction: column;
   /* Ensure proper positioning for absolutely positioned children */
   min-height: 370px;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
 }
 
 .result-card:hover {
@@ -86,10 +89,7 @@
   font-size: 14px;
 }
 
-/* 
-  NEW ANIMATION APPROACH:
-  Info section that expands upward over the image on hover
-*/
+/* Info section that's always visible at the bottom */
 .result-info {
   padding: 12px;
   display: flex;
@@ -100,8 +100,8 @@
   left: 0;
   right: 0;
   z-index: 2;
-  min-height: 100px;
-  max-height: 100px; /* Initial height */
+  min-height: 140px; /* Increased to accommodate rating */
+  max-height: 140px; /* Initial height - now includes rating */
   overflow: hidden;
   transition: max-height 0.3s ease-out;
 }
@@ -134,16 +134,34 @@
 .result-details {
   display: flex;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   font-size: 14px;
   color: #999;
+  flex-wrap: wrap;
+  gap: 8px;
 }
 
 .result-year, .result-runtime {
   margin-right: 5px;
 }
 
-/* Add a divider between header and content */
+/* Rating display - now always visible */
+.result-rating {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  /* Remove the hide/show transition */
+  opacity: 1;
+  transform: none;
+}
+
+.rating-value {
+  color: #3498db;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+/* Add a divider between basic info and extended content */
 .result-content-divider {
   height: 1px;
   background-color: #333;
@@ -214,27 +232,6 @@
   text-decoration: underline;
 }
 
-.result-rating {
-  margin-top: auto;
-  display: flex;
-  align-items: center;
-  /* Hide the rating initially */
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
-}
-
-/* Show the rating on hover */
-.result-card:hover .result-rating {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-.rating-value {
-  color: #3498db;
-  font-weight: 500;
-}
-
 .loading-indicator, 
 .error-message,
 .no-results {
@@ -249,6 +246,34 @@
 .error-message {
   color: #e74c3c;
   border-left: 4px solid #e74c3c;
+}
+
+/* Load More Button */
+.load-more-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+}
+
+.load-more-button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 6px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.load-more-button:hover {
+  background-color: #2980b9;
+}
+
+.load-more-button:disabled {
+  background-color: #555;
+  cursor: not-allowed;
 }
 
 /* Responsive adjustments */
@@ -272,5 +297,9 @@
   
   .result-overview {
     font-size: 11px;
+  }
+  
+  .rating-value {
+    font-size: 12px;
   }
 }

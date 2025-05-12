@@ -1,6 +1,16 @@
 import { getImageUrl } from '../services/api';
+import { Link } from 'react-router-dom';
 
-function SearchResults({ results, searchType, searchQuery, totalResults = 0 }) {
+function SearchResults({ 
+  results, 
+  searchType, 
+  searchQuery, 
+  totalResults = 0,
+  page = 1,
+  totalPages = 1,
+  onLoadMore,
+  isLoadingMore = false 
+}) {
   const MINIMUM_VOTE_COUNT = 10; // Lower threshold to show more results
   
   // Get release year from date string
@@ -153,7 +163,12 @@ function SearchResults({ results, searchType, searchQuery, totalResults = 0 }) {
       
       <div className="results-grid">
         {filteredResults.map(item => (
-          <div key={item.id} className="result-card">
+          <Link 
+            key={item.id} 
+            to={`/${searchType}/${item.id}`}
+            className="result-card"
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
             <div className="result-poster">
               {item.poster_path ? (
                 <img src={getImageUrl(item.poster_path)} alt={getTitle(item)} />
@@ -178,6 +193,13 @@ function SearchResults({ results, searchType, searchQuery, totalResults = 0 }) {
                     </>
                   )}
                 </div>
+                
+                {/* Rating is now always visible */}
+                <div className="result-rating">
+                  <span className="rating-value">
+                    {item.vote_average ? (item.vote_average.toFixed(1) + '/10') : 'No rating'}
+                  </span>
+                </div>
               </div>
               
               {/* Divider line */}
@@ -186,22 +208,27 @@ function SearchResults({ results, searchType, searchQuery, totalResults = 0 }) {
               {/* Content that appears on hover */}
               <p className="result-overview">
                 {getOverview(item)}
-                <a href={`#/details/${item.id}`} className="see-more-button-inline">
-                  see more
-                </a>
               </p>
               <div className="result-id" style={{ fontSize: '10px', color: '#666', marginTop: '4px' }}>
                 ID: {item.id}
               </div>
-              <div className="result-rating">
-                <span className="rating-value">
-                  {item.vote_average ? (item.vote_average.toFixed(1) + '/10') : 'No rating'}
-                </span>
-              </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
+      
+      {/* Load More Button */}
+      {page < totalPages && onLoadMore && (
+        <div className="load-more-container">
+          <button 
+            className="load-more-button"
+            onClick={onLoadMore}
+            disabled={isLoadingMore}
+          >
+            {isLoadingMore ? 'Loading...' : 'Load More'}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

@@ -11,9 +11,11 @@ import './styles/Footer.css'
 import './styles/SearchBar.css'
 import './styles/panels/GenrePanel.css'
 import './styles/panels/FilterHeader.css'
+import './styles/panels/DetailPanel.css'
 import './styles/Home.css'
 import './styles/Cinema.css'
 import './styles/SearchResults.css'
+import './styles/Detail.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

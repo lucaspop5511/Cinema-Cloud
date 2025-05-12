@@ -1,0 +1,245 @@
+/* Detail page container */
+.detail-container {
+  display: flex;
+  flex-direction: row;
+  min-height: 100vh;
+  background-color: #121212;
+}
+
+/* Content area - properly positioned to account for detail panel */
+.detail-content {
+  flex: 1;
+  padding: 20px;
+  min-width: 0; /* Allow content to shrink */
+  overflow-x: hidden; /* Prevent horizontal overflow */
+}
+
+/* Main content */
+.detail-main {
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  padding: 0; /* Remove extra padding */
+}
+
+/* Header section */
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  border-bottom: 1px solid #333;
+  padding-bottom: 20px;
+  width: 100%;
+}
+
+.detail-title {
+  font-size: 2.5rem;
+  color: #e0e0e0;
+  margin: 0;
+  flex: 1;
+  margin-right: 20px; /* Add some space between title and rating */
+}
+
+.detail-rating {
+  display: flex;
+  align-items: center;
+  flex-shrink: 0;
+}
+
+.rating-value {
+  font-size: 1.5rem;
+  color: #3498db;
+  font-weight: bold;
+}
+
+/* Overview section */
+.detail-overview {
+  margin-bottom: 40px;
+}
+
+.detail-overview p {
+  font-size: 16px;
+  line-height: 1.8;
+  color: #e0e0e0;
+  max-width: 100%;
+}
+
+/* Section styling */
+.detail-section {
+  margin-bottom: 40px;
+  width: 100%;
+}
+
+.detail-section h3 {
+  font-size: 1.5rem;
+  color: #3498db;
+  margin-bottom: 20px;
+}
+
+/* Images grid */
+.detail-images {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  width: 100%;
+}
+
+.detail-image {
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.detail-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.3s ease;
+}
+
+.detail-image:hover img {
+  transform: scale(1.05);
+}
+
+/* Trailer video */
+.detail-trailer {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  aspect-ratio: 16/9;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+}
+
+.detail-trailer iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Cast section */
+.detail-cast {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 10px;
+  scrollbar-width: thin;
+  scrollbar-color: #3498db transparent;
+  width: 100%;
+}
+
+.detail-cast::-webkit-scrollbar {
+  height: 8px;
+}
+
+.detail-cast::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.detail-cast::-webkit-scrollbar-thumb {
+  background: #3498db;
+  border-radius: 4px;
+}
+
+.cast-member {
+  flex-shrink: 0;
+  width: 120px;
+  text-align: center;
+}
+
+.cast-photo {
+  width: 120px;
+  height: 150px;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.cast-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no-photo {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #333;
+  color: #999;
+  font-size: 14px;
+}
+
+.cast-info {
+  color: #e0e0e0;
+}
+
+.cast-name {
+  font-weight: bold;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+.cast-character {
+  color: #999;
+  font-size: 12px;
+}
+
+/* Loading and Error states */
+.detail-loading, .detail-error {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;
+  color: #e0e0e0;
+  margin-left: 250px;
+  padding: 20px;
+}
+
+.detail-error h2 {
+  color: #e74c3c;
+  margin-bottom: 10px;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .detail-content {
+    margin-left: 0;
+    padding: 10px;
+  }
+
+  .detail-loading, .detail-error {
+    margin-left: 0;
+  }
+
+  .detail-title {
+    font-size: 2rem;
+  }
+
+  .detail-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+
+  .detail-images {
+    grid-template-columns: 1fr;
+  }
+
+  .cast-member {
+    width: 100px;
+  }
+
+  .cast-photo {
+    width: 100px;
+    height: 125px;
+  }
+}

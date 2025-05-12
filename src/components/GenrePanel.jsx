@@ -144,7 +144,7 @@ function GenrePanel({ isOpen, closePanel }) {
   const validateMinYear = () => {
     let validatedValue = parseInt(minYear)
     if (isNaN(validatedValue) || validatedValue < 1900) {
-      validatedValue = 1990 // Default to 1990 instead of 1900
+      validatedValue = 1990 
     } else if (validatedValue > parseInt(maxYear)) {
       validatedValue = parseInt(maxYear)
     }

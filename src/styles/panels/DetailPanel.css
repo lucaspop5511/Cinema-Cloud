@@ -1,0 +1,191 @@
+/* Detail panel styles */
+.detail-panel {
+  width: 250px;
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  background-color: #1a1a1a;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Responsive styles for mobile */
+@media (max-width: 767px) {
+  .detail-panel {
+    width: 0;
+    overflow: hidden;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0);
+    transition: width 0.3s ease, box-shadow 0.3s ease;
+  }
+  
+  .detail-panel.open {
+    width: 250px;
+    overflow: visible;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Ensure content doesn't overflow hidden container when closed */
+  .detail-panel:not(.open) .detail-panel-content,
+  .detail-panel:not(.open) .detail-panel-header {
+    opacity: 0;
+    visibility: hidden;
+  }
+  
+  .detail-panel.open .detail-panel-content,
+  .detail-panel.open .detail-panel-header {
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.2s ease 0.1s;
+  }
+}
+
+/* Header */
+.detail-panel-header {
+  padding: 20px;
+  background-color: #1a1a1a;
+  border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+}
+
+.detail-panel-header h2 {
+  font-size: 24px;
+  font-weight: bold;
+  color: #3498db;
+  margin: 0;
+}
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.3s ease;
+}
+
+.logo-link:hover h2 {
+  color: #5dade2;
+}
+
+.close-panel-btn {
+  background: none;
+  border: none;
+  color: #e0e0e0;
+  font-size: 16px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  padding: 0;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.close-panel-btn:hover {
+  background-color: #333;
+  color: #3498db;
+}
+
+/* Content */
+.detail-panel-content {
+  overflow-y: auto;
+  flex-grow: 1;
+  padding: 20px;
+  scrollbar-width: thin;
+  scrollbar-color: #333 transparent;
+}
+
+.detail-panel-content::-webkit-scrollbar {
+  width: 4px;
+}
+
+.detail-panel-content::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.detail-panel-content::-webkit-scrollbar-thumb {
+  background-color: #333;
+  border-radius: 2px;
+}
+
+.detail-panel-content::-webkit-scrollbar-thumb:hover {
+  background-color: #444;
+}
+
+/* Poster */
+.detail-poster {
+  margin-bottom: 25px;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+}
+
+.detail-poster img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.no-poster {
+  width: 100%;
+  aspect-ratio: 2/3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #333;
+  color: #999;
+  font-size: 14px;
+}
+
+/* Info section */
+.detail-info {
+  color: #e0e0e0;
+}
+
+.detail-panel-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #3498db;
+}
+
+.detail-info-item {
+  margin-bottom: 15px;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.info-label {
+  font-size: 12px;
+  color: #999;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.info-value {
+  font-size: 14px;
+  color: #e0e0e0;
+  font-weight: 500;
+}
+
+.director-creator {
+  font-size: 13px;
+  color: #3498db;
+  font-weight: normal;
+  margin-top: 5px;
+}
+
+/* Special styling for ratings */
+.detail-info-item:has(.info-label:contains("IMDb Score")) .info-value {
+  color: #3498db;
+  font-weight: bold;
+}

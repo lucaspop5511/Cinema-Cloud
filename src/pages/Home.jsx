@@ -31,11 +31,18 @@ function Home() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [totalResults, setTotalResults] = useState(0)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [totalPages, setTotalPages] = useState(1)
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
 
   // Function to fetch content based on current state
-  const fetchContent = async () => {
-    setLoading(true);
-    setError(null);
+  const fetchContent = async (page = 1, append = false) => {
+    if (!append) {
+      setLoading(true);
+      setError(null);
+    } else {
+      setIsLoadingMore(true);
+    }
 
     try {
       let data;
@@ -67,34 +74,56 @@ function Home() {
         if (hasFilters) {
           // Combine search with filters
           filterParams.query = searchQuery;
-          data = await getFilteredContent(filterParams);
+          data = await getFilteredContent(filterParams, page);
         } else {
           // Just search without filters
           if (searchType === 'movie') {
-            data = await searchMovies(searchQuery);
+            data = await searchMovies(searchQuery, page);
           } else {
-            data = await searchTvShows(searchQuery);
+            data = await searchTvShows(searchQuery, page);
           }
         }
       } else if (hasFilters) {
         // If we have filters but no search query, use discover API
-        data = await getFilteredContent(filterParams);
+        data = await getFilteredContent(filterParams, page);
       } else {
         // No search, no filters - clear results
         setResults([]);
         setTotalResults(0);
+        setCurrentPage(1);
+        setTotalPages(1);
         setLoading(false);
+        setIsLoadingMore(false);
         return;
       }
 
       // Update state with results
-      setResults(data.results || []);
+      const newResults = data.results || [];
+      
+      if (append) {
+        setResults(prevResults => [...prevResults, ...newResults]);
+      } else {
+        setResults(newResults);
+        setCurrentPage(1);
+      }
+      
       setTotalResults(data.total_results || 0);
+      setTotalPages(data.total_pages || 1);
     } catch (err) {
       setError('Failed to fetch results. Please try again.');
       console.error('Fetch error:', err);
     } finally {
       setLoading(false);
+      setIsLoadingMore(false);
+    }
+  };
+
+  // Load more results
+  const handleLoadMore = () => {
+    const nextPage = currentPage + 1;
+    if (nextPage <= totalPages) {
+      setCurrentPage(nextPage);
+      fetchContent(nextPage, true);
     }
   };
 
@@ -150,6 +179,10 @@ function Home() {
             searchType={searchType}
             searchQuery={searchQuery || 'Filtered Results'}
             totalResults={totalResults}
+            page={currentPage}
+            totalPages={totalPages}
+            onLoadMore={handleLoadMore}
+            isLoadingMore={isLoadingMore}
           />
         )}
         
