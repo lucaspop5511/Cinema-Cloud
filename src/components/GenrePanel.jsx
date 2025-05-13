@@ -15,8 +15,8 @@ function GenrePanel({ isOpen, closePanel }) {
     maxRuntime, 
     setMinRuntime, 
     setMaxRuntime,
-    contentRatings, 
-    setContentRatings,
+    imdbRating,
+    setImdbRating,
     applyFilters,
     searchType,
     isFilterActive,
@@ -41,7 +41,7 @@ function GenrePanel({ isOpen, closePanel }) {
     maxYear: currentYear,
     minRuntime: 0,
     maxRuntime: 240,
-    contentRatings: [],
+    imdbRating: 'none',
     searchType: 'movie'
   })
   
@@ -54,7 +54,7 @@ function GenrePanel({ isOpen, closePanel }) {
         maxYear,
         minRuntime,
         maxRuntime,
-        contentRatings: [...contentRatings],
+        imdbRating,
         searchType
       })
       setFiltersModified(false)
@@ -82,15 +82,8 @@ function GenrePanel({ isOpen, closePanel }) {
           minRuntime !== initialFilters.minRuntime ||
           maxRuntime !== initialFilters.maxRuntime ||
           searchType !== initialFilters.searchType ||
-          contentRatings.length !== initialFilters.contentRatings.length) {
+          imdbRating !== initialFilters.imdbRating) {
         return true
-      }
-      
-      // Check content ratings
-      for (const rating of contentRatings) {
-        if (!initialFilters.contentRatings.includes(rating)) {
-          return true
-        }
       }
       
       return false
@@ -103,7 +96,7 @@ function GenrePanel({ isOpen, closePanel }) {
     maxYear, 
     minRuntime, 
     maxRuntime, 
-    contentRatings,
+    imdbRating,
     searchType
   ])
   
@@ -114,8 +107,13 @@ function GenrePanel({ isOpen, closePanel }) {
     'Thriller', 'War', 'Western'
   ].sort();
   
-  const contentRatingOptions = [
-    'G', 'PG', 'PG-13', 'R'
+  // Updated IMDB Rating options - removed 9+, changed 8-9 to 8+
+  const imdbRatingOptions = [
+    { value: 'none', label: '⊘' }, 
+    { value: '<6', label: '<6' },
+    { value: '6-7', label: '6-7' },
+    { value: '7-8', label: '7-8' },
+    { value: '8+', label: '8+' }
   ];
   
   // Handle escape key to close panel on mobile
@@ -144,7 +142,7 @@ function GenrePanel({ isOpen, closePanel }) {
   const validateMinYear = () => {
     let validatedValue = parseInt(minYear)
     if (isNaN(validatedValue) || validatedValue < 1900) {
-      validatedValue = 1990 
+      validatedValue = 1990 // Default to 1990 instead of 1900
     } else if (validatedValue > parseInt(maxYear)) {
       validatedValue = parseInt(maxYear)
     }
@@ -228,15 +226,6 @@ function GenrePanel({ isOpen, closePanel }) {
     updateSliderRangeStyle()
   }, [minRuntime, maxRuntime])
   
-  // Toggle content rating selection
-  const toggleRating = (rating) => {
-    setContentRatings(prevRatings => 
-      prevRatings.includes(rating)
-        ? prevRatings.filter(r => r !== rating)
-        : [...prevRatings, rating]
-    )
-  }
-  
   // Limit genre selection to 3
   const handleGenreToggle = (genre) => {
     if (selectedGenres.includes(genre)) {
@@ -251,6 +240,16 @@ function GenrePanel({ isOpen, closePanel }) {
   
   // Handle search button click
   const handleSearch = () => {
+    console.log('Search button clicked with filters:', {
+      selectedGenres,
+      minYear,
+      maxYear,
+      minRuntime,
+      maxRuntime,
+      imdbRating,
+      searchType
+    });
+    
     applyFilters();
     
     // Close panel on mobile after search
@@ -406,16 +405,16 @@ function GenrePanel({ isOpen, closePanel }) {
         </section>
         
         <section className="filter-section">
-          <h3 className="filter-section-title">Content Rating</h3>
-          <div className="rating-grid">
-            {contentRatingOptions.map((rating) => (
+          <h3 className="filter-section-title">IMDB Rating</h3>
+          <div className="segmented-control">
+            {imdbRatingOptions.map((option) => (
               <button 
-                key={rating} 
+                key={option.value} 
                 type="button"
-                className={`genre-item ${contentRatings.includes(rating) ? 'active' : ''}`}
-                onClick={() => toggleRating(rating)}
+                className={`segmented-control-item ${imdbRating === option.value ? 'active' : ''} ${option.value === 'none' ? 'none-option' : ''}`}
+                onClick={() => setImdbRating(option.value)}
               >
-                {rating}
+                {option.label}
               </button>
             ))}
           </div>

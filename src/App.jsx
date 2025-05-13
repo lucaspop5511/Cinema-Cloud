@@ -25,7 +25,7 @@ function App() {
   const [maxYear, setMaxYear] = useState(new Date().getFullYear())
   const [minRuntime, setMinRuntime] = useState(0) // Updated from 30 to 0
   const [maxRuntime, setMaxRuntime] = useState(240)
-  const [contentRatings, setContentRatings] = useState([])
+  const [imdbRating, setImdbRating] = useState('none') // Replaced contentRatings with imdbRating
   const [isFilterActive, setIsFilterActive] = useState(false)
   const [genreIdMapping, setGenreIdMapping] = useState({})
   const [filterCounter, setFilterCounter] = useState(0) // Track filter changes
@@ -147,7 +147,7 @@ function App() {
     setMaxYear(new Date().getFullYear());
     setMinRuntime(0); // Reset to new default of 0
     setMaxRuntime(240);
-    setContentRatings([]);
+    setImdbRating('none'); // Reset IMDB rating
     setIsFilterActive(false);
     setClearFiltersCounter(prev => prev + 1); // Increment to trigger re-search
   }
@@ -181,8 +181,8 @@ function App() {
     setMinRuntime,
     maxRuntime,
     setMaxRuntime,
-    contentRatings,
-    setContentRatings,
+    imdbRating,
+    setImdbRating,
     isFilterActive,
     setIsFilterActive,
     clearFilters,

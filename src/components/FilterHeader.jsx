@@ -9,7 +9,7 @@ function FilterHeader() {
     maxYear, 
     minRuntime,
     maxRuntime,
-    contentRatings,
+    imdbRating,
     clearFilters,
     isFilterActive,
     searchType
@@ -28,13 +28,25 @@ function FilterHeader() {
     }
   };
 
+  // Get IMDB rating label
+  const getImdbRatingLabel = () => {
+    const ratingMap = {
+      'none': null,
+      '<6': '< 6',
+      '6-7': '6-7',
+      '7-8': '7-8',
+      '8+': '8+' // Updated to match the new rating system
+    };
+    return ratingMap[imdbRating];
+  };
+
   // Check if we have any active filters
   const hasActiveFilters = selectedGenres.length > 0 || 
                           minYear !== 1990 || 
                           maxYear !== new Date().getFullYear() ||
                           minRuntime !== 0 ||
                           maxRuntime !== 240 ||
-                          contentRatings.length > 0;
+                          imdbRating !== 'none';
 
   return (
     <div className="filter-header">
@@ -67,12 +79,10 @@ function FilterHeader() {
               </div>
             )}
             
-            {contentRatings.length > 0 && (
+            {imdbRating !== 'none' && (
               <div className="filter-tag-group">
-                <span className="filter-tag-label">Rating:</span>
-                {contentRatings.map(rating => (
-                  <span key={rating} className="filter-tag">{rating}</span>
-                ))}
+                <span className="filter-tag-label">IMDB Rating:</span>
+                <span className="filter-tag">{getImdbRatingLabel()}</span>
               </div>
             )}
             

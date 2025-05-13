@@ -16,7 +16,7 @@ function Home() {
     maxYear,
     minRuntime,
     maxRuntime,
-    contentRatings,
+    imdbRating,
     isFilterActive,
     setIsFilterActive,
     genreIdMapping,
@@ -35,6 +35,22 @@ function Home() {
   const [totalPages, setTotalPages] = useState(1)
   const [isLoadingMore, setIsLoadingMore] = useState(false)
 
+  // Convert IMDB rating to min/max values
+  const getImdbRatingRange = () => {
+    switch (imdbRating) {
+      case '<6':
+        return { min: 0, max: 6 };
+      case '6-7':
+        return { min: 6, max: 7 };
+      case '7-8':
+        return { min: 7, max: 8 };
+      case '8+':
+        return { min: 8, max: 10 }; // Changed to 8+ with no upper limit except 10
+      default:
+        return null; // 'none' returns null which means no rating filter
+    }
+  };
+
   // Function to fetch content based on current state
   const fetchContent = async (page = 1, append = false) => {
     if (!append) {
@@ -46,55 +62,44 @@ function Home() {
 
     try {
       let data;
-      const hasFilters = selectedGenres.length > 0 || 
-                         minYear !== 1900 || 
+      const ratingRange = getImdbRatingRange();
+      
+      // Check if we have any filters applied (including IMDB rating when it's not 'none')
+      const hasNonDefaultFilters = selectedGenres.length > 0 || 
+                         minYear !== 1990 || 
                          maxYear !== new Date().getFullYear() ||
-                         minRuntime !== 30 ||
+                         minRuntime !== 0 ||
                          maxRuntime !== 240 ||
-                         contentRatings.length > 0;
+                         imdbRating !== 'none';
 
       // Convert selected genre names to IDs
       const genreIds = selectedGenres.map(genre => genreIdMapping[genre]).filter(id => id);
       
-      // Prepare filters object
-      const filterParams = {
-        mediaType: searchType,
-        genres: genreIds,
-        minYear,
-        maxYear,
-        minRuntime,
-        maxRuntime,
-        contentRatings,
-        sortBy: 'popularity' // Always sort by popularity
-      };
+      // Always use the discover API if we have any filters (including IMDB rating)
+      // or if we don't have a search query
+      if (!searchQuery.trim() || hasNonDefaultFilters) {
+        // Prepare filters object for discover API
+        const filterParams = {
+          mediaType: searchType,
+          genres: genreIds,
+          minYear,
+          maxYear,
+          minRuntime,
+          maxRuntime,
+          sortBy: 'popularity',
+          imdbRating: ratingRange
+          // No longer have minVoteCount requirements
+        };
 
-      // Determine which API to call based on search query and filters
-      if (searchQuery.trim().length >= 2) {
-        // If we have a search query, use search API
-        if (hasFilters) {
-          // Combine search with filters
-          filterParams.query = searchQuery;
-          data = await getFilteredContent(filterParams, page);
-        } else {
-          // Just search without filters
-          if (searchType === 'movie') {
-            data = await searchMovies(searchQuery, page);
-          } else {
-            data = await searchTvShows(searchQuery, page);
-          }
-        }
-      } else if (hasFilters) {
-        // If we have filters but no search query, use discover API
+        console.log('Using discover API with filters:', filterParams);
         data = await getFilteredContent(filterParams, page);
       } else {
-        // No search, no filters - clear results
-        setResults([]);
-        setTotalResults(0);
-        setCurrentPage(1);
-        setTotalPages(1);
-        setLoading(false);
-        setIsLoadingMore(false);
-        return;
+        // Use search API for query-based searches without filters
+        if (searchType === 'movie') {
+          data = await searchMovies(searchQuery, page);
+        } else {
+          data = await searchTvShows(searchQuery, page);
+        }
       }
 
       // Update state with results
@@ -177,7 +182,7 @@ function Home() {
           <SearchResults 
             results={results} 
             searchType={searchType}
-            searchQuery={searchQuery || 'Filtered Results'}
+            searchQuery={searchQuery || 'Popular Results'}
             totalResults={totalResults}
             page={currentPage}
             totalPages={totalPages}
@@ -186,7 +191,7 @@ function Home() {
           />
         )}
         
-        {!loading && !error && results.length === 0 && (searchQuery || isFilterActive) && (
+        {!loading && !error && results.length === 0 && (
           <div className="no-results">
             <h2>No Results Found</h2>
             <p>

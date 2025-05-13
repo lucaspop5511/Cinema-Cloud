@@ -1,0 +1,56 @@
+/* Segmented Control Styles */
+.segmented-control {
+  display: flex;
+  background-color: #242424;
+  border-radius: 8px;
+  padding: 4px;
+  gap: 2px;
+  border: 1px solid #333;
+}
+
+.segmented-control-item {
+  flex: 1;
+  padding: 6px 8px; /* Reduced padding */
+  background-color: transparent;
+  border: none;
+  border-radius: 6px;
+  color: #999;
+  cursor: pointer;
+  font-size: 11px; /* Smaller font size */
+  text-align: center;
+  transition: all 0.2s ease;
+  font-weight: 500;
+  min-height: 28px; /* Set minimum height for consistency */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.segmented-control-item:hover:not(.active) {
+  background-color: #525d60;
+  color: #e0e0e0;
+}
+
+.segmented-control-item.active {
+  background-color: #3498db;
+  color: white;
+  box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+}
+
+/* Special styling for the none option with symbol */
+.segmented-control-item.none-option {
+  font-size: 16px; /* Larger font for the symbol */
+}
+
+/* Make segmented control responsive */
+@media (max-width: 768px) {
+  .segmented-control-item {
+    padding: 4px 6px;
+    font-size: 10px;
+    min-height: 26px;
+  }
+  
+  .segmented-control-item.none-option {
+    font-size: 14px;
+  }
+}
