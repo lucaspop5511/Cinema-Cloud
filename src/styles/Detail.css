@@ -38,7 +38,7 @@
   color: #e0e0e0;
   margin: 0;
   flex: 1;
-  margin-right: 20px; /* Add some space between title and rating */
+  margin-right: 20px;
 }
 
 .detail-rating {
@@ -90,6 +90,7 @@
   border-radius: 8px;
   overflow: hidden;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  max-width: 500px;
 }
 
 .detail-image img {
@@ -97,10 +98,6 @@
   height: 100%;
   object-fit: cover;
   transition: transform 0.3s ease;
-}
-
-.detail-image:hover img {
-  transform: scale(1.05);
 }
 
 /* Trailer video */

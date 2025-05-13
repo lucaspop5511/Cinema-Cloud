@@ -119,10 +119,10 @@ export default function MovieDetail() {
             <div className="detail-section">
               <h3>Images</h3>
               <div className="detail-images">
-                {images.slice(0, 4).map((image, index) => (
+                {images.slice(2, 6).map((image, index) => (
                   <div key={index} className="detail-image">
                     <img 
-                      src={getImageUrl(image.file_path)} 
+                      src={getImageUrl(image.file_path)}
                       alt={`Movie still ${index + 1}`}
                     />
                   </div>
