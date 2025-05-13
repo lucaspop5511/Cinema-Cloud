@@ -1,45 +1,89 @@
-/* Segmented Control Styles */
+/* Segmented Control Styles with Smooth Animation */
 .segmented-control {
   display: flex;
   background-color: #242424;
   border-radius: 8px;
   padding: 4px;
-  gap: 2px;
   border: 1px solid #333;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Sliding background indicator */
+.segmented-control::before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  bottom: 4px;
+  background-color: #3498db;
+  border-radius: 6px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+  box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
+}
+
+/* Calculate position for each option */
+.segmented-control[data-selected="none"]::before {
+  left: 4px;
+  width: calc(20% - 2px);
+}
+
+.segmented-control[data-selected="<6"]::before {
+  left: calc(20% + 2px);
+  width: calc(20% - 2px);
+}
+
+.segmented-control[data-selected="6-7"]::before {
+  left: calc(40% + 2px);
+  width: calc(20% - 2px);
+}
+
+.segmented-control[data-selected="7-8"]::before {
+  left: calc(60% + 2px);
+  width: calc(20% - 2px);
+}
+
+.segmented-control[data-selected="8+"]::before {
+  left: calc(80% + 2px);
+  width: calc(20% - 7px);
 }
 
 .segmented-control-item {
   flex: 1;
-  padding: 6px 8px; /* Reduced padding */
+  padding: 6px 8px;
   background-color: transparent;
   border: none;
   border-radius: 6px;
   color: #999;
   cursor: pointer;
-  font-size: 11px; /* Smaller font size */
+  font-size: 11px;
   text-align: center;
-  transition: all 0.2s ease;
+  transition: color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   font-weight: 500;
-  min-height: 28px; /* Set minimum height for consistency */
+  min-height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
+  position: relative;
+  z-index: 2;
 }
 
 .segmented-control-item:hover:not(.active) {
-  background-color: #525d60;
   color: #e0e0e0;
 }
 
 .segmented-control-item.active {
-  background-color: #3498db;
   color: white;
-  box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
 }
 
 /* Special styling for the none option with symbol */
 .segmented-control-item.none-option {
-  font-size: 16px; /* Larger font for the symbol */
+  font-size: 16px;
+}
+
+.segmented-control-item.active {
+  background-color: transparent;
+  box-shadow: none;
 }
 
 /* Make segmented control responsive */

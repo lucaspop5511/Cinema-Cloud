@@ -406,7 +406,7 @@ function GenrePanel({ isOpen, closePanel }) {
         
         <section className="filter-section">
           <h3 className="filter-section-title">IMDB Rating</h3>
-          <div className="segmented-control">
+          <div className="segmented-control" data-selected={imdbRating}>
             {imdbRatingOptions.map((option) => (
               <button 
                 key={option.value} 
