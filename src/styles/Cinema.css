@@ -12,15 +12,53 @@
 .cinema-header h1 {
   font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   color: #e0e0e0;
 }
 
-.cinema-city-selector {
+/* Media Type Picker */
+.media-type-picker {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 25px;
+  background-color: #242424;
+  border-radius: 30px;
+  overflow: hidden;
+  border: 1px solid #333;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.media-type-button {
+  padding: 12px 24px;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  color: #999;
+  transition: background-color 0.2s, color 0.2s;
+  flex: 1;
+}
+
+.media-type-button.active {
+  background-color: #3498db;
+  color: white;
+}
+
+.media-type-button:hover:not(.active) {
+  color: #e0e0e0;
+  background-color: #333;
+}
+
+/* Dropdowns */
+.cinema-city-selector,
+.streaming-selector {
   margin-top: 20px;
 }
 
-.cinema-city-selector label {
+.cinema-city-selector label,
+.streaming-selector label {
   display: block;
   margin-bottom: 10px;
   color: #999;
@@ -50,33 +88,155 @@
   color: #e0e0e0;
 }
 
-.cinema-info {
+/* Content Section */
+.content-section {
   background-color: #1e1e1e;
   border-radius: 8px;
   padding: 20px;
-  margin-bottom: 30px;
+}
+
+.content-section h2 {
+  color: #e0e0e0;
+  font-size: 1.5rem;
+  margin-bottom: 20px;
   text-align: center;
 }
 
-.cinema-info p {
-  color: #999;
-  line-height: 1.6;
-  font-size: 16px;
+.content-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.movies-list {
-  background-color: #1e1e1e;
+.content-row {
+  display: flex;
+  background-color: #242424;
   border-radius: 8px;
-  padding: 20px;
-  min-height: 200px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  transition: background-color 0.2s ease;
 }
 
-.no-movies {
+.content-row.clickable {
+  cursor: pointer;
+}
+
+.content-row.clickable:hover {
+  background-color: #2a2a2a;
+}
+
+.content-poster {
+  width: 150px;
+  height: 225px;
+  flex-shrink: 0;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #333;
+}
+
+.content-poster img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.no-poster {
+  color: #999;
+  font-size: 14px;
+  text-align: center;
+}
+
+.content-info {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.content-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 10px;
+}
+
+.content-title {
+  color: #e0e0e0;
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0;
+  flex: 1;
+  margin-right: 15px;
+}
+
+.content-rating {
+  color: #f39c12;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.content-details {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 12px;
+  color: #999;
+  font-size: 14px;
+}
+
+.content-year {
+  color: #3498db;
+}
+
+.content-separator {
+  color: #666;
+}
+
+.content-additional {
+  color: #999;
+  font-weight: 500;
+}
+
+.content-overview {
+  color: #ccc;
+  font-size: 14px;
+  line-height: 1.6;
+  margin-bottom: 15px;
+  flex: 1;
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+}
+
+/* Cinema Link */
+.cinema-link {
+  color: #3498db;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s ease;
+  align-self: flex-start;
+  font-size: 14px;
+}
+
+.cinema-link:hover {
+  color: #5dade2;
+  text-decoration: underline;
+}
+
+/* TV Show Status - Removed */
+
+/* No Content */
+.no-content {
   text-align: center;
   padding: 40px;
   color: #999;
 }
 
+/* Loading and Error States */
 .cinema-loading,
 .cinema-error {
   display: flex;
@@ -114,8 +274,44 @@
     font-size: 1.5rem;
   }
   
+  .media-type-picker {
+    max-width: 100%;
+  }
+  
+  .media-type-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
   .cinema-dropdown {
     min-width: 100%;
     max-width: 100%;
+  }
+  
+  .content-row {
+    flex-direction: column;
+  }
+  
+  .content-poster {
+    width: 100%;
+    height: 250px;
+  }
+  
+  .content-info {
+    padding: 15px;
+  }
+  
+  .content-title {
+    font-size: 1.1rem;
+  }
+  
+  .content-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .content-section h2 {
+    font-size: 1.3rem;
   }
 }
