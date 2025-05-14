@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from 'react-router-dom'
 import App from './App.jsx'
 
-// Import all CSS files directly
+// Import only the CSS files we're keeping
 import './styles/index.css'
 import './styles/App.css'
 import './styles/Header.css'

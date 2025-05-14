@@ -21,15 +21,15 @@ function App() {
   const [searchQuery, setSearchQuery] = useState('')
   const [searchType, setSearchType] = useState('movie')
   const [previousSearchType, setPreviousSearchType] = useState(null)
-  const [minYear, setMinYear] = useState(1990) // Updated from 1900 to 1990
+  const [minYear, setMinYear] = useState(1990)
   const [maxYear, setMaxYear] = useState(new Date().getFullYear())
-  const [minRuntime, setMinRuntime] = useState(0) // Updated from 30 to 0
+  const [minRuntime, setMinRuntime] = useState(0)
   const [maxRuntime, setMaxRuntime] = useState(240)
-  const [imdbRating, setImdbRating] = useState('none') // Replaced contentRatings with imdbRating
+  const [imdbRating, setImdbRating] = useState('none')
   const [isFilterActive, setIsFilterActive] = useState(false)
   const [genreIdMapping, setGenreIdMapping] = useState({})
-  const [filterCounter, setFilterCounter] = useState(0) // Track filter changes
-  const [clearFiltersCounter, setClearFiltersCounter] = useState(0) // Track clear filter events
+  const [filterCounter, setFilterCounter] = useState(0)
+  const [clearFiltersCounter, setClearFiltersCounter] = useState(0)
   
   // Detail page state
   const [detailItem, setDetailItem] = useState(null)
@@ -37,17 +37,10 @@ function App() {
   
   const location = useLocation()
 
-  // Debug current location
-  useEffect(() => {
-    console.log('Current route:', location.pathname);
-  }, [location.pathname]);
-
   // Check if current route is a detail page
   useEffect(() => {
     const isDetail = location.pathname.includes('/movie/') || location.pathname.includes('/tv/')
     setIsDetailPage(isDetail)
-    
-    console.log('Is detail page:', isDetail, 'Route:', location.pathname);
     
     // Fetch detail item data when on detail page
     if (isDetail) {
@@ -55,12 +48,9 @@ function App() {
       const mediaType = pathParts[1] // 'movie' or 'tv'
       const id = pathParts[2]
       
-      console.log('Fetching detail item - MediaType:', mediaType, 'ID:', id);
-      
       const fetchDetailItem = async () => {
         try {
           const data = await fetchFromApi(`/${mediaType}/${id}?language=en-US`)
-          console.log('Detail item fetched:', data);
           setDetailItem(data)
         } catch (error) {
           console.error('Error fetching detail item:', error)
@@ -79,21 +69,16 @@ function App() {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768)
       
-      // On desktop, panel should always be open
-      if (window.innerWidth >= 768) {
+      // On desktop, panel should always be open for home and cinema pages
+      if (window.innerWidth >= 768 && (location.pathname === '/' || location.pathname === '/cinema')) {
         setIsPanelOpen(true)
       }
     }
     
-    // Initial check
     checkIfMobile()
-    
-    // Add resize listener
     window.addEventListener('resize', checkIfMobile)
-    
-    // Cleanup
     return () => window.removeEventListener('resize', checkIfMobile)
-  }, [])
+  }, [location.pathname])
 
   // Load genre mappings when search type changes
   useEffect(() => {
@@ -109,14 +94,13 @@ function App() {
     loadGenreMappings();
   }, [searchType]);
 
-  // Open panel function (mobile only)
+  // Panel controls
   const openPanel = () => {
     if (isMobile) {
       setIsPanelOpen(true)
     }
   }
 
-  // Close panel function (mobile only)
   const closePanel = () => {
     if (isMobile) {
       setIsPanelOpen(false)
@@ -124,8 +108,8 @@ function App() {
   }
 
   const handleOverlayClick = (e) => {
-    if (isMobile && isPanelOpen) {
-      // Check if the click was outside the panel
+    if (isMobile && isPanelOpen && (location.pathname === '/' || location.pathname === '/cinema')) {
+      // Close panel on overlay click for home and cinema pages
       const panelElement = document.querySelector('.genre-panel, .detail-panel');
       if (panelElement && !panelElement.contains(e.target)) {
         closePanel();
@@ -143,18 +127,17 @@ function App() {
 
   const clearFilters = () => {
     setSelectedGenres([]);
-    setMinYear(1990); // Reset to new default of 1990
+    setMinYear(1990);
     setMaxYear(new Date().getFullYear());
-    setMinRuntime(0); // Reset to new default of 0
+    setMinRuntime(0);
     setMaxRuntime(240);
-    setImdbRating('none'); // Reset IMDB rating
+    setImdbRating('none');
     setIsFilterActive(false);
-    setClearFiltersCounter(prev => prev + 1); // Increment to trigger re-search
+    setClearFiltersCounter(prev => prev + 1);
   }
 
   const applyFilters = () => {
     setIsFilterActive(true);
-    // Increment filter counter to trigger useEffect in Home.jsx
     setFilterCounter(prev => prev + 1); 
   }
 
@@ -194,28 +177,29 @@ function App() {
     isDetailPage
   }
 
-  console.log('App rendering - isDetailPage:', isDetailPage, 'Current route:', location.pathname);
-
   return (
     <AppContext.Provider value={contextValue}>
       <div className={`app ${isPanelOpen ? 'panel-open' : ''}`}
        onClick={handleOverlayClick}>
-        {/* Render appropriate panel based on current page */}
-        {isDetailPage ? (
+        {/* Show GenrePanel on home and cinema pages */}
+        {(location.pathname === '/' || location.pathname === '/cinema') && (
+          <GenrePanel 
+            isOpen={isPanelOpen} 
+            closePanel={closePanel}
+          />
+        )}
+
+        {/* Show DetailPanel only on detail pages */}
+        {isDetailPage && (
           <DetailPanel 
             item={detailItem}
             isOpen={isPanelOpen} 
             closePanel={closePanel}
             mediaType={location.pathname.includes('/movie/') ? 'movie' : 'tv'}
           />
-        ) : (
-          <GenrePanel 
-            isOpen={isPanelOpen} 
-            closePanel={closePanel}
-          />
         )}
         
-        <div className={`content-wrapper ${!isMobile && 'with-sidebar'}`}>
+        <div className={`content-wrapper ${!isMobile && (location.pathname === '/' || location.pathname === '/cinema' || isDetailPage) && 'with-sidebar'}`}>
           <Header openPanel={openPanel} isPanelOpen={isPanelOpen} isMobile={isMobile} />
           <main className="main-content">
             <Routes>

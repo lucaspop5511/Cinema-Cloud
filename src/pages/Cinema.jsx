@@ -1,120 +1,99 @@
-import React, { useEffect, useState } from 'react';
-import { cinemaApi } from '../services/cinemaApi';
-import Calendar from '../components/Calendar';
-import CinemaSelector from '../components/CinemaSelector';
-import MovieCards from '../components/MovieCards';
+import React, { useState, useEffect } from 'react';
+import FilterHeader from '../components/FilterHeader';
+
+// Romanian cities with major cinemas
+const CINEMA_CITIES = [
+  { value: 'bucharest', label: 'București', cinemaUrl: 'https://www.cinemacity.ro/xbk/buy-tickets-by-cinema/1806' },
+  { value: 'cluj', label: 'Cluj-Napoca', cinemaUrl: 'https://www.cinemacity.ro/xbk/buy-tickets-by-cinema/1815' },
+  { value: 'timisoara', label: 'Timișoara', cinemaUrl: 'https://www.cinemacity.ro/xbk/buy-tickets-by-cinema/1820' },
+  { value: 'iasi', label: 'Iași', cinemaUrl: 'https://www.movieplex.ro/constanta/' },
+  { value: 'constanta', label: 'Constanța', cinemaUrl: 'https://www.movieplex.ro/constanta/' }
+];
 
 function Cinema() {
-  const [cinemas, setCinemas] = useState([]);
+  const [selectedCity, setSelectedCity] = useState(CINEMA_CITIES[0]);
+  const [nowPlayingMovies, setNowPlayingMovies] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [selectedCinema, setSelectedCinema] = useState(null);
-  const [movies, setMovies] = useState([]);
-  const [moviesLoading, setMoviesLoading] = useState(false);
-  const [moviesError, setMoviesError] = useState(null);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    // Load cinemas on component mount
-    const loadCinemas = async () => {
-      try {
-        console.log('Loading cinemas...');
-        const cinemasData = await cinemaApi.getCinemas();
-        console.log('Loaded cinemas:', cinemasData);
-        setCinemas(cinemasData);
-        setLoading(false);
-      } catch (error) {
-        console.error('Failed to load cinemas:', error);
-        setLoading(false);
-      }
-    };
-
-    loadCinemas();
+    // TODO: Fetch now playing movies from TMDb API
+    // For now, just set loading to false
+    setTimeout(() => {
+      setLoading(false);
+    }, 1000);
   }, []);
 
-  // Load movies when both cinema and date are selected
-  useEffect(() => {
-    if (selectedCinema && selectedDate) {
-      loadMovies();
-    }
-  }, [selectedCinema, selectedDate]);
-
-  const loadMovies = async () => {
-    if (!selectedCinema || !selectedDate) return;
-
-    setMoviesLoading(true);
-    setMoviesError(null);
-    
-    try {
-      console.log(`Loading movies for ${selectedCinema.name} on ${selectedDate}`);
-      const moviesData = await cinemaApi.getMovies(selectedCinema.id, selectedDate);
-      console.log('Loaded movies:', moviesData);
-      setMovies(moviesData);
-    } catch (error) {
-      console.error('Failed to load movies:', error);
-      setMoviesError(error.message);
-      setMovies([]);
-    } finally {
-      setMoviesLoading(false);
-    }
-  };
-
-  const handleDateSelect = (date) => {
-    console.log('Selected date:', date);
-    setSelectedDate(date);
-  };
-
-  const handleCinemaSelect = (cinema) => {
-    console.log('Selected cinema:', cinema);
-    setSelectedCinema(cinema);
-    // Clear movies when cinema changes
-    setMovies([]);
-    setMoviesError(null);
+  const handleCityChange = (event) => {
+    const cityValue = event.target.value;
+    const city = CINEMA_CITIES.find(c => c.value === cityValue);
+    setSelectedCity(city);
   };
 
   if (loading) {
-    return <div>Loading cinemas...</div>;
+    return (
+      <div className="cinema-container">
+        <div className="cinema-loading">
+          <p>Loading movies...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="cinema-container">
+        <div className="cinema-error">
+          <h3>Error loading movies</h3>
+          <p>{error}</p>
+        </div>
+      </div>
+    );
   }
 
   return (
     <div className="cinema-container">
-      <h1 className="cinema-title">Cinema Schedule</h1>
-      
-      <div className="cinema-controls">
-        <div className="cinema-selector-section">
-          <h3>Select Cinema</h3>
-          <CinemaSelector
-            cinemas={cinemas}
-            selectedCinema={selectedCinema}
-            onCinemaSelect={handleCinemaSelect}
-          />
-          {selectedCinema && (
-            <div className="selected-cinema-info">
-              <p><strong>{selectedCinema.name}</strong></p>
-              <p>{selectedCinema.city} • {selectedCinema.address}</p>
-            </div>
-          )}
-        </div>
-
-        <div className="calendar-section">
-          <h3>Select Date</h3>
-          <Calendar 
-            selectedDate={selectedDate} 
-            onDateSelect={handleDateSelect} 
-          />
-          {selectedDate && (
-            <p>Selected: {selectedDate}</p>
-          )}
+      <div className="cinema-header">
+        <h1>Now Playing in Romanian Cinemas</h1>
+        
+        <div className="cinema-city-selector">
+          <label htmlFor="city-select">Choose your city:</label>
+          <select 
+            id="city-select"
+            value={selectedCity.value} 
+            onChange={handleCityChange}
+            className="cinema-dropdown"
+          >
+            {CINEMA_CITIES.map(city => (
+              <option key={city.value} value={city.value}>
+                {city.label}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
-      {/* Movies Display */}
-      {(selectedCinema && selectedDate) && (
-        <MovieCards 
-          movies={movies}
-          loading={moviesLoading}
-          error={moviesError}
-        />
-      )}
+      <div className="cinema-info">
+        <p>
+          Movies currently playing in {selectedCity.label}. 
+          Click on any movie to view showtimes at your local cinema.
+        </p>
+      </div>
+
+      {/* Add FilterHeader for consistency with Home page */}
+      <FilterHeader />
+
+      {/* Movie list will be added here */}
+      <div className="movies-list">
+        {nowPlayingMovies.length === 0 ? (
+          <div className="no-movies">
+            <p>Movies will be loaded here from TMDb "Now Playing" API</p>
+          </div>
+        ) : (
+          /* Movies will be rendered here */
+          <div>Movies coming soon...</div>
+        )}
+      </div>
     </div>
   );
 }
