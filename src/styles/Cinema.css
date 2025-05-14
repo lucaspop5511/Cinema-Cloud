@@ -88,6 +88,22 @@
   color: #e0e0e0;
 }
 
+/* Cinema filter notice */
+.cinema-filter-notice {
+  text-align: center;
+  padding: 15px;
+  background-color: rgba(52, 152, 219, 0.1);
+  border: 1px solid rgba(52, 152, 219, 0.3);
+  border-radius: 6px;
+  margin: 15px 0;
+}
+
+.cinema-filter-notice p {
+  color: #3498db;
+  margin: 0;
+  font-size: 14px;
+}
+
 /* Content Section */
 .content-section {
   background-color: #1e1e1e;

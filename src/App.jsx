@@ -133,7 +133,7 @@ function App() {
     setMaxRuntime(240);
     setImdbRating('none');
     setIsFilterActive(false);
-    setSearchQuery(''); // Also clear search query when clearing filters
+    // Don't clear search query when clearing filters - keep the search intact
     setClearFiltersCounter(prev => prev + 1);
   }
 

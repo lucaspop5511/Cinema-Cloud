@@ -160,7 +160,7 @@ function Home() {
       setTotalPages(1);
       setCurrentPage(1);
     }
-  }, [searchQuery, selectedGenres, minYear, maxYear, minRuntime, maxRuntime, imdbRating, isFilterActive]);
+  }, [searchQuery, selectedGenres, minYear, maxYear, minRuntime, maxRuntime, imdbRating]);
 
   // Determine display query for results
   const getDisplayQuery = () => {

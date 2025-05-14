@@ -4,3 +4,107 @@
 @import './YearInputs.css';
 @import './RuntimeSlider.css';
 @import './SegmentedControl.css';
+
+/* Disabled state styles for filters */
+.disabled-notice {
+  background-color: rgba(231, 76, 60, 0.1);
+  border: 1px solid rgba(231, 76, 60, 0.3);
+  border-radius: 6px;
+  padding: 15px;
+  margin-bottom: 20px;
+  color: #e74c3c;
+  text-align: center;
+  font-size: 14px;
+}
+
+.filter-section.disabled {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+.filter-section.disabled h3 {
+  color: #666;
+}
+
+.genre-item.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background-color: #1a1a1a;
+  color: #666;
+}
+
+.genre-item.disabled:hover {
+  background-color: #1a1a1a;
+}
+
+/* Disabled input styles */
+input:disabled {
+  background-color: #1a1a1a;
+  color: #666;
+  border-color: #333;
+  cursor: not-allowed;
+}
+
+.year-control-btn:disabled {
+  color: #444;
+  cursor: not-allowed;
+}
+
+.year-control-btn:disabled:hover {
+  color: #444;
+  background-color: transparent;
+}
+
+/* Disabled slider styles */
+.slider-track.disabled {
+  background-color: #1a1a1a;
+}
+
+.slider-range.disabled {
+  background-color: #444;
+}
+
+.slider.disabled {
+  cursor: not-allowed;
+}
+
+.slider.disabled::-webkit-slider-thumb {
+  background-color: #444;
+  border-color: #444;
+  cursor: not-allowed;
+}
+
+.slider.disabled::-moz-range-thumb {
+  background-color: #444;
+  border-color: #444;
+  cursor: not-allowed;
+}
+
+/* Disabled segmented control */
+.segmented-control.disabled {
+  opacity: 0.5;
+}
+
+.segmented-control-item.disabled {
+  cursor: not-allowed;
+  color: #444;
+}
+
+.segmented-control-item.disabled:hover {
+  color: #444;
+}
+
+/* Disabled search button */
+.search-button.disabled {
+  background-color: #333;
+  color: #666;
+  cursor: not-allowed;
+  box-shadow: none;
+  border: 1px solid #444;
+}
+
+.search-button.disabled:hover {
+  background-color: #333;
+  color: #666;
+  transform: none;
+}

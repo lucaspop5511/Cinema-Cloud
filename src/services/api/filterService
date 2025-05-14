@@ -113,6 +113,7 @@ const applyClientSideFilters = (results, filters) => {
  * @param {number} filters.maxRuntime - Maximum runtime in minutes
  * @param {Object} filters.imdbRating - Object with min and max rating values
  * @param {string} filters.query - Optional search query to combine with filters
+ * @param {string} filters.streamingService - Optional streaming service ID for TV shows
  * @param {number} page - Page number (default: 1)
  * @returns {Promise} - Promise with results
  */
@@ -194,6 +195,12 @@ export const getFilteredContent = async (filters, page = 1) => {
         queryParams.push(`first_air_date.lte=${maxDate}`);
         // For TV shows, exclude talk shows
         queryParams.push(`without_genres=10767`);
+        
+        // Add streaming service filter for TV shows if specified
+        if (filters.streamingService) {
+          queryParams.push(`with_watch_providers=${filters.streamingService}`);
+          queryParams.push('watch_region=US');
+        }
       }
       
       // Add runtime filters
@@ -203,6 +210,12 @@ export const getFilteredContent = async (filters, page = 1) => {
       // Add genre filters
       if (genreIds.length > 0) {
         queryParams.push(`with_genres=${genreIds.join(',')}`);
+      }
+      
+      // Add streaming service filter for TV shows
+      if (filters.mediaType === 'tv' && filters.streamingService) {
+        queryParams.push(`with_watch_providers=${filters.streamingService}`);
+        queryParams.push('watch_region=US');
       }
       
       // Add IMDB rating filters

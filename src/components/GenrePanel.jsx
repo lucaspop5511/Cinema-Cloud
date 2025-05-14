@@ -1,8 +1,10 @@
 import { useEffect, useRef, useContext, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import { AppContext } from '../App'
 import '../styles/panels/GenrePanel.css'
 
 function GenrePanel({ isOpen, closePanel }) {
+  const location = useLocation()
   const { 
     selectedGenres, 
     toggleGenre, 
@@ -45,6 +47,9 @@ function GenrePanel({ isOpen, closePanel }) {
     imdbRating: 'none',
     searchType: 'movie'
   })
+  
+  // Check if filters should be disabled (movies on cinema page)
+  const isFiltersDisabled = location.pathname === '/cinema' && searchType === 'movie';
   
   // Update initial filters when search is performed
   useEffect(() => {
@@ -251,6 +256,11 @@ function GenrePanel({ isOpen, closePanel }) {
   
   // Handle search button click
   const handleSearch = () => {
+    // Don't do anything if filters are disabled
+    if (isFiltersDisabled) {
+      return;
+    }
+    
     console.log('Search button clicked with filters:', {
       selectedGenres,
       minYear,
@@ -273,10 +283,17 @@ function GenrePanel({ isOpen, closePanel }) {
   
   // Determine search button state and label
   const getSearchButtonClass = () => {
+    if (isFiltersDisabled) {
+      return "search-button disabled";
+    }
     return isFilterActive && !filtersModified ? "search-button active" : "search-button";
   }
   
   const getSearchButtonLabel = () => {
+    if (isFiltersDisabled) {
+      return 'Not Available';
+    }
+    
     // If we have a search query and filters, show "Apply Filters"
     if (searchQuery && searchQuery.trim() !== '' && hasActiveFilters()) {
       return 'Apply Filters';
@@ -285,12 +302,8 @@ function GenrePanel({ isOpen, closePanel }) {
     if (searchQuery && searchQuery.trim() !== '' && !hasActiveFilters()) {
       return 'Search';
     }
-    // If we have only filters, show "Filter"
-    if (!searchQuery || searchQuery.trim() === '') {
-      return hasActiveFilters() ? 'Filter' : 'Browse';
-    }
-    // Default
-    return 'Search';
+    // If we have only filters or no search query, show "Filter"
+    return 'Filter';
   }
 
   return (
@@ -310,15 +323,22 @@ function GenrePanel({ isOpen, closePanel }) {
       </div>
       
       <div className="genre-panel-content">
-        <section className="filter-section">
+        {isFiltersDisabled && (
+          <div className="disabled-notice">
+            <p>Filters are not available for now playing movies. Switch to TV Shows to use filters.</p>
+          </div>
+        )}
+        
+        <section className={`filter-section ${isFiltersDisabled ? 'disabled' : ''}`}>
           <h3 className="filter-section-title">Categories (max 3)</h3>
           <div className="genre-grid">
             {genres.map((genre) => (
               <button 
                 key={genre} 
                 type="button"
-                className={`genre-item ${selectedGenres.includes(genre) ? 'active' : ''}`}
-                onClick={() => handleGenreToggle(genre)}
+                className={`genre-item ${selectedGenres.includes(genre) ? 'active' : ''} ${isFiltersDisabled ? 'disabled' : ''}`}
+                onClick={() => !isFiltersDisabled && handleGenreToggle(genre)}
+                disabled={isFiltersDisabled}
               >
                 {genre}
               </button>
@@ -326,7 +346,7 @@ function GenrePanel({ isOpen, closePanel }) {
           </div>
         </section>
         
-        <section className="filter-section">
+        <section className={`filter-section ${isFiltersDisabled ? 'disabled' : ''}`}>
           <h3 className="filter-section-title">Year Released</h3>
           <div className="year-inputs">
             <div className="input-group">
@@ -340,21 +360,24 @@ function GenrePanel({ isOpen, closePanel }) {
                   value={minYear}
                   onChange={handleMinYearChange}
                   onBlur={validateMinYear}
+                  disabled={isFiltersDisabled}
                 />
                 <div className="year-controls">
                   <button 
                     type="button" 
                     className="year-control-btn up"
-                    onClick={() => incrementYear(setMinYear, minYear)}
+                    onClick={() => !isFiltersDisabled && incrementYear(setMinYear, minYear)}
                     aria-label="Increase minimum year"
+                    disabled={isFiltersDisabled}
                   >
                     <span className="arrow-up">&#9650;</span>
                   </button>
                   <button 
                     type="button" 
                     className="year-control-btn down"
-                    onClick={() => decrementYear(setMinYear, minYear)}
+                    onClick={() => !isFiltersDisabled && decrementYear(setMinYear, minYear)}
                     aria-label="Decrease minimum year"
+                    disabled={isFiltersDisabled}
                   >
                     <span className="arrow-down">&#9660;</span>
                   </button>
@@ -373,21 +396,24 @@ function GenrePanel({ isOpen, closePanel }) {
                   value={maxYear}
                   onChange={handleMaxYearChange}
                   onBlur={validateMaxYear}
+                  disabled={isFiltersDisabled}
                 />
                 <div className="year-controls">
                   <button 
                     type="button" 
                     className="year-control-btn up"
-                    onClick={() => incrementYear(setMaxYear, maxYear)}
+                    onClick={() => !isFiltersDisabled && incrementYear(setMaxYear, maxYear)}
                     aria-label="Increase maximum year"
+                    disabled={isFiltersDisabled}
                   >
                     <span className="arrow-up">&#9650;</span>
                   </button>
                   <button 
                     type="button" 
                     className="year-control-btn down"
-                    onClick={() => decrementYear(setMaxYear, maxYear)}
+                    onClick={() => !isFiltersDisabled && decrementYear(setMaxYear, maxYear)}
                     aria-label="Decrease maximum year"
+                    disabled={isFiltersDisabled}
                   >
                     <span className="arrow-down">&#9660;</span>
                   </button>
@@ -397,7 +423,7 @@ function GenrePanel({ isOpen, closePanel }) {
           </div>
         </section>
         
-        <section className="filter-section">
+        <section className={`filter-section ${isFiltersDisabled ? 'disabled' : ''}`}>
           <h3 className="filter-section-title">
             {searchType === 'tv' ? 'Episode Runtime' : 'Runtime'}
           </h3>
@@ -407,9 +433,9 @@ function GenrePanel({ isOpen, closePanel }) {
               <span>{formatRuntime(maxRuntime)}</span>
             </div>
             <div className="dual-slider">
-              <div className="slider-track"></div>
+              <div className={`slider-track ${isFiltersDisabled ? 'disabled' : ''}`}></div>
               <div 
-                className="slider-range" 
+                className={`slider-range ${isFiltersDisabled ? 'disabled' : ''}`}
                 style={sliderRangeStyle}
               ></div>
               <input 
@@ -419,7 +445,8 @@ function GenrePanel({ isOpen, closePanel }) {
                 step="10"
                 value={minRuntime}
                 onChange={handleMinRuntimeChange}
-                className="slider min-slider"
+                className={`slider min-slider ${isFiltersDisabled ? 'disabled' : ''}`}
+                disabled={isFiltersDisabled}
               />
               <input 
                 type="range" 
@@ -428,21 +455,23 @@ function GenrePanel({ isOpen, closePanel }) {
                 step="10"
                 value={maxRuntime}
                 onChange={handleMaxRuntimeChange}
-                className="slider max-slider"
+                className={`slider max-slider ${isFiltersDisabled ? 'disabled' : ''}`}
+                disabled={isFiltersDisabled}
               />
             </div>
           </div>
         </section>
         
-        <section className="filter-section">
+        <section className={`filter-section ${isFiltersDisabled ? 'disabled' : ''}`}>
           <h3 className="filter-section-title">IMDB Rating</h3>
-          <div className="segmented-control" data-selected={imdbRating}>
+          <div className={`segmented-control ${isFiltersDisabled ? 'disabled' : ''}`} data-selected={imdbRating}>
             {imdbRatingOptions.map((option) => (
               <button 
                 key={option.value} 
                 type="button"
-                className={`segmented-control-item ${imdbRating === option.value ? 'active' : ''} ${option.value === 'none' ? 'none-option' : ''}`}
-                onClick={() => setImdbRating(option.value)}
+                className={`segmented-control-item ${imdbRating === option.value ? 'active' : ''} ${option.value === 'none' ? 'none-option' : ''} ${isFiltersDisabled ? 'disabled' : ''}`}
+                onClick={() => !isFiltersDisabled && setImdbRating(option.value)}
+                disabled={isFiltersDisabled}
               >
                 {option.label}
               </button>
@@ -456,6 +485,7 @@ function GenrePanel({ isOpen, closePanel }) {
           type="button"
           className={getSearchButtonClass()}
           onClick={handleSearch}
+          disabled={isFiltersDisabled}
         >
           {getSearchButtonLabel()}
         </button>

@@ -12,7 +12,8 @@ function FilterHeader() {
     imdbRating,
     clearFilters,
     isFilterActive,
-    searchType
+    searchType,
+    searchQuery
   } = useContext(AppContext);
 
   // Format runtime for display
@@ -52,7 +53,7 @@ function FilterHeader() {
     <div className="filter-header">
       {hasActiveFilters && isFilterActive && (
         <div className="active-filters">
-          <h3>Active Filters:</h3>
+          <h3>Active Filters{searchQuery && searchQuery.trim() ? ` for "${searchQuery}"` : ''}:</h3>
           <div className="filter-tags">
             {selectedGenres.length > 0 && (
               <div className="filter-tag-group">
@@ -90,8 +91,9 @@ function FilterHeader() {
               type="button" 
               className="clear-filters-btn" 
               onClick={clearFilters}
+              title={searchQuery && searchQuery.trim() ? "Clear filters and show all search results" : "Clear all filters"}
             >
-              Clear All
+              Clear Filters
             </button>
           </div>
         </div>

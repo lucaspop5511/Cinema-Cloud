@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FilterHeader from '../components/FilterHeader';
-import { fetchFromApi, getImageUrl } from '../services/api';
+import { AppContext } from '../App';
+import { fetchFromApi, getImageUrl, getFilteredContent } from '../services/api';
 
 // Romanian cities with their Cinemagia URLs (in alphabetical order)
 const CINEMA_CITIES = [
@@ -33,6 +34,21 @@ const STREAMING_SERVICES = [
 
 function Cinema() {
   const navigate = useNavigate();
+  const {
+    selectedGenres,
+    minYear,
+    maxYear,
+    minRuntime,
+    maxRuntime,
+    imdbRating,
+    genreIdMapping,
+    filterCounter,
+    clearFiltersCounter,
+    isFilterActive,
+    setSearchType,
+    searchType
+  } = useContext(AppContext);
+
   const [mediaType, setMediaType] = useState('movie');
   const [selectedCity, setSelectedCity] = useState(CINEMA_CITIES[0]);
   const [selectedStreaming, setSelectedStreaming] = useState(STREAMING_SERVICES[0]);
@@ -40,54 +56,127 @@ function Cinema() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // Convert IMDB rating to min/max values
+  const getImdbRatingRange = () => {
+    switch (imdbRating) {
+      case '<6':
+        return { min: 0, max: 6 };
+      case '6-7':
+        return { min: 6, max: 7 };
+      case '7-8':
+        return { min: 7, max: 8 };
+      case '8+':
+        return { min: 8, max: 10 };
+      default:
+        return null;
+    }
+  };
+
+  // Check if filters should be applied (only for TV shows)
+  const hasActiveFilters = () => {
+    return selectedGenres.length > 0 || 
+           minYear !== 1990 || 
+           maxYear !== new Date().getFullYear() ||
+           minRuntime !== 0 ||
+           maxRuntime !== 240 ||
+           imdbRating !== 'none';
+  };
+
   // Fetch content based on media type and selected options
   useEffect(() => {
     const fetchContent = async () => {
       try {
         setLoading(true);
         setError(null);
-        
-        let endpoint = '';
+        console.log('Fetching content for:', mediaType, 'with filters active:', isFilterActive, 'streaming service:', selectedStreaming.value);
         
         if (mediaType === 'movie') {
-          // Fetch now playing movies - using region=RO for Romania
-          endpoint = '/movie/now_playing?language=en-US&region=RO&page=1';
-        } else {
-          // Fetch currently airing TV shows
-          if (selectedStreaming.value === 'none') {
-            // All platforms
-            endpoint = '/tv/on_the_air?language=en-US&page=1';
-          } else {
-            // Specific streaming platform using discover API
-            endpoint = `/discover/tv?language=en-US&sort_by=popularity.desc&page=1&with_watch_providers=${selectedStreaming.value}&watch_region=US&with_status=0`;
-          }
-        }
-        
-        const response = await fetchFromApi(endpoint);
-        let results = response.results || [];
-        
-        // Fetch additional details for both movies and TV shows
-        if (results.length > 0) {
-          const detailedContent = await Promise.all(
-            results.map(async (item) => {
-              try {
-                let details;
-                if (mediaType === 'movie') {
-                  details = await fetchFromApi(`/movie/${item.id}?language=en-US`);
+          // For movies, just fetch now playing - no filters
+          const endpoint = '/movie/now_playing?language=en-US&region=RO&page=1';
+          const response = await fetchFromApi(endpoint);
+          let results = response.results || [];
+          
+          // Fetch additional details for movies (runtime)
+          if (results.length > 0) {
+            const detailedContent = await Promise.all(
+              results.map(async (item) => {
+                try {
+                  const details = await fetchFromApi(`/movie/${item.id}?language=en-US`);
                   return { ...item, runtime: details.runtime };
-                } else {
-                  details = await fetchFromApi(`/tv/${item.id}?language=en-US`);
-                  return { ...item, number_of_seasons: details.number_of_seasons };
+                } catch (error) {
+                  console.error(`Error fetching details for movie ${item.id}:`, error);
+                  return item;
                 }
-              } catch (error) {
-                console.error(`Error fetching details for ${mediaType} ${item.id}:`, error);
-                return item;
-              }
-            })
-          );
-          setContent(detailedContent);
+              })
+            );
+            setContent(detailedContent);
+          } else {
+            setContent(results);
+          }
         } else {
-          setContent(results);
+          // For TV shows, only apply filters when explicitly requested via filterCounter
+          if (mediaType === 'tv' && isFilterActive) {
+            console.log('Applying filters to TV shows in Cinema');
+            
+            // Convert selected genre names to IDs
+            const genreIds = selectedGenres.map(genre => genreIdMapping[genre]).filter(id => id);
+            const ratingRange = getImdbRatingRange();
+            
+            // Use filtered content system for TV shows, including streaming service
+            const filterParams = {
+              mediaType: 'tv',
+              genres: genreIds,
+              minYear,
+              maxYear,
+              minRuntime,
+              maxRuntime,
+              imdbRating: ratingRange,
+              streamingService: selectedStreaming.value !== 'none' ? selectedStreaming.value : null
+            };
+            
+            console.log('Filter params with streaming service:', filterParams);
+            
+            // Get TV shows with both filters and streaming service
+            const data = await getFilteredContent(filterParams, 1);
+            console.log('Results:', data);
+            setContent(data.results || []);
+          } else {
+            // Regular TV show fetching without filters, but with streaming service
+            console.log('Fetching TV shows without filters, streaming service:', selectedStreaming.value);
+            
+            let endpoint;
+            if (selectedStreaming.value === 'none') {
+              // All platforms - use on_the_air endpoint
+              endpoint = '/tv/on_the_air?language=en-US&page=1';
+            } else {
+              // Specific streaming platform using discover API
+              endpoint = `/discover/tv?language=en-US&sort_by=popularity.desc&page=1&with_watch_providers=${selectedStreaming.value}&watch_region=US&with_status=0`;
+            }
+            
+            console.log('Using endpoint:', endpoint);
+            
+            const response = await fetchFromApi(endpoint);
+            let results = response.results || [];
+            console.log('Raw TV results:', results.length);
+            
+            // Fetch additional details for TV shows
+            if (results.length > 0) {
+              const detailedContent = await Promise.all(
+                results.map(async (item) => {
+                  try {
+                    const details = await fetchFromApi(`/tv/${item.id}?language=en-US`);
+                    return { ...item, number_of_seasons: details.number_of_seasons };
+                  } catch (error) {
+                    console.error(`Error fetching details for TV ${item.id}:`, error);
+                    return item;
+                  }
+                })
+              );
+              setContent(detailedContent);
+            } else {
+              setContent(results);
+            }
+          }
         }
       } catch (error) {
         console.error('Error fetching content:', error);
@@ -98,9 +187,22 @@ function Cinema() {
     };
 
     fetchContent();
-  }, [mediaType, selectedCity, selectedStreaming]);
+  }, [
+    mediaType, 
+    selectedCity, 
+    selectedStreaming, 
+    filterCounter, // Only refresh when filters are explicitly applied
+    clearFiltersCounter // Refresh when filters are cleared
+  ]);
+
+  // Update search type context when media type changes
+  useEffect(() => {
+    console.log('Setting search type to:', mediaType);
+    setSearchType(mediaType);
+  }, [mediaType, setSearchType]);
 
   const handleMediaTypeChange = (type) => {
+    console.log('Media type changing from', mediaType, 'to', type);
     setMediaType(type);
   };
 
@@ -229,8 +331,16 @@ function Cinema() {
         )}
       </div>
 
-      {/* Add FilterHeader for consistency with Home page */}
-      <FilterHeader />
+      {/* Add FilterHeader for TV shows only, or show disabled state for movies */}
+      {mediaType === 'tv' ? (
+        <FilterHeader />
+      ) : (
+        <div className="filter-header">
+          <div className="cinema-filter-notice">
+            <p>Filters are not available for now playing movies</p>
+          </div>
+        </div>
+      )}
 
       {/* Content Section */}
       <div className="content-section">
@@ -298,6 +408,9 @@ function Cinema() {
         ) : (
           <div className="no-content">
             <p>No {mediaType === 'movie' ? 'movies' : 'TV shows'} found for your selection.</p>
+            {mediaType === 'tv' && isFilterActive && hasActiveFilters() && (
+              <p>Try adjusting your filters or clearing them to see more results.</p>
+            )}
           </div>
         )}
       </div>
