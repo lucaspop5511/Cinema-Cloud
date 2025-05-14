@@ -4,11 +4,27 @@ import { AppContext } from '../App'
 function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
   const { 
     isFilterActive, 
-    applyFilters 
+    applyFilters,
+    selectedGenres,
+    minYear,
+    maxYear,
+    minRuntime,
+    maxRuntime,
+    imdbRating
   } = useContext(AppContext)
   
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery)
   const searchTimeout = useRef(null)
+  
+  // Check if any filters are applied (non-default values)
+  const hasActiveFilters = () => {
+    return selectedGenres.length > 0 || 
+           minYear !== 1990 || 
+           maxYear !== new Date().getFullYear() ||
+           minRuntime !== 0 ||
+           maxRuntime !== 240 ||
+           imdbRating !== 'none';
+  };
   
   const handleInputChange = (e) => {
     const newValue = e.target.value
@@ -22,6 +38,12 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
     // Set a new timeout to update the parent state after typing stops
     searchTimeout.current = setTimeout(() => {
       setSearchQuery(newValue)
+      
+      // If we have active filters and we're searching, apply filters to combine them
+      if (hasActiveFilters() && newValue.trim() !== '') {
+        console.log('Search with active filters, applying filters');
+        applyFilters();
+      }
     }, 500) // 500ms delay
   }
   
@@ -30,10 +52,11 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
     if (type !== searchType) {
       setSearchType(type)
       
-      // If filters are active, automatically apply them when switching media type
-      if (isFilterActive) {
+      // If we have active filters or a search query, automatically apply them when switching media type
+      if (isFilterActive || hasActiveFilters() || (searchQuery && searchQuery.trim() !== '')) {
         // Use a small timeout to ensure the type change happens first
         setTimeout(() => {
+          console.log('Media type changed, applying filters/search');
           applyFilters()
         }, 100)
       }

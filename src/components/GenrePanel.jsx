@@ -20,7 +20,8 @@ function GenrePanel({ isOpen, closePanel }) {
     applyFilters,
     searchType,
     isFilterActive,
-    filterCounter
+    filterCounter,
+    searchQuery  // Add access to search query
   } = useContext(AppContext)
   
   const panelRef = useRef(null)
@@ -238,6 +239,16 @@ function GenrePanel({ isOpen, closePanel }) {
     // If 3 genres are already selected and trying to add another, do nothing
   }
   
+  // Check if any filters are currently applied (non-default values)
+  const hasActiveFilters = () => {
+    return selectedGenres.length > 0 || 
+           minYear !== 1990 || 
+           maxYear !== currentYear ||
+           minRuntime !== 0 ||
+           maxRuntime !== 240 ||
+           imdbRating !== 'none';
+  };
+  
   // Handle search button click
   const handleSearch = () => {
     console.log('Search button clicked with filters:', {
@@ -247,9 +258,11 @@ function GenrePanel({ isOpen, closePanel }) {
       minRuntime,
       maxRuntime,
       imdbRating,
-      searchType
+      searchType,
+      hasSearchQuery: !!(searchQuery && searchQuery.trim())
     });
     
+    // Apply filters (this now works with or without search query)
     applyFilters();
     
     // Close panel on mobile after search
@@ -258,9 +271,26 @@ function GenrePanel({ isOpen, closePanel }) {
     }
   }
   
-  // Simplified search button class - just active or not
+  // Determine search button state and label
   const getSearchButtonClass = () => {
     return isFilterActive && !filtersModified ? "search-button active" : "search-button";
+  }
+  
+  const getSearchButtonLabel = () => {
+    // If we have a search query and filters, show "Apply Filters"
+    if (searchQuery && searchQuery.trim() !== '' && hasActiveFilters()) {
+      return 'Apply Filters';
+    }
+    // If we have only a search query, show "Search"
+    if (searchQuery && searchQuery.trim() !== '' && !hasActiveFilters()) {
+      return 'Search';
+    }
+    // If we have only filters, show "Filter"
+    if (!searchQuery || searchQuery.trim() === '') {
+      return hasActiveFilters() ? 'Filter' : 'Browse';
+    }
+    // Default
+    return 'Search';
   }
 
   return (
@@ -427,7 +457,7 @@ function GenrePanel({ isOpen, closePanel }) {
           className={getSearchButtonClass()}
           onClick={handleSearch}
         >
-          Search
+          {getSearchButtonLabel()}
         </button>
       </div>
     </div>

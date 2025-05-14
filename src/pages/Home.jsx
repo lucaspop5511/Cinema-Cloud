@@ -45,10 +45,20 @@ function Home() {
       case '7-8':
         return { min: 7, max: 8 };
       case '8+':
-        return { min: 8, max: 10 }; // Changed to 8+ with no upper limit except 10
+        return { min: 8, max: 10 };
       default:
         return null; // 'none' returns null which means no rating filter
     }
+  };
+
+  // Check if any non-default filters are applied
+  const hasActiveFilters = () => {
+    return selectedGenres.length > 0 || 
+           minYear !== 1990 || 
+           maxYear !== new Date().getFullYear() ||
+           minRuntime !== 0 ||
+           maxRuntime !== 240 ||
+           imdbRating !== 'none';
   };
 
   // Function to fetch content based on current state
@@ -64,43 +74,24 @@ function Home() {
       let data;
       const ratingRange = getImdbRatingRange();
       
-      // Check if we have any filters applied (including IMDB rating when it's not 'none')
-      const hasNonDefaultFilters = selectedGenres.length > 0 || 
-                         minYear !== 1990 || 
-                         maxYear !== new Date().getFullYear() ||
-                         minRuntime !== 0 ||
-                         maxRuntime !== 240 ||
-                         imdbRating !== 'none';
-
       // Convert selected genre names to IDs
       const genreIds = selectedGenres.map(genre => genreIdMapping[genre]).filter(id => id);
       
-      // Always use the discover API if we have any filters (including IMDB rating)
-      // or if we don't have a search query
-      if (!searchQuery.trim() || hasNonDefaultFilters) {
-        // Prepare filters object for discover API
-        const filterParams = {
-          mediaType: searchType,
-          genres: genreIds,
-          minYear,
-          maxYear,
-          minRuntime,
-          maxRuntime,
-          sortBy: 'popularity',
-          imdbRating: ratingRange
-          // No longer have minVoteCount requirements
-        };
+      // Always use getFilteredContent which now handles both search and filters
+      const filterParams = {
+        mediaType: searchType,
+        genres: genreIds,
+        minYear,
+        maxYear,
+        minRuntime,
+        maxRuntime,
+        sortBy: 'popularity',
+        imdbRating: ratingRange,
+        query: searchQuery?.trim() || null // Pass search query to filter service
+      };
 
-        console.log('Using discover API with filters:', filterParams);
-        data = await getFilteredContent(filterParams, page);
-      } else {
-        // Use search API for query-based searches without filters
-        if (searchType === 'movie') {
-          data = await searchMovies(searchQuery, page);
-        } else {
-          data = await searchTvShows(searchQuery, page);
-        }
-      }
+      console.log('Fetching content with params:', filterParams);
+      data = await getFilteredContent(filterParams, page);
 
       // Update state with results
       const newResults = data.results || [];
@@ -114,6 +105,11 @@ function Home() {
       
       setTotalResults(data.total_results || 0);
       setTotalPages(data.total_pages || 1);
+      
+      // Set filter as active if we have any filters (including search)
+      if (hasActiveFilters() || (searchQuery && searchQuery.trim() !== '')) {
+        setIsFilterActive(true);
+      }
     } catch (err) {
       setError('Failed to fetch results. Please try again.');
       console.error('Fetch error:', err);
@@ -132,8 +128,9 @@ function Home() {
     }
   };
 
-  // Fetch content whenever search, filters change
+  // Fetch content whenever search, filters change, or clear filters
   useEffect(() => {
+    console.log('Home useEffect triggered - fetchContent');
     fetchContent();
   }, [searchQuery, searchType, filterCounter, clearFiltersCounter]);
 
@@ -143,8 +140,9 @@ function Home() {
     if (
       previousSearchType && 
       previousSearchType !== searchType && 
-      isFilterActive
+      (isFilterActive || hasActiveFilters())
     ) {
+      console.log('Media type changed with active filters, applying filters');
       // Automatically apply filters when switching media types
       applyFilters();
     }
@@ -152,6 +150,29 @@ function Home() {
     // Update previous search type for next comparison
     setPreviousSearchType(searchType);
   }, [searchType]);
+
+  // Clear results when search query is completely empty and no filters
+  useEffect(() => {
+    if (!searchQuery?.trim() && !hasActiveFilters() && !isFilterActive) {
+      console.log('No search query and no filters, clearing results');
+      setResults([]);
+      setTotalResults(0);
+      setTotalPages(1);
+      setCurrentPage(1);
+    }
+  }, [searchQuery, selectedGenres, minYear, maxYear, minRuntime, maxRuntime, imdbRating, isFilterActive]);
+
+  // Determine display query for results
+  const getDisplayQuery = () => {
+    if (searchQuery && searchQuery.trim() !== '') {
+      return hasActiveFilters() 
+        ? `"${searchQuery}" with filters` 
+        : searchQuery;
+    } else if (hasActiveFilters()) {
+      return 'Filtered Results';
+    }
+    return 'Popular Results';
+  };
 
   return (
     <div className="home-container">
@@ -163,7 +184,7 @@ function Home() {
       />
       
       <div className="search-results">
-        {/* Filter header with active filters - no sort options */}
+        {/* Filter header with active filters */}
         <FilterHeader />
         
         {loading && (
@@ -182,7 +203,7 @@ function Home() {
           <SearchResults 
             results={results} 
             searchType={searchType}
-            searchQuery={searchQuery || 'Popular Results'}
+            searchQuery={getDisplayQuery()}
             totalResults={totalResults}
             page={currentPage}
             totalPages={totalPages}
@@ -191,14 +212,24 @@ function Home() {
           />
         )}
         
-        {!loading && !error && results.length === 0 && (
+        {!loading && !error && results.length === 0 && (searchQuery?.trim() || hasActiveFilters()) && (
           <div className="no-results">
             <h2>No Results Found</h2>
             <p>
-              {searchQuery 
-                ? `No ${searchType === 'movie' ? 'movies' : 'TV shows'} found matching "${searchQuery}"` 
-                : 'Try adjusting your filters to see more content.'}
+              {searchQuery?.trim() && hasActiveFilters()
+                ? `No ${searchType === 'movie' ? 'movies' : 'TV shows'} found matching "${searchQuery}" with the applied filters`
+                : searchQuery?.trim()
+                ? `No ${searchType === 'movie' ? 'movies' : 'TV shows'} found matching "${searchQuery}"`
+                : 'No results found with the applied filters'}
             </p>
+            <p>Try adjusting your search terms or filters to see more content.</p>
+          </div>
+        )}
+        
+        {!loading && !error && results.length === 0 && !searchQuery?.trim() && !hasActiveFilters() && (
+          <div className="no-results">
+            <h2>Start Your Search</h2>
+            <p>Use the search bar above or apply filters to discover {searchType === 'movie' ? 'movies' : 'TV shows'}.</p>
           </div>
         )}
       </div>

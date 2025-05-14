@@ -63,7 +63,47 @@ const enhanceResultsWithRuntime = async (results, mediaType) => {
 };
 
 /**
- * Get movie or TV show by filters
+ * Apply filters to an array of results
+ * @param {Array} results - Array of movies/TV shows to filter
+ * @param {Object} filters - Filter options
+ * @returns {Array} - Filtered results
+ */
+const applyClientSideFilters = (results, filters) => {
+  if (!results || !Array.isArray(results)) return [];
+  
+  return results.filter(item => {
+    // Year filter
+    const releaseDate = filters.mediaType === 'movie' ? item.release_date : item.first_air_date;
+    if (releaseDate) {
+      const year = new Date(releaseDate).getFullYear();
+      if (year < filters.minYear || year > filters.maxYear) {
+        return false;
+      }
+    }
+    
+    // Genre filter
+    if (filters.genres && filters.genres.length > 0) {
+      const itemGenres = item.genre_ids || [];
+      const hasMatchingGenre = filters.genres.some(genreId => itemGenres.includes(genreId));
+      if (!hasMatchingGenre) {
+        return false;
+      }
+    }
+    
+    // IMDB rating filter
+    if (filters.imdbRating && filters.imdbRating !== null) {
+      const rating = item.vote_average || 0;
+      if (rating < filters.imdbRating.min || rating > filters.imdbRating.max) {
+        return false;
+      }
+    }
+    
+    return true;
+  });
+};
+
+/**
+ * Get movie or TV show by filters with optional search query
  * @param {Object} filters - Filter options
  * @param {string} filters.mediaType - 'movie' or 'tv'
  * @param {Array} filters.genres - Array of genre names or IDs
@@ -80,10 +120,6 @@ export const getFilteredContent = async (filters, page = 1) => {
   try {
     console.log('getFilteredContent called with filters:', filters);
     
-    // Convert year to TMDB date format
-    const minDate = `${filters.minYear}-01-01`;
-    const maxDate = `${filters.maxYear}-12-31`;
-    
     // Convert genre names to IDs if they're not already IDs
     const genreIds = Array.isArray(filters.genres) ? 
       (typeof filters.genres[0] === 'string' ? 
@@ -91,67 +127,117 @@ export const getFilteredContent = async (filters, page = 1) => {
         filters.genres) : 
       [];
     
-    // Build query parameters for discover API
-    let queryParams = [
-      `page=${page}`,
-      'language=en-US',
-      'include_adult=false',
-      'sort_by=popularity.desc',
-      'vote_count.gte=10' // Just require some votes to avoid completely obscure content
-    ];
-    
-    // Add year filters
-    if (filters.mediaType === 'movie') {
-      queryParams.push(`primary_release_date.gte=${minDate}`);
-      queryParams.push(`primary_release_date.lte=${maxDate}`);
-    } else {
-      queryParams.push(`first_air_date.gte=${minDate}`);
-      queryParams.push(`first_air_date.lte=${maxDate}`);
-      // For TV shows, exclude talk shows
-      queryParams.push(`without_genres=10767`);
-    }
-    
-    // Add runtime filters
-    queryParams.push(`with_runtime.gte=${filters.minRuntime}`);
-    queryParams.push(`with_runtime.lte=${filters.maxRuntime}`);
-    
-    // Add genre filters
-    if (genreIds.length > 0) {
-      queryParams.push(`with_genres=${genreIds.join(',')}`);
-    }
-    
-    // Add IMDB rating filters (no special vote count requirements)
-    if (filters.imdbRating && filters.imdbRating !== null) {
-      queryParams.push(`vote_average.gte=${filters.imdbRating.min}`);
-      if (filters.imdbRating.max < 10) {
-        queryParams.push(`vote_average.lte=${filters.imdbRating.max}`);
+    // Check if we have a search query
+    if (filters.query && filters.query.trim() !== '') {
+      console.log('Using search with filters for query:', filters.query);
+      
+      // Use search API to get initial results
+      let searchData;
+      if (filters.mediaType === 'movie') {
+        searchData = await searchMovies(filters.query, page);
+      } else {
+        searchData = await searchTvShows(filters.query, page);
       }
-    }
-    
-    const queryString = queryParams.join('&');
-    const endpoint = `/discover/${filters.mediaType}?${queryString}`;
-    
-    console.log('API endpoint:', endpoint);
-    
-    const data = await fetchFromApi(endpoint);
-    
-    console.log('API response:', { total_results: data.total_results, results_count: data.results?.length });
-    
-    // Apply additional content filtering
-    if (data.results && Array.isArray(data.results)) {
-      let filteredResults = filterContent(data.results, {
+      
+      // Apply client-side filters to search results
+      let filteredResults = applyClientSideFilters(searchData.results, {
+        ...filters,
+        genres: genreIds
+      });
+      
+      // Apply content filtering (adult content, etc.)
+      filteredResults = filterContent(filteredResults, {
         excludeTalkShows: filters.mediaType === 'tv'
       });
       
       // Enhance results with runtime information
       filteredResults = await enhanceResultsWithRuntime(filteredResults, filters.mediaType);
       
-      // Update data results
-      data.results = filteredResults;
-      data.total_results = filteredResults.length;
+      // Apply runtime filter after getting detailed runtime info
+      if (filters.minRuntime !== undefined && filters.maxRuntime !== undefined) {
+        filteredResults = filteredResults.filter(item => {
+          const runtime = item.runtime || 0;
+          return runtime >= filters.minRuntime && runtime <= filters.maxRuntime;
+        });
+      }
+      
+      return {
+        ...searchData,
+        results: filteredResults,
+        total_results: filteredResults.length,
+        page,
+        total_pages: Math.ceil(filteredResults.length / 20)
+      };
+    } else {
+      // No search query - use discover API
+      console.log('Using discover API without search query');
+      
+      // Convert year to TMDB date format
+      const minDate = `${filters.minYear}-01-01`;
+      const maxDate = `${filters.maxYear}-12-31`;
+      
+      // Build query parameters for discover API
+      let queryParams = [
+        `page=${page}`,
+        'language=en-US',
+        'include_adult=false',
+        'sort_by=popularity.desc',
+        'vote_count.gte=10' // Just require some votes to avoid completely obscure content
+      ];
+      
+      // Add year filters
+      if (filters.mediaType === 'movie') {
+        queryParams.push(`primary_release_date.gte=${minDate}`);
+        queryParams.push(`primary_release_date.lte=${maxDate}`);
+      } else {
+        queryParams.push(`first_air_date.gte=${minDate}`);
+        queryParams.push(`first_air_date.lte=${maxDate}`);
+        // For TV shows, exclude talk shows
+        queryParams.push(`without_genres=10767`);
+      }
+      
+      // Add runtime filters
+      queryParams.push(`with_runtime.gte=${filters.minRuntime}`);
+      queryParams.push(`with_runtime.lte=${filters.maxRuntime}`);
+      
+      // Add genre filters
+      if (genreIds.length > 0) {
+        queryParams.push(`with_genres=${genreIds.join(',')}`);
+      }
+      
+      // Add IMDB rating filters
+      if (filters.imdbRating && filters.imdbRating !== null) {
+        queryParams.push(`vote_average.gte=${filters.imdbRating.min}`);
+        if (filters.imdbRating.max < 10) {
+          queryParams.push(`vote_average.lte=${filters.imdbRating.max}`);
+        }
+      }
+      
+      const queryString = queryParams.join('&');
+      const endpoint = `/discover/${filters.mediaType}?${queryString}`;
+      
+      console.log('API endpoint:', endpoint);
+      
+      const data = await fetchFromApi(endpoint);
+      
+      console.log('API response:', { total_results: data.total_results, results_count: data.results?.length });
+      
+      // Apply additional content filtering
+      if (data.results && Array.isArray(data.results)) {
+        let filteredResults = filterContent(data.results, {
+          excludeTalkShows: filters.mediaType === 'tv'
+        });
+        
+        // Enhance results with runtime information
+        filteredResults = await enhanceResultsWithRuntime(filteredResults, filters.mediaType);
+        
+        // Update data results
+        data.results = filteredResults;
+        data.total_results = filteredResults.length;
+      }
+      
+      return data;
     }
-    
-    return data;
   } catch (error) {
     console.error(`Error getting filtered content:`, error);
     throw error;
