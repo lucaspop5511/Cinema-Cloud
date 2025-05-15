@@ -4,54 +4,103 @@
   align-items: center;
   justify-content: center;
   width: 100%;
-  padding: 20px 0;
+  padding: 20px 0 40px 0;
   background-color: #1a1a1a;
   border-bottom: 1px solid #333;
 }
 
-.search-bar {
+/* Page title */
+.search-page-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 25px;
+  color: #e0e0e0;
+  text-align: center;
+}
+
+/* Media Type Picker */
+.media-type-picker {
   display: flex;
-  max-width: 800px;
-  width: 100%;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  margin-bottom: 25px;
+  background-color: #242424;
   border-radius: 30px;
   overflow: hidden;
-  background-color: #242424;
   border: 1px solid #333;
+  width: 100%;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
-.search-type {
-  display: flex;
-}
-
-.search-type-button {
-  padding: 12px 16px;
-  background-color: #242424;
+.media-type-button {
+  padding: 12px 24px;
+  background-color: transparent;
   border: none;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   color: #999;
   transition: background-color 0.2s, color 0.2s;
+  flex: 1;
 }
 
-.search-type-button.active {
+.media-type-button.active {
   background-color: #3498db;
   color: white;
 }
 
+.media-type-button:hover:not(.active) {
+  color: #e0e0e0;
+  background-color: #333;
+}
+
+/* Search Bar - simplified version */
+.search-bar {
+  display: flex;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+  border-radius: 25px;
+  overflow: hidden;
+  background-color: #1f1f1f;
+  border: 1px solid #333;
+}
+
 .search-input {
   flex: 1;
-  padding: 12px 16px;
+  padding: 12px 20px;
   border: none;
   font-size: 16px;
   outline: none;
   background-color: #1f1f1f;
   color: #e0e0e0;
   caret-color: #3498db;
-  border-top-right-radius: 30px;
-  border-bottom-right-radius: 30px;
+  border-radius: 25px;
 }
 
 .search-input::placeholder {
   color: #666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .search-page-title {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+  }
+  
+  .media-type-picker {
+    max-width: 100%;
+    margin-bottom: 20px;
+  }
+  
+  .media-type-button {
+    padding: 10px 20px;
+    font-size: 14px;
+  }
+  
+  .search-input {
+    padding: 10px 16px;
+    font-size: 14px;
+  }
 }

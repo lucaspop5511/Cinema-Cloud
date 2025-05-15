@@ -5,18 +5,6 @@
 @import './RuntimeSlider.css';
 @import './SegmentedControl.css';
 
-/* Disabled state styles for filters */
-.disabled-notice {
-  background-color: rgba(231, 76, 60, 0.1);
-  border: 1px solid rgba(231, 76, 60, 0.3);
-  border-radius: 6px;
-  padding: 15px;
-  margin-bottom: 20px;
-  color: #e74c3c;
-  text-align: center;
-  font-size: 14px;
-}
-
 .filter-section.disabled {
   opacity: 0.5;
   pointer-events: none;

@@ -171,7 +171,7 @@ function Home() {
     } else if (hasActiveFilters()) {
       return 'Filtered Results';
     }
-    return 'Popular Results';
+    return 'Popular Choises';
   };
 
   return (

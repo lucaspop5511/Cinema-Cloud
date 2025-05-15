@@ -155,10 +155,10 @@ function SearchResults({
     <div className="results-container">
       <div className="results-header">
         <h2 className="results-query">{searchQuery}</h2>
-        <span className="results-count">
+        {/* <span className="results-count">
           ({filteredResults.length} {searchType === 'movie' ? 'movies' : 'TV shows'} found
           {totalResults > filteredResults.length ? ` of ${totalResults} total` : ''})
-        </span>
+        </span> */}
       </div>
       
       <div className="results-grid">

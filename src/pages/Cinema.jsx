@@ -331,16 +331,7 @@ function Cinema() {
         )}
       </div>
 
-      {/* Add FilterHeader for TV shows only, or show disabled state for movies */}
-      {mediaType === 'tv' ? (
-        <FilterHeader />
-      ) : (
-        <div className="filter-header">
-          <div className="cinema-filter-notice">
-            <p>Filters are not available for now playing movies</p>
-          </div>
-        </div>
-      )}
+      <FilterHeader />
 
       {/* Content Section */}
       <div className="content-section">

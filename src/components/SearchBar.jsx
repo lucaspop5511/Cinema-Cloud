@@ -65,23 +65,28 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
   
   return (
     <div className="search-container">
+      <h1 className="search-page-title">Find your favourite {searchType === 'movie' ? 'movies' : 'TV shows'}</h1>
+      
+      {/* Media Type Picker - matches cinema page style */}
+      <div className="media-type-picker">
+        <button 
+          type="button"
+          className={`media-type-button ${searchType === 'movie' ? 'active' : ''}`}
+          onClick={() => handleMediaTypeChange('movie')}
+        >
+          Movies
+        </button>
+        <button 
+          type="button"
+          className={`media-type-button ${searchType === 'tv' ? 'active' : ''}`}
+          onClick={() => handleMediaTypeChange('tv')}
+        >
+          TV Shows
+        </button>
+      </div>
+      
+      {/* Search Bar */}
       <div className="search-bar">
-        <div className="search-type">
-          <button 
-            type="button"
-            className={`search-type-button ${searchType === 'movie' ? 'active' : ''}`}
-            onClick={() => handleMediaTypeChange('movie')}
-          >
-            Movies
-          </button>
-          <button 
-            type="button"
-            className={`search-type-button ${searchType === 'tv' ? 'active' : ''}`}
-            onClick={() => handleMediaTypeChange('tv')}
-          >
-            TV Shows
-          </button>
-        </div>
         <input 
           type="text" 
           className="search-input"

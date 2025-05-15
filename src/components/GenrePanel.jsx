@@ -323,11 +323,6 @@ function GenrePanel({ isOpen, closePanel }) {
       </div>
       
       <div className="genre-panel-content">
-        {isFiltersDisabled && (
-          <div className="disabled-notice">
-            <p>Filters are not available for now playing movies. Switch to TV Shows to use filters.</p>
-          </div>
-        )}
         
         <section className={`filter-section ${isFiltersDisabled ? 'disabled' : ''}`}>
           <h3 className="filter-section-title">Categories (max 3)</h3>
