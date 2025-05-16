@@ -16,10 +16,20 @@ const WatchlistButton = ({ item, mediaType, className = '' }) => {
     e.preventDefault();
     e.stopPropagation();
 
-    if (inWatchlist) {
-      await removeFromWatchlist(item.id, mediaType);
-    } else {
-      await addToWatchlist(item, mediaType);
+    console.log('WatchlistButton clicked', { itemId: item.id, mediaType, inWatchlist });
+
+    try {
+      if (inWatchlist) {
+        console.log('Removing from watchlist...');
+        const success = await removeFromWatchlist(item.id, mediaType);
+        console.log('Remove result:', success);
+      } else {
+        console.log('Adding to watchlist...', item);
+        const success = await addToWatchlist(item, mediaType);
+        console.log('Add result:', success);
+      }
+    } catch (error) {
+      console.error('Error updating watchlist:', error);
     }
   };
 

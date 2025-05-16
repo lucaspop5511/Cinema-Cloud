@@ -100,15 +100,23 @@ export const WatchlistProvider = ({ children }) => {
     if (!currentUser) return false;
 
     try {
+      // Create a clean watchlist item with only the necessary fields
       const watchlistItem = {
         id: item.id,
         title: mediaType === 'movie' ? item.title : item.name,
-        poster_path: item.poster_path,
+        poster_path: item.poster_path || null,
         release_date: mediaType === 'movie' ? item.release_date : item.first_air_date,
-        vote_average: item.vote_average,
+        vote_average: item.vote_average || 0,
         media_type: mediaType,
         added_at: new Date().toISOString()
       };
+
+      // Remove any undefined fields to prevent Firebase errors
+      Object.keys(watchlistItem).forEach(key => {
+        if (watchlistItem[key] === undefined) {
+          delete watchlistItem[key];
+        }
+      });
 
       const docRef = doc(db, 'users', currentUser.uid, 'watchlist', `${mediaType}_${item.id}`);
       await setDoc(docRef, watchlistItem);

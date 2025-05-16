@@ -1,8 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { useWatchlist } from '../contexts/WatchlistContext';
 import { useAuth } from '../contexts/AuthContext';
 import { AppContext } from '../App';
-import { getImageUrl } from '../services/api';
+import { getImageUrl, fetchFromApi } from '../services/api';
 import { Link } from 'react-router-dom';
 import '../styles/Watchlist.css';
 
@@ -22,12 +22,53 @@ const Watchlist = () => {
     minRuntime,
     maxRuntime,
     imdbRating,
-    genreIdMapping,
     searchType,
     setSearchType
   } = useContext(AppContext);
 
   const [viewType, setViewType] = useState('all');
+  const [detailedItems, setDetailedItems] = useState([]);
+  const [loadingDetails, setLoadingDetails] = useState(false);
+
+  // Fetch detailed information for watchlist items
+  useEffect(() => {
+    const fetchDetailedInfo = async () => {
+      if (watchlist.length === 0) return;
+
+      setLoadingDetails(true);
+      try {
+        const detailedPromises = watchlist.map(async (item) => {
+          try {
+            const details = await fetchFromApi(`/${item.media_type}/${item.id}?language=en-US`);
+            return {
+              ...item,
+              overview: details.overview,
+              genres: details.genres || [],
+              runtime: item.media_type === 'movie' 
+                ? details.runtime 
+                : (details.episode_run_time && details.episode_run_time.length > 0 
+                   ? Math.max(...details.episode_run_time) 
+                   : 0),
+              vote_average: details.vote_average
+            };
+          } catch (error) {
+            console.error(`Error fetching details for ${item.media_type} ${item.id}:`, error);
+            return item; // Return original item if fetch fails
+          }
+        });
+
+        const detailedResults = await Promise.all(detailedPromises);
+        setDetailedItems(detailedResults);
+      } catch (error) {
+        console.error('Error fetching detailed info:', error);
+        setDetailedItems(watchlist); // Fallback to original items
+      } finally {
+        setLoadingDetails(false);
+      }
+    };
+
+    fetchDetailedInfo();
+  }, [watchlist]);
 
   if (!currentUser) {
     return (
@@ -49,16 +90,64 @@ const Watchlist = () => {
     );
   }
 
+  // Get release year from date string
+  const getYear = (dateString) => {
+    if (!dateString) return '';
+    return new Date(dateString).getFullYear();
+  };
+
+  // Get title based on media type
+  const getTitle = (item) => {
+    return item.media_type === 'movie' ? item.title : item.name || item.title;
+  };
+
+  // Get release date based on media type
+  const getReleaseDate = (item) => {
+    return item.release_date;
+  };
+  
+  // Get and format overview text with character limit for all cards
+  const getOverview = (item) => {
+    if (!item.overview || item.overview.trim() === '') {
+      return item.media_type === 'movie' 
+        ? 'No description available for this movie.' 
+        : 'No description available for this TV show.';
+    }
+    
+    // Limit to 200 characters for all descriptions
+    const CHARACTER_LIMIT = 200;
+    
+    // Always truncate to ensure consistent look with "see more" button
+    const lastSpace = item.overview.lastIndexOf(' ', CHARACTER_LIMIT);
+    const cutPoint = lastSpace > 0 ? lastSpace : CHARACTER_LIMIT;
+    
+    return item.overview.substring(0, cutPoint) + (item.overview.length > CHARACTER_LIMIT ? '...' : '');
+  };
+  
+  // Format runtime information
+  const formatRuntime = (runtime) => {
+    if (!runtime || runtime <= 0) return '';
+    
+    const hours = Math.floor(runtime / 60);
+    const minutes = runtime % 60;
+    
+    if (hours === 0) {
+      return `${minutes}m`;
+    } else if (minutes === 0) {
+      return `${hours}h`;
+    } else {
+      return `${hours}h ${minutes}m`;
+    }
+  };
+
   // Filter function to apply filters to watchlist items
   const applyFilters = (items) => {
     return items.filter(item => {
       // Genre filter
-      if (selectedGenres.length > 0) {
-        // For watchlist items, we need to check against the original genres
-        // This is a simplified check - in a real app you'd want to store genre info
-        const itemGenres = item.genres || [];
+      if (selectedGenres.length > 0 && item.genres) {
+        const itemGenreNames = item.genres.map(genre => genre.name);
         const hasMatchingGenre = selectedGenres.some(selectedGenre => 
-          itemGenres.some(genre => genre.name === selectedGenre)
+          itemGenreNames.includes(selectedGenre)
         );
         if (!hasMatchingGenre) return false;
       }
@@ -67,6 +156,11 @@ const Watchlist = () => {
       if (item.release_date) {
         const year = new Date(item.release_date).getFullYear();
         if (year < minYear || year > maxYear) return false;
+      }
+
+      // Runtime filter
+      if (item.runtime) {
+        if (item.runtime < minRuntime || item.runtime > maxRuntime) return false;
       }
 
       // IMDB rating filter
@@ -93,26 +187,26 @@ const Watchlist = () => {
 
   // Get filtered items based on current filters and view type
   const getFilteredItems = () => {
-    let items = watchlist;
+    // Use detailed items if available, otherwise use original watchlist
+    const items = detailedItems.length > 0 ? detailedItems : watchlist;
+    
+    let filteredByType = items;
     
     // Filter by media type if not viewing all
     if (viewType === 'movies') {
-      items = getWatchlistByType('movie');
+      filteredByType = items.filter(item => item.media_type === 'movie');
     } else if (viewType === 'tv') {
-      items = getWatchlistByType('tv');
+      filteredByType = items.filter(item => item.media_type === 'tv');
     }
     
     // Apply additional filters
-    return applyFilters(items);
+    return applyFilters(filteredByType);
   };
 
-  const handleRemove = async (item) => {
+  const handleRemove = async (e, item) => {
+    e.preventDefault();
+    e.stopPropagation();
     await removeFromWatchlist(item.id, item.media_type);
-  };
-
-  const formatDate = (dateString) => {
-    if (!dateString) return 'N/A';
-    return new Date(dateString).getFullYear();
   };
 
   const handleMediaTypeChange = (type) => {
@@ -124,53 +218,96 @@ const Watchlist = () => {
   const movies = watchlist.filter(item => item.media_type === 'movie');
   const tvShows = watchlist.filter(item => item.media_type === 'tv');
 
-  const renderItems = (items, showTitle = false) => (
-    <>
-      {showTitle && items.length > 0 && (
-        <h3 className="section-title">
-          {items[0].media_type === 'movie' ? 'Movies' : 'TV Shows'} ({items.length})
-        </h3>
-      )}
-      {items.length === 0 ? (
-        <p className="no-items">
-          No {viewType === 'all' ? 'items' : viewType === 'movies' ? 'movies' : 'TV shows'} found with current filters.
-        </p>
-      ) : (
-        <div className="watchlist-grid">
-          {items.map(item => (
-            <div key={`${item.media_type}_${item.id}`} className="watchlist-item">
-              <Link 
-                to={`/${item.media_type}/${item.id}`}
-                className="watchlist-item-link"
-              >
-                <div className="watchlist-poster">
-                  {item.poster_path ? (
-                    <img src={getImageUrl(item.poster_path)} alt={item.title} />
-                  ) : (
-                    <div className="no-poster">No Poster</div>
-                  )}
-                </div>
-                <div className="watchlist-info">
-                  <h4 className="watchlist-title">{item.title}</h4>
-                  <p className="watchlist-year">{formatDate(item.release_date)}</p>
-                  {item.vote_average && (
-                    <p className="watchlist-rating">★ {item.vote_average.toFixed(1)}</p>
-                  )}
-                </div>
-              </Link>
+  const renderItems = (items) => {
+    if (loadingDetails) {
+      return (
+        <div className="loading-indicator">
+          <p>Loading movie details...</p>
+        </div>
+      );
+    }
+
+    if (items.length === 0) {
+      return (
+        <div className="no-results">
+          <h2>No Results Found</h2>
+          <p>
+            No {viewType === 'all' ? 'items' : viewType === 'movies' ? 'movies' : 'TV shows'} found with current filters.
+          </p>
+          <p>Try adjusting your filters to see more content.</p>
+        </div>
+      );
+    }
+
+    return (
+      <div className="results-grid">
+        {items.map(item => (
+          <Link 
+            key={`${item.media_type}_${item.id}`} 
+            to={`/${item.media_type}/${item.id}`}
+            className="result-card"
+            style={{ textDecoration: 'none', color: 'inherit' }}
+          >
+            <div className="result-poster">
+              {item.poster_path ? (
+                <img src={getImageUrl(item.poster_path)} alt={getTitle(item)} />
+              ) : (
+                <div className="no-poster">No Poster</div>
+              )}
+              {/* Remove button - only visible on hover */}
               <button 
-                className="remove-button"
-                onClick={() => handleRemove(item)}
+                className="remove-from-watchlist-btn"
+                onClick={(e) => handleRemove(e, item)}
                 title="Remove from watchlist"
               >
                 ✕
               </button>
             </div>
-          ))}
-        </div>
-      )}
-    </>
-  );
+            
+            {/* Single expandable info section that overlays the image */}
+            <div className="result-info">
+              {/* Static header info (always visible) */}
+              <div className="result-info-header">
+                <h3 className="result-title">{getTitle(item)}</h3>
+                <div className="result-details">
+                  <span className="result-year">{getYear(getReleaseDate(item))}</span>
+                  {item.runtime && item.runtime > 0 && (
+                    <>
+                      •
+                      <div className="result-runtime-display">
+                        {item.media_type === 'tv' ? `${formatRuntime(item.runtime)} / episode` : formatRuntime(item.runtime)}
+                      </div>
+                    </>
+                  )}
+                </div>
+                
+                {/* Rating is now always visible */}
+                <div className="result-rating">
+                  <span className="rating-value">
+                    {item.vote_average ? (item.vote_average.toFixed(1) + '/10') : 'No rating'}
+                  </span>
+                </div>
+              </div>
+              
+              {/* Divider line */}
+              <div className="result-content-divider"></div>
+              
+              {/* Content that appears on hover */}
+              <p className="result-overview">
+                {getOverview(item)}
+                <span className="see-more-button-inline">
+                  see more
+                </span>
+              </p>
+              <div className="result-id" style={{ fontSize: '10px', color: '#666', marginTop: '4px' }}>
+                ID: {item.id}
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    );
+  };
 
   return (
     <div className="watchlist-container">
@@ -178,8 +315,8 @@ const Watchlist = () => {
         <h1>My Watchlist</h1>
         <p>Total items: {watchlist.length}</p>
         
-        {/* Media Type Picker */}
-        <div className="watchlist-media-picker">
+        {/* Media Type Picker - Updated to match other pages */}
+        <div className="media-type-picker">
           <button 
             className={`media-type-button ${viewType === 'all' ? 'active' : ''}`}
             onClick={() => handleMediaTypeChange('all')}

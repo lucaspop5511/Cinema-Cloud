@@ -250,7 +250,7 @@ function GenrePanel({ isOpen, closePanel }) {
   const hasActiveFilters = () => {
     return selectedGenres.length > 0 || 
            minYear !== 1990 || 
-           maxYear !== currentYear ||
+           maxYear !== new Date().getFullYear() ||
            minRuntime !== 0 ||
            maxRuntime !== 240 ||
            imdbRating !== 'none';
@@ -275,16 +275,8 @@ function GenrePanel({ isOpen, closePanel }) {
       currentPage: location.pathname
     });
     
-    // For watchlist page, we don't need to apply filters through the context
-    // The filtering is handled directly in the Watchlist component
-    if (location.pathname === '/watchlist') {
-      // Just update the filter active state for UI feedback
-      setIsFilterActive(true);
-      setFilterCounter(prev => prev + 1);
-    } else {
-      // Apply filters for home and cinema pages
-      applyFilters();
-    }
+    // Apply filters for all pages through the context
+    applyFilters();
     
     // Close panel on mobile after search
     if (window.innerWidth < 768) {
