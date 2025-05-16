@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import FilterHeader from '../components/FilterHeader';
 import { AppContext } from '../App';
 import { fetchFromApi, getImageUrl, getFilteredContent } from '../services/api';
+import WatchlistButton from '../components/WatchlistButton';
 
 // Romanian cities with their Cinemagia URLs (in alphabetical order)
 const CINEMA_CITIES = [
@@ -359,6 +360,8 @@ function Cinema() {
                   ) : (
                     <div className="no-poster">No Poster</div>
                   )}
+                  {/* Watchlist Button */}
+                  <WatchlistButton item={item} mediaType={mediaType} />
                 </div>
                 
                 <div className="content-info">

@@ -17,6 +17,12 @@ import './styles/Home.css'
 import './styles/Cinema.css'
 import './styles/SearchResults.css'
 import './styles/Detail.css'
+import './styles/Watchlist.css'
+// Import auth styles
+import './styles/auth/LoginModal.css'
+import './styles/auth/AuthButton.css'
+// Import watchlist styles - FIXED PATH
+import './styles/WatchlistButton.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

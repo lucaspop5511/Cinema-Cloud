@@ -1,5 +1,6 @@
 import { getImageUrl } from '../services/api';
 import { Link } from 'react-router-dom';
+import WatchlistButton from './WatchlistButton';
 
 function SearchResults({ 
   results, 
@@ -175,6 +176,8 @@ function SearchResults({
               ) : (
                 <div className="no-poster">No Poster</div>
               )}
+              {/* Watchlist Button */}
+              <WatchlistButton item={item} mediaType={searchType} />
             </div>
             
             {/* Single expandable info section that overlays the image */}

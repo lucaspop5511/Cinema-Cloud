@@ -5,6 +5,57 @@
 @import './RuntimeSlider.css';
 @import './SegmentedControl.css';
 
+/* Updated panel header layout */
+.genre-panel-header {
+  padding: 20px;
+  background-color: #1a1a1a;
+  border-bottom: 1px solid #333;
+  position: sticky;
+  top: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 1;
+  min-height: 60px; /* Maintain height even without text */
+}
+
+.panel-header-left,
+.panel-header-right {
+  display: flex;
+  align-items: center;
+  min-width: 45px; /* Ensure space for buttons */
+}
+
+.panel-header-left {
+  justify-content: flex-start;
+}
+
+.panel-header-right {
+  justify-content: flex-end;
+}
+
+/* Remove center heading styles since we're not using them */
+.genre-panel-header h2 {
+  display: none;
+}
+
+/* Mobile specific adjustments */
+@media (max-width: 767px) {
+  .genre-panel-header {
+    padding: 15px;
+  }
+  
+  .genre-panel-header h2 {
+    font-size: 20px;
+  }
+  
+  .panel-header-left,
+  .panel-header-right {
+    min-width: 40px;
+  }
+}
+
+/* Existing disabled styles */
 .filter-section.disabled {
   opacity: 0.5;
   pointer-events: none;

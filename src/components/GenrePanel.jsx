@@ -1,6 +1,7 @@
 import { useEffect, useRef, useContext, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import { AppContext } from '../App'
+import AuthButton from './auth/AuthButton'
 import '../styles/panels/GenrePanel.css'
 
 function GenrePanel({ isOpen, closePanel }) {
@@ -23,7 +24,8 @@ function GenrePanel({ isOpen, closePanel }) {
     searchType,
     isFilterActive,
     filterCounter,
-    searchQuery  // Add access to search query
+    searchQuery,
+    isMobile
   } = useContext(AppContext)
   
   const panelRef = useRef(null)
@@ -269,11 +271,20 @@ function GenrePanel({ isOpen, closePanel }) {
       maxRuntime,
       imdbRating,
       searchType,
-      hasSearchQuery: !!(searchQuery && searchQuery.trim())
+      hasSearchQuery: !!(searchQuery && searchQuery.trim()),
+      currentPage: location.pathname
     });
     
-    // Apply filters (this now works with or without search query)
-    applyFilters();
+    // For watchlist page, we don't need to apply filters through the context
+    // The filtering is handled directly in the Watchlist component
+    if (location.pathname === '/watchlist') {
+      // Just update the filter active state for UI feedback
+      setIsFilterActive(true);
+      setFilterCounter(prev => prev + 1);
+    } else {
+      // Apply filters for home and cinema pages
+      applyFilters();
+    }
     
     // Close panel on mobile after search
     if (window.innerWidth < 768) {
@@ -294,6 +305,11 @@ function GenrePanel({ isOpen, closePanel }) {
       return 'Not Available';
     }
     
+    // Different labels based on current page
+    if (location.pathname === '/watchlist') {
+      return 'Apply Filters';
+    }
+    
     // If we have a search query and filters, show "Apply Filters"
     if (searchQuery && searchQuery.trim() !== '' && hasActiveFilters()) {
       return 'Apply Filters';
@@ -309,17 +325,23 @@ function GenrePanel({ isOpen, closePanel }) {
   return (
     <div className={`genre-panel ${isOpen ? 'open' : ''}`} ref={panelRef}>
       <div className="genre-panel-header">
-        <h2>Browse</h2>
-        {window.innerWidth < 768 && isOpen && (
-          <button 
-            type="button"
-            className="close-panel-btn"
-            onClick={closePanel}
-            aria-label="Close panel"
-          >
-            ✕
-          </button>
-        )}
+        <div className="panel-header-left">
+          {isMobile && isOpen && (
+            <button 
+              type="button"
+              className="close-panel-btn"
+              onClick={closePanel}
+              aria-label="Close panel"
+            >
+              ✕
+            </button>
+          )}
+          {!isMobile && <AuthButton isMobile={isMobile} />}
+        </div>
+        
+        <div className="panel-header-right">
+          {isMobile && <AuthButton isMobile={isMobile} />}
+        </div>
       </div>
       
       <div className="genre-panel-content">

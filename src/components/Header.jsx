@@ -12,10 +12,13 @@ function Header({ openPanel, isPanelOpen, isMobile }) {
           {isMobile && !isPanelOpen && (
             <button 
               type="button"
-              className="genre-button"
+              className="hamburger-button"
               onClick={openPanel}
+              aria-label="Open menu"
             >
-              <span className="genre-button-text">Filter</span>
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
+              <span className="hamburger-line"></span>
             </button>
           )}
         </div>

@@ -1,0 +1,46 @@
+/* Watchlist Button Styles */
+.watchlist-button {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  z-index: 10;
+  backdrop-filter: blur(4px);
+}
+
+.watchlist-button:hover {
+  background-color: rgba(0, 0, 0, 0.9);
+  transform: scale(1.1);
+}
+
+.watchlist-button.in-watchlist {
+  background-color: rgba(52, 152, 219, 0.9);
+  color: white;
+}
+
+.watchlist-button.in-watchlist:hover {
+  background-color: rgba(52, 152, 219, 1);
+}
+
+/* Ensure parent containers have relative positioning */
+.result-card,
+.content-row {
+  position: relative;
+}
+
+/* For Cinema page content rows, adjust positioning */
+.content-row .watchlist-button {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+}

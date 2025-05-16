@@ -1,8 +1,13 @@
 import { Link } from 'react-router-dom';
 import { getImageUrl } from '../services/api';
+import AuthButton from './auth/AuthButton';
+import { useContext } from 'react';
+import { AppContext } from '../App';
 import '../styles/panels/DetailPanel.css';
 
 function DetailPanel({ item, isOpen, closePanel, mediaType }) {
+  const { isMobile } = useContext(AppContext);
+  
   if (!item) return null;
 
   // Format runtime
@@ -55,19 +60,26 @@ function DetailPanel({ item, isOpen, closePanel, mediaType }) {
   return (
     <div className={`detail-panel ${isOpen ? 'open' : ''}`}>
       <div className="detail-panel-header">
+        <div className="panel-header-left">
+          {isMobile && isOpen && (
+            <button 
+              type="button"
+              className="close-panel-btn"
+              onClick={closePanel}
+              aria-label="Close panel"
+            >
+              ✕
+            </button>
+          )}
+        </div>
+        
         <Link to="/" className="logo-link">
           <h2>Cinema Cloud</h2>
         </Link>
-        {window.innerWidth < 768 && isOpen && (
-          <button 
-            type="button"
-            className="close-panel-btn"
-            onClick={closePanel}
-            aria-label="Close panel"
-          >
-            ✕
-          </button>
-        )}
+        
+        <div className="panel-header-right">
+          <AuthButton isMobile={isMobile} />
+        </div>
       </div>
       
       <div className="detail-panel-content">

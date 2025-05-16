@@ -1,7 +1,10 @@
 import { useState, createContext, useEffect } from 'react'
 import { Routes, Route, useLocation } from 'react-router-dom'
+import { AuthProvider } from './contexts/AuthContext'
+import { WatchlistProvider } from './contexts/WatchlistContext'
 import Home from './pages/Home'
 import Cinema from './pages/Cinema'
+import Watchlist from './pages/Watchlist'
 import MovieDetail from './components/MovieDetail'
 import TvDetail from './components/TvDetail'
 import Header from './components/Header'
@@ -69,8 +72,8 @@ function App() {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768)
       
-      // On desktop, panel should always be open for home and cinema pages
-      if (window.innerWidth >= 768 && (location.pathname === '/' || location.pathname === '/cinema')) {
+      // On desktop, panel should always be open for home, cinema, and watchlist pages
+      if (window.innerWidth >= 768 && (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist')) {
         setIsPanelOpen(true)
       }
     }
@@ -108,8 +111,8 @@ function App() {
   }
 
   const handleOverlayClick = (e) => {
-    if (isMobile && isPanelOpen && (location.pathname === '/' || location.pathname === '/cinema')) {
-      // Close panel on overlay click for home and cinema pages
+    if (isMobile && isPanelOpen && (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist')) {
+      // Close panel on overlay click for home, cinema, and watchlist pages
       const panelElement = document.querySelector('.genre-panel, .detail-panel');
       if (panelElement && !panelElement.contains(e.target)) {
         closePanel();
@@ -179,41 +182,46 @@ function App() {
   }
 
   return (
-    <AppContext.Provider value={contextValue}>
-      <div className={`app ${isPanelOpen ? 'panel-open' : ''}`}
-       onClick={handleOverlayClick}>
-        {/* Show GenrePanel on home and cinema pages */}
-        {(location.pathname === '/' || location.pathname === '/cinema') && (
-          <GenrePanel 
-            isOpen={isPanelOpen} 
-            closePanel={closePanel}
-          />
-        )}
+    <AuthProvider>
+      <WatchlistProvider>
+        <AppContext.Provider value={contextValue}>
+          <div className={`app ${isPanelOpen ? 'panel-open' : ''}`}
+           onClick={handleOverlayClick}>
+            {/* Show GenrePanel on home, cinema, and watchlist pages */}
+            {(location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist') && (
+              <GenrePanel 
+                isOpen={isPanelOpen} 
+                closePanel={closePanel}
+              />
+            )}
 
-        {/* Show DetailPanel only on detail pages */}
-        {isDetailPage && (
-          <DetailPanel 
-            item={detailItem}
-            isOpen={isPanelOpen} 
-            closePanel={closePanel}
-            mediaType={location.pathname.includes('/movie/') ? 'movie' : 'tv'}
-          />
-        )}
-        
-        <div className={`content-wrapper ${!isMobile && (location.pathname === '/' || location.pathname === '/cinema' || isDetailPage) && 'with-sidebar'}`}>
-          <Header openPanel={openPanel} isPanelOpen={isPanelOpen} isMobile={isMobile} />
-          <main className="main-content">
-            <Routes>
-              <Route path="/" element={<Home />} />
-              <Route path="/cinema" element={<Cinema />} />
-              <Route path="/movie/:id" element={<MovieDetail />} />
-              <Route path="/tv/:id" element={<TvDetail />} />
-            </Routes>
-          </main>
-          <Footer />
-        </div>
-      </div>
-    </AppContext.Provider>
+            {/* Show DetailPanel only on detail pages */}
+            {isDetailPage && (
+              <DetailPanel 
+                item={detailItem}
+                isOpen={isPanelOpen} 
+                closePanel={closePanel}
+                mediaType={location.pathname.includes('/movie/') ? 'movie' : 'tv'}
+              />
+            )}
+            
+            <div className={`content-wrapper ${!isMobile && (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist' || isDetailPage) && 'with-sidebar'}`}>
+              <Header openPanel={openPanel} isPanelOpen={isPanelOpen} isMobile={isMobile} />
+              <main className="main-content">
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/cinema" element={<Cinema />} />
+                  <Route path="/watchlist" element={<Watchlist />} />
+                  <Route path="/movie/:id" element={<MovieDetail />} />
+                  <Route path="/tv/:id" element={<TvDetail />} />
+                </Routes>
+              </main>
+              <Footer />
+            </div>
+          </div>
+        </AppContext.Provider>
+      </WatchlistProvider>
+    </AuthProvider>
   )
 }
 
