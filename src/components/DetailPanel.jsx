@@ -73,10 +73,6 @@ function DetailPanel({ item, isOpen, closePanel, mediaType }) {
           )}
         </div>
         
-        <Link to="/" className="logo-link">
-          <h2>Cinema Cloud</h2>
-        </Link>
-        
         <div className="panel-header-right">
           <AuthButton isMobile={isMobile} />
         </div>

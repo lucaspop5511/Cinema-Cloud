@@ -58,6 +58,11 @@ const LoginModal = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  // Cloud icon SVG component for Google button
+  const GoogleIcon = () => (
+    <span className="google-icon">G</span>
+  );
+
   return (
     <div className="login-modal-overlay" onClick={onClose}>
       <div className="login-modal" onClick={(e) => e.stopPropagation()}>
@@ -125,7 +130,7 @@ const LoginModal = ({ isOpen, onClose }) => {
             onClick={handleGoogleLogin}
             disabled={loading}
           >
-            <span className="google-icon">G</span>
+            <GoogleIcon />
             Continue with Google
           </button>
 
