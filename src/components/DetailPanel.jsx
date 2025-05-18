@@ -61,7 +61,7 @@ function DetailPanel({ item, isOpen, closePanel, mediaType }) {
     <div className={`detail-panel ${isOpen ? 'open' : ''}`}>
       <div className="detail-panel-header">
         <div className="panel-header-left">
-          {isMobile && isOpen && (
+          {isMobile && isOpen && ( 
             <button 
               type="button"
               className="close-panel-btn"
