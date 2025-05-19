@@ -3,11 +3,11 @@
   position: absolute;
   top: 8px;
   left: 8px;
-  width: 32px;
-  height: 32px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   border: none;
-  background-color: rgba(0, 0, 0, 0.7);
+  background-color: rgba(0, 0, 0, 0.6);
   color: #fff;
   cursor: pointer;
   display: flex;
@@ -16,20 +16,70 @@
   transition: all 0.2s ease;
   z-index: 10;
   backdrop-filter: blur(4px);
+  opacity: 1; /* Always visible */
 }
 
 .watchlist-button:hover {
-  background-color: rgba(0, 0, 0, 0.9);
+  background-color: rgba(0, 0, 0, 0.8);
   transform: scale(1.1);
 }
 
 .watchlist-button.in-watchlist {
-  background-color: rgba(52, 152, 219, 0.9);
+  background-color: rgba(42, 126, 211, 0.8);
   color: white;
 }
 
 .watchlist-button.in-watchlist:hover {
-  background-color: rgba(52, 152, 219, 1);
+  background-color: rgba(42, 126, 211, 1);
+}
+
+/* Bookmark icon styles */
+.bookmark-icon {
+  width: 18px;
+  height: 18px;
+  transition: transform 0.2s ease;
+}
+
+.watchlist-button:hover .bookmark-icon {
+  transform: scale(1.1);
+}
+
+/* Remove button for Watchlist items */
+.remove-from-watchlist-btn {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none;
+  background-color: rgba(231, 76, 60, 0.9);
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  transition: all 0.2s ease;
+  backdrop-filter: blur(4px);
+  opacity: 0;
+  z-index: 10;
+}
+
+/* Position on the left when using the left-positioned class */
+.remove-from-watchlist-btn.left-positioned {
+  right: auto;
+  left: 8px;
+  opacity: 0; /* Hidden until hover */
+}
+
+.result-card:hover .remove-from-watchlist-btn {
+  opacity: 1;
+}
+
+.remove-from-watchlist-btn:hover {
+  background-color: rgba(231, 76, 60, 1);
+  transform: scale(1.1);
 }
 
 /* Ensure parent containers have relative positioning */
@@ -43,4 +93,11 @@
   position: absolute;
   top: 12px;
   left: 12px;
+}
+
+/* On mobile devices, always show the remove button since there's no hover */
+@media (max-width: 768px) {
+  .remove-from-watchlist-btn.left-positioned {
+    opacity: 1; /* Always visible on mobile */
+  }
 }

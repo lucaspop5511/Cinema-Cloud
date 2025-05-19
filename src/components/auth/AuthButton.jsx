@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { useNavigate } from 'react-router-dom';
+import { AppContext } from '../../App';
 import LoginModal from './LoginModal';
 import '../../styles/auth/AuthButton.css';
 
@@ -10,6 +11,7 @@ const AuthButton = ({ isMobile = false }) => {
   const { currentUser, logout } = useAuth();
   const navigate = useNavigate();
   const profileMenuRef = useRef(null);
+  const { closePanel } = useContext(AppContext);
 
   const handleLogout = async () => {
     try {
@@ -23,6 +25,16 @@ const AuthButton = ({ isMobile = false }) => {
   const handleWatchlistClick = () => {
     setShowProfileMenu(false);
     navigate('/watchlist');
+    
+    // Close the filter panel on mobile when navigating to watchlist
+    if (isMobile) {
+      closePanel();
+    }
+  };
+  
+  const handleLoginClick = () => {
+    // Do not close panel, just show the login modal
+    setShowLoginModal(true);
   };
 
   const getDisplayName = () => {
@@ -96,7 +108,7 @@ const AuthButton = ({ isMobile = false }) => {
     <div className={`auth-container ${isMobile ? 'mobile' : ''}`}>
       <button 
         className="login-button"
-        onClick={() => setShowLoginModal(true)}
+        onClick={handleLoginClick}
       >
         <CloudIcon />
         <span className="login-button-text">Sign In</span>

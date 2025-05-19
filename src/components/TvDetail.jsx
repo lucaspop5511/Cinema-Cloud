@@ -2,7 +2,9 @@ import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../App';
 import { fetchFromApi, getImageUrl } from '../services/api';
+import NowPlayingButton from './NowPlayingButton';
 import '../styles/Detail.css';
+import '../styles/NowPlayingButton.css';
 
 export default function TvDetail() {
   const { id } = useParams();
@@ -116,6 +118,11 @@ export default function TvDetail() {
                 {show.vote_average ? `${show.vote_average.toFixed(1)}/10 ★` : 'No rating'}
               </span>
             </div>
+          </div>
+
+          {/* Currently Airing Button */}
+          <div className="detail-now-playing">
+            <NowPlayingButton mediaType="tv" itemId={id} />
           </div>
 
           {/* Overview */}

@@ -21,8 +21,10 @@ import './styles/Watchlist.css'
 // Import auth styles
 import './styles/auth/LoginModal.css'
 import './styles/auth/AuthButton.css'
-// Import watchlist styles - FIXED PATH
+// Import watchlist styles
 import './styles/WatchlistButton.css'
+// Import new styles for Now Playing/Currently Airing button
+import './styles/NowPlayingButton.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

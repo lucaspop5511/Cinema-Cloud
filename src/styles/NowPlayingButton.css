@@ -1,0 +1,68 @@
+/* Now Playing Button Styles */
+.now-playing-button {
+  position: absolute;
+  top: 8px; /* Same top position as watchlist button */
+  left: 49px; /* Position to the right of the watchlist button */
+  right: 8px;
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  text-align: center;
+  transition: all 0.2s ease;
+  z-index: 9; /* One less than watchlist button to ensure proper layering */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  backdrop-filter: blur(2px);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.now-playing-button.cinema-button {
+  background-color: rgba(52, 152, 219, 0.7);
+  color: white;
+  border: 1px solid rgba(52, 152, 219, 0.5);
+}
+
+.now-playing-button.cinema-button:hover {
+  background-color: rgba(52, 152, 219, 0.85);
+  box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4);
+}
+
+.now-playing-button.airing-button {
+  background-color: rgba(46, 204, 113, 0.9);
+  color: white;
+  border: 1px solid rgba(46, 204, 113, 0.9);
+}
+
+.now-playing-button.airing-button:hover {
+  background-color: rgba(46, 204, 113, 1);
+  box-shadow: 0 2px 6px rgba(46, 204, 113, 0.4);
+}
+
+/* For detail page button */
+.detail-now-playing {
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.detail-now-playing .now-playing-button {
+  position: relative;
+  top: auto;
+  left: auto;
+  right: auto;
+  padding: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .now-playing-button {
+    font-size: 12px;
+    padding: 4px 8px;
+  }
+}

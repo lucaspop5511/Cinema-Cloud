@@ -253,6 +253,8 @@ function Cinema() {
     // Navigate to the detail page based on media type
     navigate(`/${mediaType}/${item.id}`);
   };
+  
+  // Removed isCurrentlyActive function since not needed
 
   if (loading) {
     return (
@@ -362,6 +364,8 @@ function Cinema() {
                   )}
                   {/* Watchlist Button */}
                   <WatchlistButton item={item} mediaType={mediaType} />
+                  
+                  {/* Removed Now Playing/Currently Airing Button from Cinema page */}
                 </div>
                 
                 <div className="content-info">

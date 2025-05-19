@@ -1,6 +1,7 @@
 import { getImageUrl } from '../services/api';
 import { Link } from 'react-router-dom';
 import WatchlistButton from './WatchlistButton';
+import NowPlayingButton from './NowPlayingButton';
 
 function SearchResults({ 
   results, 
@@ -178,6 +179,12 @@ function SearchResults({
               )}
               {/* Watchlist Button */}
               <WatchlistButton item={item} mediaType={searchType} />
+              
+              {/* Now Playing/Currently Airing Button */}
+              <NowPlayingButton 
+                mediaType={searchType} 
+                itemId={item.id}
+              />
             </div>
             
             {/* Single expandable info section that overlays the image */}

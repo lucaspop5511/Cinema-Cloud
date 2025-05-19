@@ -4,7 +4,9 @@ import { useAuth } from '../contexts/AuthContext';
 import { AppContext } from '../App';
 import { getImageUrl, fetchFromApi } from '../services/api';
 import { Link } from 'react-router-dom';
+import NowPlayingButton from '../components/NowPlayingButton';
 import '../styles/Watchlist.css';
+import '../styles/NowPlayingButton.css';
 
 const Watchlist = () => {
   const { currentUser } = useAuth();
@@ -49,7 +51,10 @@ const Watchlist = () => {
                 : (details.episode_run_time && details.episode_run_time.length > 0 
                    ? Math.max(...details.episode_run_time) 
                    : 0),
-              vote_average: details.vote_average
+              vote_average: details.vote_average,
+              status: details.status, // Add status for TV shows
+              last_air_date: details.last_air_date, // Add last air date for TV shows
+              release_date: details.release_date || item.release_date // Ensure we have release date
             };
           } catch (error) {
             console.error(`Error fetching details for ${item.media_type} ${item.id}:`, error);
@@ -254,14 +259,20 @@ const Watchlist = () => {
               ) : (
                 <div className="no-poster">No Poster</div>
               )}
-              {/* Remove button - only visible on hover */}
+              {/* Remove button - repositioned to the left */}
               <button 
-                className="remove-from-watchlist-btn"
+                className="remove-from-watchlist-btn left-positioned"
                 onClick={(e) => handleRemove(e, item)}
                 title="Remove from watchlist"
               >
                 ✕
               </button>
+              
+              {/* Now Playing/Currently Airing Button */}
+              <NowPlayingButton 
+                mediaType={item.media_type} 
+                itemId={item.id} 
+              />
             </div>
             
             {/* Single expandable info section that overlays the image */}
