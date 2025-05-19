@@ -88,22 +88,6 @@
   color: #e0e0e0;
 }
 
-/* Cinema filter notice */
-.cinema-filter-notice {
-  text-align: center;
-  padding: 15px;
-  background-color: rgba(52, 152, 219, 0.1);
-  border: 1px solid rgba(52, 152, 219, 0.3);
-  border-radius: 6px;
-  margin: 15px 0;
-}
-
-.cinema-filter-notice p {
-  color: #3498db;
-  margin: 0;
-  font-size: 14px;
-}
-
 /* Content Section */
 .content-section {
   background-color: #1e1e1e;
@@ -124,6 +108,7 @@
   gap: 20px;
 }
 
+/* Updated content row styles to ensure optimal display */
 .content-row {
   display: flex;
   background-color: #242424;
@@ -131,6 +116,8 @@
   overflow: hidden;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   transition: background-color 0.2s ease;
+  height: 225px; /* Fixed height to match poster height */
+  position: relative;
 }
 
 .content-row.clickable {
@@ -150,6 +137,7 @@
   align-items: center;
   justify-content: center;
   background-color: #333;
+  position: relative;
 }
 
 .content-poster img {
@@ -166,17 +154,19 @@
 
 .content-info {
   flex: 1;
-  padding: 20px;
+  padding: 15px;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
+  height: 225px; /* Match poster height */
+  overflow: hidden; /* Prevent overflow */
+  position: relative; /* For absolute positioning of streaming providers */
 }
 
 .content-header {
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
 }
 
 .content-title {
@@ -198,7 +188,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
   color: #999;
   font-size: 14px;
 }
@@ -219,13 +209,65 @@
 .content-overview {
   color: #ccc;
   font-size: 14px;
-  line-height: 1.6;
-  margin-bottom: 15px;
-  flex: 1;
+  line-height: 1.5;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 6; /* Show up to 6 lines */
   -webkit-box-orient: vertical;
+  flex: 1;
+}
+
+/* Style for "see more" text that's part of the text flow */
+.see-more {
+  color: #3498db;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+/* Hide "Available on:" text */
+.streaming-label {
+  display: none;
+}
+
+/* Streaming providers container - positioned at absolute bottom */
+.streaming-providers {
+  position: absolute;
+  bottom: 0;
+  left: 15px;
+  right: 15px;
+  padding-bottom: 4px;
+  background-color: #242424; /* Match card background */
+}
+
+/* Refine provider logos - smaller and tighter layout */
+.provider-logos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  align-items: center;
+}
+
+.provider-logo {
+  width: 20px; /* Even smaller icons */
+  height: 20px;
+  border-radius: 3px;
+  overflow: hidden;
+  background-color: #333;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.provider-logo img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.no-providers {
+  color: #666;
+  font-style: italic;
+  font-size: 12px;
 }
 
 /* Cinema Link */
@@ -234,8 +276,10 @@
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s ease;
-  align-self: flex-start;
-  font-size: 14px;
+  font-size: 13px;
+  position: absolute;
+  bottom: 0;
+  left: 15px;
 }
 
 .cinema-link:hover {
@@ -243,7 +287,15 @@
   text-decoration: underline;
 }
 
-/* TV Show Status - Removed */
+/* Adjust overview padding to make room for streaming providers */
+.content-overview {
+  margin-bottom: 30px; /* Make space for the streaming providers at bottom */
+}
+
+/* New provider logos container */
+.provider-logos-container {
+  max-width: 300px; /* Limit width to prevent sprawling across entire width */
+}
 
 /* No Content */
 .no-content {
@@ -306,15 +358,18 @@
   
   .content-row {
     flex-direction: column;
+    height: auto;
   }
   
   .content-poster {
     width: 100%;
-    height: 250px;
+    height: 200px;
   }
   
   .content-info {
     padding: 15px;
+    height: auto;
+    min-height: 180px;
   }
   
   .content-title {
@@ -329,5 +384,22 @@
   
   .content-section h2 {
     font-size: 1.3rem;
+  }
+  
+  .content-overview {
+    -webkit-line-clamp: 4; /* Fewer lines on mobile */
+  }
+  
+  /* Adjust streaming providers for mobile */
+  .streaming-providers {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    right: auto;
+    margin-top: 15px;
+  }
+  
+  .content-overview {
+    margin-bottom: 10px;
   }
 }
