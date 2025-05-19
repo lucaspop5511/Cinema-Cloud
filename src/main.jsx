@@ -23,8 +23,10 @@ import './styles/auth/LoginModal.css'
 import './styles/auth/AuthButton.css'
 // Import watchlist styles
 import './styles/WatchlistButton.css'
-// Import new styles for Now Playing/Currently Airing button
+// Import button styles
 import './styles/NowPlayingButton.css'
+// Import streaming providers styles
+import './styles/StreamingProviders.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>

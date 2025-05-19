@@ -5,6 +5,7 @@ import { fetchFromApi, getImageUrl } from '../services/api';
 import NowPlayingButton from './NowPlayingButton';
 import '../styles/Detail.css';
 import '../styles/NowPlayingButton.css';
+import '../styles/StreamingProviders.css';
 
 export default function TvDetail() {
   const { id } = useParams();
@@ -33,15 +34,19 @@ export default function TvDetail() {
         console.log('Fetching TV show details for ID:', id);
 
         // Fetch multiple endpoints
-        const [showData, creditsData, videosData, imagesData] = await Promise.all([
+        const [showData, creditsData, videosData, imagesData, providersData] = await Promise.all([
           fetchFromApi(`/tv/${id}?language=en-US`),
           fetchFromApi(`/tv/${id}/credits?language=en-US`),
           fetchFromApi(`/tv/${id}/videos?language=en-US`),
-          fetchFromApi(`/tv/${id}/images`)
+          fetchFromApi(`/tv/${id}/images`),
+          fetchFromApi(`/tv/${id}/watch/providers`)
         ]);
 
         console.log('TV show data:', showData);
-        setShow(showData);
+        setShow({
+          ...showData,
+          watch_providers: providersData.results?.RO || providersData.results?.US || {}
+        });
         setCredits(creditsData);
         setVideos(videosData.results || []);
         setImages(imagesData.backdrops || []);
@@ -129,6 +134,30 @@ export default function TvDetail() {
           <div className="detail-overview">
             <p>{show.overview || 'No overview available.'}</p>
           </div>
+          
+          {/* Streaming Services */}
+          {show.watch_providers && (
+            <div className="detail-section streaming-services-section">
+              <h3>Where to Watch</h3>
+              <div className="streaming-providers detail-providers">
+                {show.watch_providers.flatrate && show.watch_providers.flatrate.length > 0 ? (
+                  <div className="provider-logos">
+                    {show.watch_providers.flatrate.map(provider => (
+                      <div key={provider.provider_id} className="provider-logo" title={provider.provider_name}>
+                        <img 
+                          src={`https://image.tmdb.org/t/p/original${provider.logo_path}`} 
+                          alt={provider.provider_name} 
+                        />
+                        <span className="provider-name">{provider.provider_name}</span>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="no-providers">No streaming information available</p>
+                )}
+              </div>
+            </div>
+          )}
 
           {/* Images section */}
           {images.length > 0 && (

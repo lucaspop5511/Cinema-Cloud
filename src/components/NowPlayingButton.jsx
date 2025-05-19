@@ -1,10 +1,11 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useCinemaContent } from '../contexts/CinemaContentContext';
 import '../styles/NowPlayingButton.css';
 
 const NowPlayingButton = ({ mediaType, itemId }) => {
   const { isInCinema, isAiring, isLoaded } = useCinemaContent();
+  const navigate = useNavigate();
   
   // Don't render until cinema content is loaded
   if (!isLoaded) return null;
@@ -20,14 +21,20 @@ const NowPlayingButton = ({ mediaType, itemId }) => {
   const buttonText = mediaType === 'movie' ? 'Now in Cinemas' : 'Currently Airing';
   const buttonClass = mediaType === 'movie' ? 'cinema-button' : 'airing-button';
   
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    navigate('/cinema');
+  };
+  
+  // Use a button instead of a Link to avoid nesting <a> tags
   return (
-    <Link 
-      to="/cinema" 
+    <button 
       className={`now-playing-button ${buttonClass}`}
-      onClick={(e) => e.stopPropagation()}
+      onClick={handleClick}
     >
       {buttonText}
-    </Link>
+    </button>
   );
 };
 

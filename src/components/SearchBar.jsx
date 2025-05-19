@@ -1,5 +1,6 @@
 import { useState, useRef, useContext } from 'react'
 import { AppContext } from '../App'
+import '../styles/SearchBar.css'
 
 function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
   const { 

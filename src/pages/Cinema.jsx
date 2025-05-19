@@ -4,6 +4,8 @@ import FilterHeader from '../components/FilterHeader';
 import { AppContext } from '../App';
 import { fetchFromApi, getImageUrl, getFilteredContent } from '../services/api';
 import WatchlistButton from '../components/WatchlistButton';
+import '../styles/Cinema.css';
+import '../styles/StreamingProviders.css';
 
 // Romanian cities with their Cinemagia URLs (in alphabetical order)
 const CINEMA_CITIES = [
@@ -160,13 +162,24 @@ function Cinema() {
             let results = response.results || [];
             console.log('Raw TV results:', results.length);
             
-            // Fetch additional details for TV shows
+            // Fetch additional details for TV shows including watch providers
             if (results.length > 0) {
               const detailedContent = await Promise.all(
                 results.map(async (item) => {
                   try {
-                    const details = await fetchFromApi(`/tv/${item.id}?language=en-US`);
-                    return { ...item, number_of_seasons: details.number_of_seasons };
+                    const [details, providers] = await Promise.all([
+                      fetchFromApi(`/tv/${item.id}?language=en-US`),
+                      fetchFromApi(`/tv/${item.id}/watch/providers`)
+                    ]);
+                    
+                    // Get providers for Romania or US as fallback
+                    const watchProviders = providers.results?.RO || providers.results?.US || {};
+                    
+                    return { 
+                      ...item, 
+                      number_of_seasons: details.number_of_seasons,
+                      watch_providers: watchProviders
+                    };
                   } catch (error) {
                     console.error(`Error fetching details for TV ${item.id}:`, error);
                     return item;
@@ -387,6 +400,28 @@ function Cinema() {
                   <p className="content-overview">
                     {item.overview || 'No description available.'}
                   </p>
+                  
+                  {mediaType === 'tv' && item.watch_providers && (
+                    <div className="streaming-providers">
+                      <span className="streaming-label">Available on: </span>
+                      <div className="provider-logos">
+                        {item.watch_providers.flatrate?.map(provider => (
+                          <div key={provider.provider_id} className="provider-logo" title={provider.provider_name}>
+                            <img 
+                              src={`https://image.tmdb.org/t/p/original${provider.logo_path}`} 
+                              alt={provider.provider_name} 
+                            />
+                          </div>
+                        ))}
+                        {item.watch_providers.flatrate?.length === 0 && (
+                          <span className="no-providers">No streaming info available</span>
+                        )}
+                        {!item.watch_providers.flatrate && (
+                          <span className="no-providers">No streaming info available</span>
+                        )}
+                      </div>
+                    </div>
+                  )}
                   
                   {mediaType === 'movie' && (
                     <a 

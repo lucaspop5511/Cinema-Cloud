@@ -4,6 +4,7 @@ import SearchResults from '../components/SearchResults'
 import FilterHeader from '../components/FilterHeader'
 import { AppContext } from '../App'
 import { searchMovies, searchTvShows, getFilteredContent } from '../services/tmdbApi'
+import '../styles/Home.css'
 
 function Home() {
   const { 
@@ -171,7 +172,7 @@ function Home() {
     } else if (hasActiveFilters()) {
       return 'Filtered Results';
     }
-    return 'Popular Choises';
+    return 'Popular Choices';
   };
 
   return (
