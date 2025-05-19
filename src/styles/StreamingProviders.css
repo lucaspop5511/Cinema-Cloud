@@ -1,9 +1,7 @@
 /* Streaming Providers Styles */
-
-/* Common providers styles */
 .streaming-providers {
   margin-top: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 0px;
 }
 
 .streaming-label {
@@ -17,7 +15,7 @@
   align-items: center;
   flex-wrap: wrap;
   gap: 8px;
-  margin-top: 8px;
+  margin-top: 0px;
 }
 
 .provider-logo {

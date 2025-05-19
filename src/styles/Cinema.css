@@ -209,10 +209,10 @@
 .content-overview {
   color: #ccc;
   font-size: 14px;
-  line-height: 1.5;
+  line-height: 1.4;
   overflow: hidden;
   display: -webkit-box;
-  -webkit-line-clamp: 6; /* Show up to 6 lines */
+  -webkit-line-clamp: 5;
   -webkit-box-orient: vertical;
   flex: 1;
 }
@@ -231,15 +231,9 @@
 
 /* Streaming providers container - positioned at absolute bottom */
 .streaming-providers {
-  position: absolute;
-  bottom: 0;
-  left: 15px;
-  right: 15px;
-  padding-bottom: 4px;
-  background-color: #242424; /* Match card background */
+  padding: 0px;
 }
 
-/* Refine provider logos - smaller and tighter layout */
 .provider-logos {
   display: flex;
   flex-wrap: wrap;
@@ -248,7 +242,7 @@
 }
 
 .provider-logo {
-  width: 20px; /* Even smaller icons */
+  width: 20px;
   height: 20px;
   border-radius: 3px;
   overflow: hidden;
@@ -278,18 +272,13 @@
   transition: color 0.2s ease;
   font-size: 13px;
   position: absolute;
-  bottom: 0;
+  bottom: 10px;
   left: 15px;
 }
 
 .cinema-link:hover {
   color: #5dade2;
   text-decoration: underline;
-}
-
-/* Adjust overview padding to make room for streaming providers */
-.content-overview {
-  margin-bottom: 30px; /* Make space for the streaming providers at bottom */
 }
 
 /* New provider logos container */

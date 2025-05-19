@@ -22,7 +22,7 @@
   margin-bottom: 25px;
 }
 
-/* Media Type Picker - Updated to match other pages */
+/* Media Type Picker */
 .media-type-picker {
   display: flex;
   justify-content: center;
@@ -37,7 +37,7 @@
 }
 
 .media-type-button {
-  padding: 12px 20px;
+  align-self: center;
   background-color: transparent;
   border: none;
   font-size: 16px;
@@ -47,7 +47,6 @@
   flex: 1;
   white-space: nowrap;
   min-width: fit-content;
-  padding: 0 100px;
 }
 
 .media-type-button.active {

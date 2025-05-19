@@ -27,7 +27,6 @@ const STREAMING_SERVICES = [
   { value: 'none', label: 'All Platforms' },
   { value: '8', label: 'Netflix' },
   { value: '337', label: 'Disney+' },
-  { value: '384', label: 'HBO Max' },
   { value: '15', label: 'Hulu' },
   { value: '350', label: 'Apple TV+' },
   { value: '531', label: 'Paramount+' },
@@ -142,7 +141,34 @@ function Cinema() {
             // Get TV shows with both filters and streaming service
             const data = await getFilteredContent(filterParams, 1);
             console.log('Results:', data);
-            setContent(data.results || []);
+            
+            // Fetch watch providers for each filtered item
+            const resultsWithProviders = await Promise.all(
+              data.results.map(async (item) => {
+                try {
+                  // First get detailed info for each show
+                  const [details, providers] = await Promise.all([
+                    fetchFromApi(`/tv/${item.id}?language=en-US`),
+                    fetchFromApi(`/tv/${item.id}/watch/providers`)
+                  ]);
+                  
+                  // Get providers for Romania or US as fallback
+                  const watchProviders = providers.results?.RO || providers.results?.US || {};
+                  
+                  return { 
+                    ...item, 
+                    number_of_seasons: details.number_of_seasons,
+                    episode_run_time: details.episode_run_time,
+                    watch_providers: watchProviders
+                  };
+                } catch (error) {
+                  console.error(`Error fetching details for TV ${item.id}:`, error);
+                  return item;
+                }
+              })
+            );
+            
+            setContent(resultsWithProviders);
           } else {
             // Regular TV show fetching without filters, but with streaming service
             console.log('Fetching TV shows without filters, streaming service:', selectedStreaming.value);
@@ -266,8 +292,6 @@ function Cinema() {
     // Navigate to the detail page based on media type
     navigate(`/${mediaType}/${item.id}`);
   };
-  
-  // Removed isCurrentlyActive function since not needed
 
   if (loading) {
     return (
@@ -377,8 +401,6 @@ function Cinema() {
                   )}
                   {/* Watchlist Button */}
                   <WatchlistButton item={item} mediaType={mediaType} />
-                  
-                  {/* Removed Now Playing/Currently Airing Button from Cinema page */}
                 </div>
                 
                 <div className="content-info">
@@ -401,11 +423,11 @@ function Cinema() {
                     {item.overview || 'No description available.'}
                   </p>
                   
-                  {mediaType === 'tv' && item.watch_providers && (
+                  {mediaType === 'tv' && (
                     <div className="streaming-providers">
                       <span className="streaming-label">Available on: </span>
                       <div className="provider-logos">
-                        {item.watch_providers.flatrate?.map(provider => (
+                        {item.watch_providers?.flatrate?.map(provider => (
                           <div key={provider.provider_id} className="provider-logo" title={provider.provider_name}>
                             <img 
                               src={`https://image.tmdb.org/t/p/original${provider.logo_path}`} 
@@ -413,10 +435,7 @@ function Cinema() {
                             />
                           </div>
                         ))}
-                        {item.watch_providers.flatrate?.length === 0 && (
-                          <span className="no-providers">No streaming info available</span>
-                        )}
-                        {!item.watch_providers.flatrate && (
+                        {!item.watch_providers?.flatrate || item.watch_providers.flatrate.length === 0 && (
                           <span className="no-providers">No streaming info available</span>
                         )}
                       </div>

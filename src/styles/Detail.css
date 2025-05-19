@@ -6,12 +6,12 @@
   background-color: #121212;
 }
 
-/* Content area - properly positioned to account for detail panel */
+/* Content area */
 .detail-content {
   flex: 1;
   padding: 20px;
-  min-width: 0; /* Allow content to shrink */
-  overflow-x: hidden; /* Prevent horizontal overflow */
+  min-width: 0; 
+  overflow-x: hidden; 
 }
 
 /* Main content */
@@ -19,7 +19,7 @@
   max-width: 1200px;
   margin: 0 auto;
   width: 100%;
-  padding: 0; /* Remove extra padding */
+  padding: 0; 
 }
 
 /* Header section */
