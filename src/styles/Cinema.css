@@ -2,6 +2,14 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 20px;
+  opacity: 0.8;
+  background-image:  
+    radial-gradient(
+     #494949ec 0.7px, transparent 0.5px), 
+    radial-gradient(
+     #555555b3 0.7px, #121212 0.5px);
+  background-size: 40px 40px;
+  background-position: 0 0,20px 20px;
 }
 
 .cinema-header {

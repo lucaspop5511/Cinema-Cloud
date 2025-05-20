@@ -6,11 +6,12 @@
   justify-content: center;
   width: 100%;
   padding: 20px 0 40px 0;
-  background-color: rgba(26, 26, 26, 0.8); /* Slightly transparent for clouds to show */
-  border-bottom: 1px solid #333;
-  position: relative; /* Important for absolute positioning of clouds */
-  overflow: hidden; /* Keep clouds inside */
-  z-index: 1; /* Ensure content is above clouds */
+  background-color: rgba(26, 26, 26, 0.8); 
+  border-radius: 12px;
+  box-shadow: inset -8px -7px 15px rgba(0, 0, 0, 0.9);
+  position: relative; 
+  overflow: hidden;
+  z-index: 1;
 }
 
 .search-page-title,

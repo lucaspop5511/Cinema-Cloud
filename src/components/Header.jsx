@@ -31,7 +31,7 @@ function Header({ openPanel, isPanelOpen, isMobile }) {
         
         <div className="right-section">
           <Link to="/cinema" className={`nav-link ${isCinema ? 'active' : ''}`}>
-            Cinema
+            Watch
           </Link>
         </div>
       </div>
