@@ -4,6 +4,7 @@
   flex-direction: row;
   min-height: 100vh;
   background-color: #121212;
+  position: relative;
 }
 
 /* Content area */
@@ -41,16 +42,70 @@
   margin-right: 20px;
 }
 
+/* Detail actions (rating and watchlist button) */
+.detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Enlarged rating display */
 .detail-rating {
   display: flex;
   align-items: center;
   flex-shrink: 0;
+  background-color: rgba(52, 152, 219, 0.2);
+  padding: 5px 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(52, 152, 219, 0.3);
 }
 
 .rating-value {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   color: #3498db;
   font-weight: bold;
+  white-space: nowrap;
+}
+
+/* Add star icon styling if using stars */
+.rating-value .star-icon,
+.rating-value span[role="img"] {
+  margin-left: 5px;
+  font-size: 1.1rem; 
+}
+
+/* Watchlist button in header */
+.header-watchlist-button {
+  position: relative !important;
+  top: auto !important;
+  left: auto !important;
+  margin-right: 5px;
+}
+
+/* Ensure the watchlist button in the header is properly sized */
+.header-watchlist-button.watchlist-button {
+  width: 42px;
+  height: 42px; 
+  opacity: 1;
+  background-color: rgba(0, 0, 0, 0.7);
+  border-radius: 50%;
+}
+
+/* Make the active watchlist button blue to match home page */
+.header-watchlist-button.watchlist-button.in-watchlist {
+  background-color: #3498db !important;
+}
+
+.header-watchlist-button.watchlist-button .bookmark-icon {
+  width: 22px;
+  height: 22px;
+}
+
+/* Hide the top watchlist button in the left panel */
+/* This will hide the button with class "blue-bookmark" in the top left */
+.detail-container > .blue-bookmark,
+.detail-panel .watchlist-button {
+  display: none !important;
 }
 
 /* Overview section */
@@ -206,7 +261,14 @@
   margin-bottom: 10px;
 }
 
-/* Mobile responsive */
+.detail-container .rating-value,
+.detail-container [class*="rating"] {
+  font-size: 1.2rem !important;
+  color: #3498db !important;
+  font-weight: bold !important;
+}
+
+/* Mobile styles */
 @media (max-width: 768px) {
   .detail-content {
     margin-left: 0;
@@ -221,10 +283,20 @@
     font-size: 2rem;
   }
 
+  /* Adjust header layout on mobile */
   .detail-header {
     flex-direction: column;
     align-items: flex-start;
     gap: 15px;
+  }
+
+  .detail-actions {
+    align-self: flex-start;
+    margin-top: 10px;
+  }
+
+  .detail-rating {
+    margin-left: auto;
   }
 
   .detail-images {
@@ -238,5 +310,9 @@
   .cast-photo {
     width: 100px;
     height: 125px;
+  }
+
+  .rating-value {
+    font-size: 1.3rem; /* Slightly smaller on mobile but still larger than before */
   }
 }

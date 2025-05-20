@@ -1,15 +1,18 @@
+// Updated MovieDetail.jsx to fix mobile menu duplication and watchlist button placement
+
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../App';
 import { fetchFromApi, getImageUrl } from '../services/api';
 import NowPlayingButton from './NowPlayingButton';
+import WatchlistButton from './WatchlistButton';
 import '../styles/Detail.css';
 import '../styles/NowPlayingButton.css';
 
 export default function MovieDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { closePanel, isMobile } = useContext(AppContext);
+  const { closePanel, isMobile, openPanel, isPanelOpen } = useContext(AppContext);
   const [movie, setMovie] = useState(null);
   const [credits, setCredits] = useState(null);
   const [videos, setVideos] = useState([]);
@@ -24,11 +27,6 @@ export default function MovieDetail() {
       try {
         setLoading(true);
         setError(null);
-        
-        // Close mobile panel when navigating to detail
-        if (isMobile) {
-          closePanel();
-        }
 
         console.log('Fetching movie details for ID:', id);
 
@@ -56,7 +54,7 @@ export default function MovieDetail() {
     if (id) {
       fetchMovieDetails();
     }
-  }, [id, isMobile, closePanel]);
+  }, [id]);
 
   // Format runtime
   const formatRuntime = (minutes) => {
@@ -74,7 +72,16 @@ export default function MovieDetail() {
            videos.find(video => video.site === 'YouTube');
   };
 
-  console.log('MovieDetail render - loading:', loading, 'error:', error, 'movie:', movie);
+  // Handle mobile menu toggle - don't need this as we'll use Header component's toggle
+  const handleMenuToggle = () => {
+    if (isMobile) {
+      if (isPanelOpen) {
+        closePanel();
+      } else {
+        openPanel();
+      }
+    }
+  };
 
   if (loading) {
     return (
@@ -101,13 +108,17 @@ export default function MovieDetail() {
       <div className="detail-content">
         {/* Main content area */}
         <div className="detail-main">
-          {/* Title and rating */}
+          {/* Title row with watchlist button */}
           <div className="detail-header">
             <h1 className="detail-title">{movie.title}</h1>
-            <div className="detail-rating">
-              <span className="rating-value">
-                {movie.vote_average ? `${movie.vote_average.toFixed(1)}/10 ★` : 'No rating'}
-              </span>
+            <div className="detail-actions">
+              {/* Add watchlist button next to rating */}
+              <WatchlistButton item={movie} mediaType="movie" className="header-watchlist-button" />
+              <div className="detail-rating">
+                <span className="rating-value">
+                  {movie.vote_average ? `${movie.vote_average.toFixed(1)}/10 ★` : 'No rating'}
+                </span>
+              </div>
             </div>
           </div>
 

@@ -3,6 +3,7 @@ import { getImageUrl } from '../services/api';
 import AuthButton from './auth/AuthButton';
 import { useContext } from 'react';
 import { AppContext } from '../App';
+import WatchlistButton from './WatchlistButton'; // Import WatchlistButton
 import '../styles/panels/DetailPanel.css';
 
 function DetailPanel({ item, isOpen, closePanel, mediaType }) {
@@ -79,10 +80,14 @@ function DetailPanel({ item, isOpen, closePanel, mediaType }) {
       </div>
       
       <div className="detail-panel-content">
-        {/* Poster */}
+        {/* Poster with Watchlist Button */}
         <div className="detail-poster">
           {item.poster_path ? (
-            <img src={getImageUrl(item.poster_path)} alt={getTitle()} />
+            <div className="detail-poster-container">
+              <img src={getImageUrl(item.poster_path)} alt={getTitle()} />
+              {/* Add WatchlistButton */}
+              <WatchlistButton item={item} mediaType={mediaType} />
+            </div>
           ) : (
             <div className="no-poster">No Poster</div>
           )}

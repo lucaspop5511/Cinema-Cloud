@@ -1,8 +1,11 @@
+// Updated TvDetail.jsx to fix mobile menu duplication and watchlist button placement
+
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../App';
 import { fetchFromApi, getImageUrl } from '../services/api';
 import NowPlayingButton from './NowPlayingButton';
+import WatchlistButton from './WatchlistButton';
 import '../styles/Detail.css';
 import '../styles/NowPlayingButton.css';
 import '../styles/StreamingProviders.css';
@@ -10,7 +13,7 @@ import '../styles/StreamingProviders.css';
 export default function TvDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { closePanel, isMobile } = useContext(AppContext);
+  const { closePanel, isMobile, openPanel, isPanelOpen } = useContext(AppContext);
   const [show, setShow] = useState(null);
   const [credits, setCredits] = useState(null);
   const [videos, setVideos] = useState([]);
@@ -25,11 +28,6 @@ export default function TvDetail() {
       try {
         setLoading(true);
         setError(null);
-        
-        // Close mobile panel when navigating to detail
-        if (isMobile) {
-          closePanel();
-        }
 
         console.log('Fetching TV show details for ID:', id);
 
@@ -61,7 +59,7 @@ export default function TvDetail() {
     if (id) {
       fetchShowDetails();
     }
-  }, [id, isMobile, closePanel]);
+  }, [id]);
 
   // Format runtime
   const formatRuntime = (minutes) => {
@@ -88,8 +86,6 @@ export default function TvDetail() {
            videos.find(video => video.site === 'YouTube');
   };
 
-  console.log('TvDetail render - loading:', loading, 'error:', error, 'show:', show);
-
   if (loading) {
     return (
       <div className="detail-loading">
@@ -115,13 +111,17 @@ export default function TvDetail() {
       <div className="detail-content">
         {/* Main content area */}
         <div className="detail-main">
-          {/* Title and rating */}
+          {/* Title row with watchlist button */}
           <div className="detail-header">
             <h1 className="detail-title">{show.name}</h1>
-            <div className="detail-rating">
-              <span className="rating-value">
-                {show.vote_average ? `${show.vote_average.toFixed(1)}/10 ★` : 'No rating'}
-              </span>
+            <div className="detail-actions">
+              {/* Add watchlist button next to rating */}
+              <WatchlistButton item={show} mediaType="tv" className="header-watchlist-button" />
+              <div className="detail-rating">
+                <span className="rating-value">
+                  {show.vote_average ? `${show.vote_average.toFixed(1)}/10 ★` : 'No rating'}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -140,7 +140,7 @@ export default function TvDetail() {
             <div className="detail-section streaming-services-section">
               <h3>Where to Watch</h3>
               <div className="streaming-providers detail-providers">
-                {show.watch_providers.flatrate && show.watch_providers.flatrate.length > 0 ? (
+                {show.watch_providers?.flatrate && show.watch_providers.flatrate.length > 0 ? (
                   <div className="provider-logos">
                     {show.watch_providers.flatrate.map(provider => (
                       <div key={provider.provider_id} className="provider-logo" title={provider.provider_name}>
