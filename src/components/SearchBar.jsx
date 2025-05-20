@@ -1,5 +1,6 @@
 import { useState, useRef, useContext } from 'react'
 import { AppContext } from '../App'
+import CloudsBackground from './CloudsBackground';
 import '../styles/SearchBar.css'
 
 function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
@@ -66,6 +67,7 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
   
   return (
     <div className="search-container">
+      <CloudsBackground />
       <h1 className="search-page-title">Find your favourite {searchType === 'movie' ? 'movies' : 'TV shows'}</h1>
       
       {/* Media Type Picker - matches cinema page style */}
