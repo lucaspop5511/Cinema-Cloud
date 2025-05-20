@@ -16,14 +16,14 @@
   justify-content: space-between;
   align-items: center;
   z-index: 1;
-  min-height: 60px; /* Maintain height even without text */
+  min-height: 60px;
 }
 
 .panel-header-left,
 .panel-header-right {
   display: flex;
   align-items: center;
-  min-width: 45px; /* Ensure space for buttons */
+  min-width: 45px; 
 }
 
 .panel-header-left {
@@ -34,7 +34,6 @@
   justify-content: flex-end;
 }
 
-/* Remove center heading styles since we're not using them */
 .genre-panel-header h2 {
   display: none;
 }
@@ -55,7 +54,6 @@
   }
 }
 
-/* Existing disabled styles */
 .filter-section.disabled {
   opacity: 0.5;
   pointer-events: none;
