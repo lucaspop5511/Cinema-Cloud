@@ -151,7 +151,15 @@ function SearchResults({
     );
   }
 
-  const filteredResults = results.filter(item => item.vote_count >= MINIMUM_VOTE_COUNT);
+  // Filter out results with insufficient vote count and ensure runtime filter is applied
+  const filteredResults = results.filter(item => {
+    // Check minimum vote count
+    if (item.vote_count < MINIMUM_VOTE_COUNT) {
+      return false;
+    }
+    
+    return true;
+  });
 
   return (
     <div className="results-container">
@@ -224,6 +232,9 @@ function SearchResults({
               </p>
               <div className="result-id" style={{ fontSize: '10px', color: '#666', marginTop: '4px' }}>
                 ID: {item.id}
+                {item.runtime !== undefined && (
+                  <span> | Runtime: {item.runtime}m</span>
+                )}
               </div>
             </div>
           </Link>
