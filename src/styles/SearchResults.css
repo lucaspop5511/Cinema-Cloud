@@ -32,8 +32,8 @@
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  gap: 15px;
 }
 
 /* Card styling with fixed dimensions */
@@ -279,7 +279,7 @@
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .results-grid {
-    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
     gap: 15px;
   }
   
@@ -301,5 +301,45 @@
   
   .rating-value {
     font-size: 12px;
+  }
+}
+
+/* Additional responsive adjustments for very small screens */
+@media (max-width: 400px) {
+  .results-grid {
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px; /* Further reduce gap on very small screens */
+  }
+}
+
+@media (max-width: 480px) {
+  /* Make cards more compact */
+  .result-card {
+    min-height: 240px; 
+  }
+  
+  .result-poster {
+    aspect-ratio: 2/3;
+  }
+  
+  .result-title {
+    font-size: 14px;
+    -webkit-line-clamp: 1;
+  }
+  
+  .result-details, 
+  .result-rating .rating-value {
+    font-size: 12px;
+  }
+  
+  .result-info {
+    padding: 8px;
+    min-height: 80px;
+    max-height: 80px;
+  }
+  
+  .result-overview {
+    -webkit-line-clamp: 2;
+    font-size: 11px;
   }
 }

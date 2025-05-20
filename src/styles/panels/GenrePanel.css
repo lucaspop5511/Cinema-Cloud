@@ -147,3 +147,106 @@ input:disabled {
   color: #666;
   transform: none;
 }
+
+@media (max-width: 400px) {
+  .genre-panel {
+    overflow-y: auto; 
+  }
+  
+  .genre-panel-content {
+    padding: 5px 15px 8px 15px;
+  }
+  
+  .filter-section-title {
+    font-size: 16px;
+    margin: 10px 0 6px 0;
+    padding-bottom: 3px;
+  }
+  
+  .genre-grid {
+    gap: 5px; 
+  }
+  
+  .genre-item {
+    padding: 5px 8px; 
+    font-size: 13px; 
+    border-radius: 5px; 
+  }
+  
+  .filter-section {
+    margin-bottom: 0;
+    padding-bottom: 5px; 
+  }
+  
+  .year-inputs {
+    gap: 5px; 
+  }
+  
+  .year-input-container {
+    height: 30px; 
+  }
+  
+  .input-group input {
+    padding: 4px 8px;
+    font-size: 14;
+    height: 30px;
+  }
+  
+  .year-control-btn {
+    width: 20px; 
+    height: 15px;
+  }
+  
+  .year-separator {
+    margin: 0 2px; 
+    align-self: center; 
+  }
+  
+  .input-group label {
+    font-size: 11px;
+    margin-bottom: 2px;
+  }
+  
+  .runtime-slider-container {
+    padding: 0;
+    margin-top: 0;
+  }
+  
+  .runtime-labels {
+    font-size: 12px; 
+    margin-bottom: 5px; 
+  }
+  
+  .dual-slider {
+    height: 25px;
+  }
+  
+  .segmented-control {
+    padding: 3px; 
+  }
+  
+  .segmented-control-item {
+    padding: 4px 5px; 
+    font-size: 10px;
+    min-height: 22px;
+  }
+  
+  .segmented-control-item.none-option {
+    font-size: 14px; 
+  }
+  
+  .genre-panel-footer {
+    padding: 10px;
+  }
+  
+  .search-button {
+    padding: 8px; 
+    font-size: 18px;
+  }
+  
+  .genre-panel-header {
+    padding: 10px;
+    padding-bottom: 5px;
+    min-height: 50px;
+  }
+}
