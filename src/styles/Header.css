@@ -14,16 +14,16 @@
   max-width: 1200px;
   margin: 0 auto;
   position: relative;
-  height: 50px; /* Fixed height to prevent vertical shifts */
+  height: 50px; 
 }
 
 .left-section, .right-section {
   flex: 1;
-  min-width: 100px; /* Set minimum width to prevent collapse */
+  min-width: 100px;
 }
 
 .left-section {
-  width: 100px; /* Fixed width to prevent layout shifts */
+  width: 100px;
 }
 
 .right-section {
@@ -61,8 +61,8 @@
 
 .nav-link {
   color: #777;
-  font-weight: 500;
-  font-size: 16px;
+  font-weight: 600;
+  font-size: 22px;
   transition: all 0.3s ease;
   padding: 5px 10px;
   border-radius: 4px;
@@ -70,7 +70,7 @@
 
 .nav-link.active {
   color: #3498db;
-  font-size: 20px;
+  font-size: 26px;
   font-weight: bold;
 }
 

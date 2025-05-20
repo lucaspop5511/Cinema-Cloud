@@ -14,26 +14,26 @@
 .search-page-title {
   font-size: 2rem;
   font-weight: bold;
-  margin-bottom: 25px;
   color: #e0e0e0;
   text-align: center;
   width: 90%;
+  margin-bottom: 25px;
 }
 
 /* Media Type Picker */
 .media-type-picker {
   display: flex;
   justify-content: center;
-  margin-bottom: 25px;
   background-color: #242424;
   border-radius: 30px;
   overflow: hidden;
-  border: 1px solid #333;
   width: 90%;
   height: 40px;
   max-width: 600px;
+  border: 1px solid #333;
   margin-left: auto;
   margin-right: auto;
+  margin-bottom: 25px;
 }
 
 .media-type-button {
@@ -41,6 +41,7 @@
   background-color: transparent;
   border: none;
   font-size: 16px;
+  font-weight: 700;
   cursor: pointer;
   color: #999;
   transition: background-color 0.2s, color 0.2s;

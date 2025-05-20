@@ -13,10 +13,10 @@
 }
 
 .login-button {
-  background-color: #3498db;
+  background-color: #3498dbce;
   color: white;
   border: none;
-  padding: 8px 16px;
+  padding: 0;
   border-radius: 4px;
   font-size: 14px;
   font-weight: 500;
@@ -41,10 +41,10 @@
   background: none;
   border: none;
   color: #e0e0e0;
-  font-size: 14px;
-  font-weight: 500;
+  font-size: 18px;
+  font-weight: 600;
   cursor: pointer;
-  padding: 4px 10px;
+  padding: 4px 15px;
   border-radius: 4px;
   transition: all 0.2s;
   white-space: nowrap;
@@ -57,7 +57,6 @@
 }
 
 .profile-name-button:hover {
-  background-color: #333;
   color: #3498db;
 }
 
@@ -105,7 +104,8 @@
   background: none;
   border: none;
   color: #e0e0e0;
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s;
   text-align: left;
@@ -129,7 +129,7 @@
   width: 100%;
   text-align: center;
   padding: 10px;
-  font-size: 13px;
+  font-size: 16px;
   justify-content: center;
 }
 
@@ -137,7 +137,7 @@
   width: 100%;
   text-align: center;
   padding: 10px;
-  font-size: 13px;
+  font-size: 14px;
   justify-content: center;
 }
 
