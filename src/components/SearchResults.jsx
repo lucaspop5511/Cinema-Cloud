@@ -13,7 +13,7 @@ function SearchResults({
   onLoadMore,
   isLoadingMore = false 
 }) {
-  const MINIMUM_VOTE_COUNT = 1000; 
+  const MINIMUM_VOTE_COUNT = 10; 
   
   const getYear = (dateString) => {
     if (!dateString) return '';
