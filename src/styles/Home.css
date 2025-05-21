@@ -81,7 +81,6 @@
   100% { transform: translateY(-50%) rotate(360deg); }
 }
 
-/* Mobile responsiveness */
 @media (max-width: 768px) {
   .search-results {
     padding: 15px;

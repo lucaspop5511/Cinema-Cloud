@@ -26,14 +26,13 @@ const AuthButton = ({ isMobile = false }) => {
     setShowProfileMenu(false);
     navigate('/watchlist');
     
-    // Close the filter panel on mobile when navigating to watchlist
+    // Close the filter panel on mobile
     if (isMobile) {
       closePanel();
     }
   };
   
   const handleLoginClick = () => {
-    // Do not close panel, just show the login modal
     setShowLoginModal(true);
   };
 

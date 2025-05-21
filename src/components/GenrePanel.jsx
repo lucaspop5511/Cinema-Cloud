@@ -71,9 +71,7 @@ function GenrePanel({ isOpen, closePanel }) {
   
   // Detect changes to any filter
   useEffect(() => {
-    // Function to check if any filter has changed
     const checkForChanges = () => {
-      // Check if genres changed
       if (selectedGenres.length !== initialFilters.genres.length) {
         return true
       }
@@ -115,7 +113,6 @@ function GenrePanel({ isOpen, closePanel }) {
     'Thriller', 'War', 'Western'
   ].sort();
   
-  // Updated IMDB Rating options - removed 9+, changed 8-9 to 8+
   const imdbRatingOptions = [
     { value: 'none', label: '⊘' }, 
     { value: '<6', label: '<6' },
@@ -124,7 +121,7 @@ function GenrePanel({ isOpen, closePanel }) {
     { value: '8+', label: '8+' }
   ];
   
-  // Handle escape key to close panel on mobile
+  // Escape key to close panel on mobile
   useEffect(() => {
     const handleEscKey = (event) => {
       if (event.key === 'Escape' && isOpen && window.innerWidth < 768) {
@@ -138,7 +135,6 @@ function GenrePanel({ isOpen, closePanel }) {
     }
   }, [isOpen, closePanel])
 
-  // Handle year input validation and step adjustment
   const handleMinYearChange = (e) => {
     setMinYear(e.target.value)
   }
@@ -150,7 +146,7 @@ function GenrePanel({ isOpen, closePanel }) {
   const validateMinYear = () => {
     let validatedValue = parseInt(minYear)
     if (isNaN(validatedValue) || validatedValue < 1900) {
-      validatedValue = 1990 // Default to 1990 instead of 1900
+      validatedValue = 1990
     } else if (validatedValue > parseInt(maxYear)) {
       validatedValue = parseInt(maxYear)
     }
@@ -167,7 +163,7 @@ function GenrePanel({ isOpen, closePanel }) {
     setMaxYear(validatedValue)
   }
   
-  // Year increment/decrement with 5-year steps
+  // Year increment/decrement
   const incrementYear = (setter, currentValue) => {
     // Round up to nearest multiple of 5
     const nextValue = Math.ceil((parseInt(currentValue) + 1) / 5) * 5;
@@ -183,7 +179,7 @@ function GenrePanel({ isOpen, closePanel }) {
   // Handle runtime changes
   const handleMinRuntimeChange = (e) => {
     let newMinRuntime = parseInt(e.target.value)
-    // Ensure minimum 30 minute difference
+    // Minimum 30 minute difference
     if (maxRuntime - newMinRuntime < 30) {
       newMinRuntime = maxRuntime - 30
     }
@@ -193,7 +189,7 @@ function GenrePanel({ isOpen, closePanel }) {
   
   const handleMaxRuntimeChange = (e) => {
     let newMaxRuntime = parseInt(e.target.value)
-    // Ensure minimum 30 minute difference
+    // Minimum 30 minute difference
     if (newMaxRuntime - minRuntime < 30) {
       newMaxRuntime = minRuntime + 30
     }
@@ -243,10 +239,8 @@ function GenrePanel({ isOpen, closePanel }) {
       // If less than 3 genres are selected, add the genre
       toggleGenre(genre);
     }
-    // If 3 genres are already selected and trying to add another, do nothing
   }
   
-  // Check if any filters are currently applied (non-default values)
   const hasActiveFilters = () => {
     return selectedGenres.length > 0 || 
            minYear !== 1990 || 
@@ -275,7 +269,6 @@ function GenrePanel({ isOpen, closePanel }) {
       currentPage: location.pathname
     });
     
-    // Apply filters for all pages through the context
     applyFilters();
     
     // Close panel on mobile after search
@@ -301,16 +294,12 @@ function GenrePanel({ isOpen, closePanel }) {
     if (location.pathname === '/watchlist') {
       return 'Apply Filters';
     }
-    
-    // If we have a search query and filters, show "Apply Filters"
     if (searchQuery && searchQuery.trim() !== '' && hasActiveFilters()) {
       return 'Apply Filters';
     }
-    // If we have only a search query, show "Search"
     if (searchQuery && searchQuery.trim() !== '' && !hasActiveFilters()) {
       return 'Search';
     }
-    // If we have only filters or no search query, show "Filter"
     return 'Filter';
   }
 

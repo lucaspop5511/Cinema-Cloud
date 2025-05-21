@@ -15,7 +15,7 @@ import Footer from './components/Footer'
 import { getGenreMapping, fetchFromApi } from './services/api'
 import './styles/App.css'
 
-// Create a context to share state across components
+// Context to share state across components
 export const AppContext = createContext(null)
 
 function App() {
@@ -73,7 +73,7 @@ function App() {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768)
       
-      // On desktop, panel should always be open for home, cinema, and watchlist pages
+      // On desktop, panel always open 
       if (window.innerWidth >= 768 && (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist')) {
         setIsPanelOpen(true)
       }
@@ -113,7 +113,7 @@ function App() {
 
   const handleOverlayClick = (e) => {
     if (isMobile && isPanelOpen && (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist')) {
-      // Close panel on overlay click for home, cinema, and watchlist pages
+      // Close panel on overlay click
       const panelElement = document.querySelector('.genre-panel, .detail-panel');
       if (panelElement && !panelElement.contains(e.target)) {
         closePanel();
@@ -137,7 +137,7 @@ function App() {
     setMaxRuntime(240);
     setImdbRating('none');
     setIsFilterActive(false);
-    // Don't clear search query when clearing filters - keep the search intact
+    // Don't clear search query when clearing filters
     setClearFiltersCounter(prev => prev + 1);
   }
 

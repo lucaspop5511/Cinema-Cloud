@@ -1,11 +1,11 @@
-/* Import the modular CSS files */
+/* Import modular CSS files */
 @import './BasePanel.css';
 @import './GenreItems.css';
 @import './YearInputs.css';
 @import './RuntimeSlider.css';
 @import './SegmentedControl.css';
 
-/* Updated panel header layout */
+/* Panel header layout */
 .genre-panel-header {
   padding: 20px;
   background-color: #1a1a1a;
@@ -38,7 +38,7 @@
   display: none;
 }
 
-/* Mobile specific adjustments */
+/* Mobile specific */
 @media (max-width: 767px) {
   .genre-panel-header {
     padding: 15px;

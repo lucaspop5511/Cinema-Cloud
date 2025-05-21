@@ -1,4 +1,3 @@
-/* Main container styles remain the same */
 .results-container {
   background-color: #1e1e1e;
   border-radius: 10px;
@@ -7,7 +6,6 @@
   margin-bottom: 30px;
 }
 
-/* Updated results header with styled components */
 .results-header {
   margin-bottom: 20px;
   border-bottom: 1px solid #333;
@@ -36,7 +34,6 @@
   gap: 15px;
 }
 
-/* Card styling with fixed dimensions */
 .result-card {
   background-color: #242424;
   border-radius: 6px;
@@ -47,7 +44,6 @@
   height: 100%;
   display: flex;
   flex-direction: column;
-  /* Ensure proper positioning for absolutely positioned children */
   min-height: 370px;
   cursor: pointer;
   text-decoration: none;
@@ -60,7 +56,6 @@
   z-index: 10;
 }
 
-/* Poster container with fixed aspect ratio */
 .result-poster {
   position: relative;
   aspect-ratio: 3/6;
@@ -89,7 +84,6 @@
   font-size: 14px;
 }
 
-/* Info section - always visible at the bottom */
 .result-info {
   padding: 12px;
   display: flex;
@@ -100,28 +94,24 @@
   left: 0;
   right: 0;
   z-index: 2;
-  min-height: 120px; /* Increased to accommodate rating */
-  max-height: 120px; /* Initial height */
+  min-height: 120px;
+  max-height: 120px;
   overflow: hidden;
   transition: max-height 0.3s ease-out;
 }
 
-/* On hover, expand the info section upward */
 .result-card:hover .result-info {
-  max-height: 85%; /* Expand to cover most of the card */
+  max-height: 85%; /* Expand */
 }
 
-/* Pin the basic info to the top */
 .result-info-header {
   margin-bottom: 8px;
 }
 
-/* Title styles */
 .result-title {
   font-size: 16px;
   color: #e0e0e0;
   font-weight: 500;
-  /* Line clamp to limit to 2 lines by default */
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
@@ -130,7 +120,6 @@
   margin-bottom: 8px;
 }
 
-/* Details row with year and runtime */
 .result-details {
   display: flex;
   align-items: center;
@@ -145,12 +134,10 @@
   margin-right: 5px;
 }
 
-/* Rating display - now always visible */
 .result-rating {
   display: flex;
   align-items: center;
   margin-bottom: 0px;
-  /* Remove the hide/show transition */
   opacity: 1;
   transform: none;
 }
@@ -161,7 +148,6 @@
   font-size: 13px;
 }
 
-/* Add a divider between basic info and extended content */
 .result-content-divider {
   height: 1px;
   background-color: #333;
@@ -169,17 +155,14 @@
   width: 100%;
 }
 
-/* Movie description styles */
 .result-overview {
   font-size: 12px;
   color: #999;
   margin: 8px 0;
   line-height: 1.4;
-  /* Hide the overview initially */
   opacity: 0;
   transform: translateY(10px);
   transition: opacity 0.3s ease 0.1s, transform 0.3s ease 0.1s;
-  /* Ensure the text has proper spacing */
   max-height: 200px;
   overflow-y: auto;
 }
@@ -190,7 +173,7 @@
   transform: translateY(0);
 }
 
-/* Scrollbar styling for overview text */
+/* Scrollbar for overview text */
 .result-overview::-webkit-scrollbar {
   width: 4px;
 }
@@ -276,7 +259,6 @@
   cursor: not-allowed;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .results-grid {
     grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
@@ -304,11 +286,10 @@
   }
 }
 
-/* Additional responsive adjustments for very small screens */
 @media (max-width: 400px) {
   .results-grid {
     grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
-    gap: 10px; /* Further reduce gap on very small screens */
+    gap: 10px;
   }
 }
 

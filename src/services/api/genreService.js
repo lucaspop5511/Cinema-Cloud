@@ -24,17 +24,17 @@ export const GENRE_IDS = {
   WESTERN: 37,
   
   // TV genres
-  ACTION_ADVENTURE: 10759, // TV-specific
-  KIDS: 10762, // TV-specific
-  NEWS: 10763, // TV-specific
-  REALITY: 10764, // TV-specific
-  SCIFI_FANTASY: 10765, // TV-specific
-  SOAP: 10766, // TV-specific
-  TALK: 10767, // TV-specific
-  WAR_POLITICS: 10768, // TV-specific
+  ACTION_ADVENTURE: 10759,
+  KIDS: 10762,
+  NEWS: 10763,
+  REALITY: 10764,
+  SCIFI_FANTASY: 10765,
+  SOAP: 10766,
+  TALK: 10767,
+  WAR_POLITICS: 10768, 
 };
 
-// Map our application genre names to TMDb genre IDs for both movies and TV
+// Map genre names to TMDb genre IDs
 export const GENRE_MAPPING = {
   'Action': { movie: GENRE_IDS.ACTION, tv: GENRE_IDS.ACTION_ADVENTURE },
   'Adventure': { movie: GENRE_IDS.ADVENTURE, tv: GENRE_IDS.ACTION_ADVENTURE },
@@ -80,7 +80,7 @@ export const getGenreMapping = async (mediaType) => {
   const genres = await getGenres(mediaType);
   const mapping = {};
   
-  // Create name-to-id mappings
+  // Name-to-id mappings
   genres.forEach(genre => {
     mapping[genre.name] = genre.id;
   });
@@ -99,7 +99,7 @@ export const mapGenreNamesToIds = (genreNames, mediaType) => {
   
   return genreNames
     .map(name => {
-      // Check if the genre exists in our mapping
+      // Check if the genre exists
       if (GENRE_MAPPING[name] && GENRE_MAPPING[name][mediaType]) {
         return GENRE_MAPPING[name][mediaType];
       }

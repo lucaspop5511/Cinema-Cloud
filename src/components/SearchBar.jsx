@@ -32,12 +32,11 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
     const newValue = e.target.value
     setLocalSearchQuery(newValue)
     
-    // Clear any existing timeout
+    // Clear existing timeout
     if (searchTimeout.current) {
       clearTimeout(searchTimeout.current)
     }
     
-    // Set a new timeout to update the parent state after typing stops
     searchTimeout.current = setTimeout(() => {
       setSearchQuery(newValue)
       
@@ -46,15 +45,15 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
         console.log('Search with active filters, applying filters');
         applyFilters();
       }
-    }, 500) // 500ms delay
+    }, 500)
   }
   
-  // Handle media type switch
+  // Media type switch
   const handleMediaTypeChange = (type) => {
     if (type !== searchType) {
       setSearchType(type)
       
-      // If we have active filters or a search query, automatically apply them when switching media type
+      // If filters active, automatically apply them when switching media type
       if (isFilterActive || hasActiveFilters() || (searchQuery && searchQuery.trim() !== '')) {
         // Use a small timeout to ensure the type change happens first
         setTimeout(() => {

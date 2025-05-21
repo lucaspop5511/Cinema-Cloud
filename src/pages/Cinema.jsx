@@ -7,7 +7,6 @@ import WatchlistButton from '../components/WatchlistButton';
 import '../styles/Cinema.css';
 import '../styles/StreamingProviders.css';
 
-// Romanian cities with their Cinemagia URLs (in alphabetical order)
 const CINEMA_CITIES = [
   { value: 'bacau', label: 'Bacău', cinemaUrl: 'https://www.cinemagia.ro/program-cinema/bacau/' },
   { value: 'brasov', label: 'Brașov', cinemaUrl: 'https://www.cinemagia.ro/program-cinema/brasov/' },
@@ -22,7 +21,6 @@ const CINEMA_CITIES = [
   { value: 'timisoara', label: 'Timișoara', cinemaUrl: 'https://www.cinemagia.ro/program-cinema/timisoara/' }
 ];
 
-// Streaming services for TV shows
 const STREAMING_SERVICES = [
   { value: 'none', label: 'All Platforms' },
   { value: '8', label: 'Netflix' },
@@ -74,7 +72,6 @@ function Cinema() {
     }
   };
 
-  // Check if filters should be applied (only for TV shows)
   const hasActiveFilters = () => {
     return selectedGenres.length > 0 || 
            minYear !== 1990 || 
@@ -84,7 +81,6 @@ function Cinema() {
            imdbRating !== 'none';
   };
 
-  // Fetch content based on media type and selected options
   useEffect(() => {
     const fetchContent = async () => {
       try {
@@ -93,12 +89,10 @@ function Cinema() {
         console.log('Fetching content for:', mediaType, 'with filters active:', isFilterActive, 'streaming service:', selectedStreaming.value);
         
         if (mediaType === 'movie') {
-          // For movies, just fetch now playing - no filters
           const endpoint = '/movie/now_playing?language=en-US&region=RO&page=1';
           const response = await fetchFromApi(endpoint);
           let results = response.results || [];
           
-          // Fetch additional details for movies (runtime)
           if (results.length > 0) {
             const detailedContent = await Promise.all(
               results.map(async (item) => {
@@ -116,7 +110,6 @@ function Cinema() {
             setContent(results);
           }
         } else {
-          // For TV shows, only apply filters when explicitly requested via filterCounter
           if (mediaType === 'tv' && isFilterActive) {
             console.log('Applying filters to TV shows in Cinema');
             
@@ -124,7 +117,6 @@ function Cinema() {
             const genreIds = selectedGenres.map(genre => genreIdMapping[genre]).filter(id => id);
             const ratingRange = getImdbRatingRange();
             
-            // Use filtered content system for TV shows, including streaming service
             const filterParams = {
               mediaType: 'tv',
               genres: genreIds,
@@ -138,15 +130,13 @@ function Cinema() {
             
             console.log('Filter params with streaming service:', filterParams);
             
-            // Get TV shows with both filters and streaming service
             const data = await getFilteredContent(filterParams, 1);
             console.log('Results:', data);
             
-            // Fetch watch providers for each filtered item
+            // Watch providers for each filtered item
             const resultsWithProviders = await Promise.all(
               data.results.map(async (item) => {
                 try {
-                  // First get detailed info for each show
                   const [details, providers] = await Promise.all([
                     fetchFromApi(`/tv/${item.id}?language=en-US`),
                     fetchFromApi(`/tv/${item.id}/watch/providers`)
@@ -170,7 +160,6 @@ function Cinema() {
             
             setContent(resultsWithProviders);
           } else {
-            // Regular TV show fetching without filters, but with streaming service
             console.log('Fetching TV shows without filters, streaming service:', selectedStreaming.value);
             
             let endpoint;
@@ -178,7 +167,7 @@ function Cinema() {
               // All platforms - use on_the_air endpoint
               endpoint = '/tv/on_the_air?language=en-US&page=1';
             } else {
-              // Specific streaming platform using discover API
+              // Specific streaming platform - discover API
               endpoint = `/discover/tv?language=en-US&sort_by=popularity.desc&page=1&with_watch_providers=${selectedStreaming.value}&watch_region=US&with_status=0`;
             }
             
@@ -188,7 +177,6 @@ function Cinema() {
             let results = response.results || [];
             console.log('Raw TV results:', results.length);
             
-            // Fetch additional details for TV shows including watch providers
             if (results.length > 0) {
               const detailedContent = await Promise.all(
                 results.map(async (item) => {
@@ -231,11 +219,11 @@ function Cinema() {
     mediaType, 
     selectedCity, 
     selectedStreaming, 
-    filterCounter, // Only refresh when filters are explicitly applied
-    clearFiltersCounter // Refresh when filters are cleared
+    filterCounter, 
+    clearFiltersCounter 
   ]);
 
-  // Update search type context when media type changes
+  // Update search when media type changes
   useEffect(() => {
     console.log('Setting search type to:', mediaType);
     setSearchType(mediaType);
@@ -289,7 +277,6 @@ function Cinema() {
   };
 
   const handleContentClick = (item) => {
-    // Navigate to the detail page based on media type
     navigate(`/${mediaType}/${item.id}`);
   };
 

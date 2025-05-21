@@ -1,4 +1,3 @@
-/* Streaming Providers Styles */
 .streaming-providers {
   margin-top: 10px;
   margin-bottom: 0px;
@@ -66,14 +65,13 @@
   margin-top: 5px;
   text-align: center;
   max-width: 70px;
-  display: none; /* Hide by default */
+  display: none;
 }
 
 .detail-providers .provider-logo:hover .provider-name {
-  display: block; /* Show on hover */
+  display: block;
 }
 
-/* Streaming services section */
 .streaming-services-section {
   background-color: #242424;
   border-radius: 8px;
@@ -81,7 +79,6 @@
   margin-bottom: 30px;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .provider-logo {
     width: 28px;

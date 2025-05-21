@@ -3,7 +3,7 @@ import { getImageUrl } from '../services/api';
 import AuthButton from './auth/AuthButton';
 import { useContext } from 'react';
 import { AppContext } from '../App';
-import WatchlistButton from './WatchlistButton'; // Import WatchlistButton
+import WatchlistButton from './WatchlistButton'; 
 import '../styles/panels/DetailPanel.css';
 
 function DetailPanel({ item, isOpen, closePanel, mediaType }) {
@@ -93,7 +93,7 @@ function DetailPanel({ item, isOpen, closePanel, mediaType }) {
           )}
         </div>
 
-        {/* Movie/TV Show Info - Without title */}
+        {/* Movie/TV Show Info */}
         <div className="detail-info">
           <div className="detail-info-item">
             <span className="info-label">Release Year:</span>

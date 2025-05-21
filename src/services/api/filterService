@@ -31,30 +31,27 @@ const enhanceResultsWithRuntime = async (results, mediaType) => {
   // Only process the first 20 items to avoid API rate limits
   const itemsToProcess = results.slice(0, 20);
   
-  // Fetch runtime details for each item
   const detailedItems = await Promise.all(
     itemsToProcess.map(async (item) => {
       try {
         const details = await getItemDetails(mediaType, item.id);
         
-        if (!details) return item; // Return original item if details not available
+        if (!details) return item; 
         
-        // Get runtime based on media type
         let runtime;
         if (mediaType === 'movie') {
-          runtime = details.runtime || null; // Use null instead of 0 for missing runtime
+          runtime = details.runtime || null;
         } else {
           // For TV shows, use average episode runtime
           runtime = details.episode_run_time && details.episode_run_time.length > 0
-            ? Math.max(...details.episode_run_time) // Use the longest episode runtime
-            : null; // Use null for missing runtime
+            ? Math.max(...details.episode_run_time)
+            : null;
         }
         
-        // Add runtime to the item
         return { ...item, runtime };
       } catch (error) {
         console.error(`Error enhancing item ${item.id}:`, error);
-        return item; // Return original item on error
+        return item;
       }
     })
   );
@@ -90,9 +87,8 @@ const applyClientSideFilters = (results, filters) => {
       }
     }
     
-    // Runtime filter - IMPROVED LOGIC
+    // Runtime filter
     if (filters.minRuntime !== undefined && filters.maxRuntime !== undefined) {
-      // If runtime is null/undefined/NaN, exclude the item when filtering
       if (item.runtime === null || item.runtime === undefined || isNaN(item.runtime)) {
         return false;
       }
@@ -134,18 +130,16 @@ export const getFilteredContent = async (filters, page = 1) => {
   try {
     console.log('getFilteredContent called with filters:', filters);
     
-    // Convert genre names to IDs if they're not already IDs
+    // Convert genre names to IDs
     const genreIds = Array.isArray(filters.genres) ? 
       (typeof filters.genres[0] === 'string' ? 
         mapGenreNamesToIds(filters.genres, filters.mediaType) : 
         filters.genres) : 
       [];
     
-    // Check if we have a search query
     if (filters.query && filters.query.trim() !== '') {
       console.log('Using search with filters for query:', filters.query);
       
-      // Use search API to get initial results
       let searchData;
       if (filters.mediaType === 'movie') {
         searchData = await searchMovies(filters.query, page);
@@ -153,21 +147,18 @@ export const getFilteredContent = async (filters, page = 1) => {
         searchData = await searchTvShows(filters.query, page);
       }
       
-      // Enhance results with runtime information FIRST
       let enhancedResults = await enhanceResultsWithRuntime(searchData.results, filters.mediaType);
       
-      // Apply client-side filters to search results AFTER enhancing with runtime
       let filteredResults = applyClientSideFilters(enhancedResults, {
         ...filters,
         genres: genreIds
       });
       
-      // Apply content filtering (adult content, etc.)
+      // Apply content filtering
       filteredResults = filterContent(filteredResults, {
         excludeTalkShows: filters.mediaType === 'tv'
       });
       
-      // Double-check runtime filter to ensure nothing slipped through
       if (filters.minRuntime !== undefined && filters.maxRuntime !== undefined) {
         filteredResults = filteredResults.filter(item => {
           // If runtime is missing or invalid, exclude item
@@ -201,27 +192,25 @@ export const getFilteredContent = async (filters, page = 1) => {
         'language=en-US',
         'include_adult=false',
         'sort_by=popularity.desc',
-        'vote_count.gte=10' // Just require some votes to avoid completely obscure content
+        'vote_count.gte=100'
       ];
       
-      // Add year filters
+      // Year filters
       if (filters.mediaType === 'movie') {
         queryParams.push(`primary_release_date.gte=${minDate}`);
         queryParams.push(`primary_release_date.lte=${maxDate}`);
       } else {
         queryParams.push(`first_air_date.gte=${minDate}`);
         queryParams.push(`first_air_date.lte=${maxDate}`);
-        // For TV shows, exclude talk shows
         queryParams.push(`without_genres=10767`);
         
-        // Add streaming service filter for TV shows if specified
         if (filters.streamingService) {
           queryParams.push(`with_watch_providers=${filters.streamingService}`);
           queryParams.push('watch_region=US');
         }
       }
       
-      // Add runtime filters - IMPORTANT: These API parameters are critical
+      // Runtime filters
       if (filters.minRuntime !== undefined) {
         queryParams.push(`with_runtime.gte=${filters.minRuntime}`);
       }
@@ -229,18 +218,18 @@ export const getFilteredContent = async (filters, page = 1) => {
         queryParams.push(`with_runtime.lte=${filters.maxRuntime}`);
       }
       
-      // Add genre filters
+      // genre filters
       if (genreIds.length > 0) {
         queryParams.push(`with_genres=${genreIds.join(',')}`);
       }
       
-      // Add streaming service filter for TV shows
+      // Streaming service filter for TV shows
       if (filters.mediaType === 'tv' && filters.streamingService) {
         queryParams.push(`with_watch_providers=${filters.streamingService}`);
         queryParams.push('watch_region=US');
       }
       
-      // Add IMDB rating filters
+      // IMDB rating filters
       if (filters.imdbRating && filters.imdbRating !== null) {
         queryParams.push(`vote_average.gte=${filters.imdbRating.min}`);
         if (filters.imdbRating.max < 10) {
@@ -257,17 +246,14 @@ export const getFilteredContent = async (filters, page = 1) => {
       
       console.log('API response:', { total_results: data.total_results, results_count: data.results?.length });
       
-      // Apply additional content filtering
+      // Additional content filtering
       if (data.results && Array.isArray(data.results)) {
-        // Filter out adult content first
         let filteredResults = filterContent(data.results, {
           excludeTalkShows: filters.mediaType === 'tv'
         });
         
-        // Enhance results with runtime information
         filteredResults = await enhanceResultsWithRuntime(filteredResults, filters.mediaType);
         
-        // Double-check runtime filters to ensure API filter worked correctly
         if (filters.minRuntime !== undefined && filters.maxRuntime !== undefined) {
           filteredResults = filteredResults.filter(item => {
             // If runtime is missing or invalid, exclude item

@@ -33,7 +33,7 @@ const WatchlistButton = ({ item, mediaType, className = '' }) => {
     }
   };
 
-  // IMDB-style bookmark icon SVG
+  // Bookmark icon SVG
   const BookmarkIcon = () => (
     <svg 
       width="24" 

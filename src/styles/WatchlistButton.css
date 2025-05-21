@@ -1,4 +1,3 @@
-/* Watchlist Button Styles */
 .watchlist-button {
   position: absolute;
   top: 8px;
@@ -16,7 +15,7 @@
   transition: all 0.2s ease;
   z-index: 10;
   backdrop-filter: blur(4px);
-  opacity: 1; /* Always visible */
+  opacity: 1;
 }
 
 .watchlist-button:hover {
@@ -33,7 +32,6 @@
   background-color: rgba(42, 126, 211, 1);
 }
 
-/* Bookmark icon styles */
 .bookmark-icon {
   width: 18px;
   height: 18px;
@@ -66,7 +64,6 @@
   z-index: 10;
 }
 
-/* Position on the left when using the left-positioned class */
 .remove-from-watchlist-btn.left-positioned {
   right: auto;
   left: 8px;
@@ -82,20 +79,17 @@
   transform: scale(1.1);
 }
 
-/* Ensure parent containers have relative positioning */
 .result-card,
 .content-row {
   position: relative;
 }
 
-/* For Cinema page content rows, adjust positioning */
 .content-row .watchlist-button {
   position: absolute;
   top: 12px;
   left: 12px;
 }
 
-/* On mobile devices, always show the remove button since there's no hover */
 @media (max-width: 768px) {
   .remove-from-watchlist-btn.left-positioned {
     opacity: 1; /* Always visible on mobile */

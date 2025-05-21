@@ -28,7 +28,6 @@
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   }
   
-  /* Ensure content doesn't overflow hidden container when closed */
   .detail-panel:not(.open) .detail-panel-content,
   .detail-panel:not(.open) .detail-panel-header {
     opacity: 0;
@@ -184,7 +183,7 @@
   margin-top: 5px;
 }
 
-/* Special styling for ratings */
+/* Ratings */
 .detail-info-item:has(.info-label:contains("IMDb Score")) .info-value {
   color: #3498db;
   font-weight: bold;

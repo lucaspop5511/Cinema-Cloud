@@ -1,7 +1,7 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { fetchFromApi } from '../services/api';
 
-// Create a context to track content that is in the Cinema page
+// Context to track content that is in the Cinema page
 const CinemaContentContext = createContext({
   cinemaMovieIds: [],
   airingShowIds: [],
@@ -17,17 +17,17 @@ export const CinemaContentProvider = ({ children }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Function to check if a movie is in the cinema list
+  // Check if a movie is in the cinema list
   const isInCinema = (movieId) => {
     return cinemaMovieIds.includes(Number(movieId));
   };
 
-  // Function to check if a TV show is in the currently airing list
+  // Check if a TV show is in the currently airing list
   const isAiring = (showId) => {
     return airingShowIds.includes(Number(showId));
   };
 
-  // Function to load the cinema content
+  // Load the cinema content
   const loadCinemaContent = async () => {
     if (loading) return;
     

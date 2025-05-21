@@ -1,4 +1,3 @@
-/* Watchlist Page Styles */
 .watchlist-container {
   max-width: 1200px;
   margin: 0 auto;
@@ -114,14 +113,13 @@
   margin-bottom: 10px;
 }
 
-/* Results Grid - Using same styles as SearchResults */
+/* Results Grid */
 .results-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
   gap: 20px;
 }
 
-/* Card styling with fixed dimensions - Same as SearchResults */
 .result-card {
   background-color: #242424;
   border-radius: 6px;
@@ -144,7 +142,7 @@
   z-index: 10;
 }
 
-/* Poster container with fixed aspect ratio */
+/* Poster container */
 .result-poster {
   position: relative;
   aspect-ratio: 3/6;
@@ -173,7 +171,7 @@
   font-size: 14px;
 }
 
-/* Remove from Watchlist Button - Only visible on hover */
+/* Remove from watchlist Button - only visible on hover */
 .remove-from-watchlist-btn {
   position: absolute;
   top: 8px;
@@ -204,7 +202,7 @@
   transform: scale(1.1);
 }
 
-/* Info section - always visible at the bottom */
+/* Info section */
 .result-info {
   padding: 12px;
   display: flex;
@@ -221,17 +219,14 @@
   transition: max-height 0.3s ease-out;
 }
 
-/* On hover, expand the info section upward */
 .result-card:hover .result-info {
   max-height: 85%;
 }
 
-/* Pin the basic info to the top */
 .result-info-header {
   margin-bottom: 8px;
 }
 
-/* Title styles */
 .result-title {
   font-size: 16px;
   color: #e0e0e0;
@@ -244,7 +239,6 @@
   margin-bottom: 8px;
 }
 
-/* Details row with year and runtime */
 .result-details {
   display: flex;
   align-items: center;
@@ -259,7 +253,6 @@
   margin-right: 5px;
 }
 
-/* Rating display - now always visible */
 .result-rating {
   display: flex;
   align-items: center;
@@ -274,7 +267,6 @@
   font-size: 13px;
 }
 
-/* Add a divider between basic info and extended content */
 .result-content-divider {
   height: 1px;
   background-color: #333;
@@ -295,7 +287,6 @@
   overflow-y: auto;
 }
 
-/* Show the overview on hover */
 .result-card:hover .result-overview {
   opacity: 1;
   transform: translateY(0);
@@ -386,7 +377,6 @@
   100% { transform: translateY(-50%) rotate(360deg); }
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .watchlist-container {
     padding: 15px;

@@ -36,7 +36,7 @@ function FilterHeader() {
       '<6': '< 6',
       '6-7': '6-7',
       '7-8': '7-8',
-      '8+': '8+' // Updated to match the new rating system
+      '8+': '8+'
     };
     return ratingMap[imdbRating];
   };

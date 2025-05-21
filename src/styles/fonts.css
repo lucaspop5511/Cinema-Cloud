@@ -1,6 +1,5 @@
-/* src/styles/fonts.css */
 @font-face {
-  font-family: 'Dosis'; /* Replace with your font name */
+  font-family: 'Dosis';
   src: url('../assets/fonts/Dosis/Dosis-VariableFont_wght.ttf') format('truetype-variations');
   font-weight: 100 900;
   font-style: normal;

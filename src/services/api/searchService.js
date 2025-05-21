@@ -1,4 +1,3 @@
-// Search Service for TMDb API
 import { fetchFromApi } from './baseApi';
 import { filterContent } from './contentFilters';
 
@@ -14,11 +13,8 @@ export const searchMovies = async (query, page = 1) => {
       `/search/movie?query=${encodeURIComponent(query)}&page=${page}&language=en-US&include_adult=false&sort_by=popularity.desc`
     );
     
-    // Apply additional content filtering
     if (data.results && Array.isArray(data.results)) {
       data.results = filterContent(data.results);
-      
-      // Update total_results count
       data.total_results = data.results.length;
     }
     
@@ -41,13 +37,11 @@ export const searchTvShows = async (query, page = 1) => {
       `/search/tv?query=${encodeURIComponent(query)}&page=${page}&language=en-US&include_adult=false&sort_by=popularity.desc`
     );
     
-    // Apply additional content filtering
     if (data.results && Array.isArray(data.results)) {
       data.results = filterContent(data.results, {
-        excludeTalkShows: true // Explicitly exclude talk shows
+        excludeTalkShows: true
       });
       
-      // Update total_results count
       data.total_results = data.results.length;
     }
     

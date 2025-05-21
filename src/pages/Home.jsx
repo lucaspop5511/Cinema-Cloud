@@ -48,11 +48,11 @@ function Home() {
       case '8+':
         return { min: 8, max: 10 };
       default:
-        return null; // 'none' returns null which means no rating filter
+        return null;
     }
   };
 
-  // Check if any non-default filters are applied
+  // Check if non-default filters are applied
   const hasActiveFilters = () => {
     return selectedGenres.length > 0 || 
            minYear !== 1990 || 
@@ -62,7 +62,7 @@ function Home() {
            imdbRating !== 'none';
   };
 
-  // Function to fetch content based on current state
+  // Fetch content based on current state
   const fetchContent = async (page = 1, append = false) => {
     if (!append) {
       setLoading(true);
@@ -78,7 +78,6 @@ function Home() {
       // Convert selected genre names to IDs
       const genreIds = selectedGenres.map(genre => genreIdMapping[genre]).filter(id => id);
       
-      // Always use getFilteredContent which now handles both search and filters
       const filterParams = {
         mediaType: searchType,
         genres: genreIds,
@@ -88,13 +87,11 @@ function Home() {
         maxRuntime,
         sortBy: 'popularity',
         imdbRating: ratingRange,
-        query: searchQuery?.trim() || null // Pass search query to filter service
+        query: searchQuery?.trim() || null
       };
 
       console.log('Fetching content with params:', filterParams);
       data = await getFilteredContent(filterParams, page);
-
-      // Update state with results
       const newResults = data.results || [];
       
       if (append) {
@@ -107,7 +104,6 @@ function Home() {
       setTotalResults(data.total_results || 0);
       setTotalPages(data.total_pages || 1);
       
-      // Set filter as active if we have any filters (including search)
       if (hasActiveFilters() || (searchQuery && searchQuery.trim() !== '')) {
         setIsFilterActive(true);
       }
@@ -120,7 +116,7 @@ function Home() {
     }
   };
 
-  // Load more results
+  // Load more
   const handleLoadMore = () => {
     const nextPage = currentPage + 1;
     if (nextPage <= totalPages) {
@@ -135,24 +131,23 @@ function Home() {
     fetchContent();
   }, [searchQuery, searchType, filterCounter, clearFiltersCounter]);
 
-  // Handle media type changes when filters are active
+  // Media type changes when filters are active
   useEffect(() => {
-    // Only run if we've changed media type and have active filters
     if (
       previousSearchType && 
       previousSearchType !== searchType && 
       (isFilterActive || hasActiveFilters())
     ) {
       console.log('Media type changed with active filters, applying filters');
-      // Automatically apply filters when switching media types
+      // Apply filters when switching media types
       applyFilters();
     }
     
-    // Update previous search type for next comparison
+    // Update previous search type
     setPreviousSearchType(searchType);
   }, [searchType]);
 
-  // Clear results when search query is completely empty and no filters
+  // Clear results when search query is empty and no filters
   useEffect(() => {
     if (!searchQuery?.trim() && !hasActiveFilters() && !isFilterActive) {
       console.log('No search query and no filters, clearing results');
@@ -163,7 +158,7 @@ function Home() {
     }
   }, [searchQuery, selectedGenres, minYear, maxYear, minRuntime, maxRuntime, imdbRating]);
 
-  // Determine display query for results
+  // Display query for results
   const getDisplayQuery = () => {
     if (searchQuery && searchQuery.trim() !== '') {
       return hasActiveFilters() 

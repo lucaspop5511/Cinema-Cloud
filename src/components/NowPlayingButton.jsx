@@ -7,10 +7,8 @@ const NowPlayingButton = ({ mediaType, itemId }) => {
   const { isInCinema, isAiring, isLoaded } = useCinemaContent();
   const navigate = useNavigate();
   
-  // Don't render until cinema content is loaded
   if (!isLoaded) return null;
   
-  // Check if this specific item is in cinema or airing
   const isActive = mediaType === 'movie' 
     ? isInCinema(itemId) 
     : isAiring(itemId);
@@ -27,7 +25,6 @@ const NowPlayingButton = ({ mediaType, itemId }) => {
     navigate('/cinema');
   };
   
-  // Use a button instead of a Link to avoid nesting <a> tags
   return (
     <button 
       className={`now-playing-button ${buttonClass}`}

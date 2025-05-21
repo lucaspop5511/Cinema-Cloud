@@ -9,7 +9,6 @@
   z-index: 0; 
 }
 
-/* Base cloud styles */
 .cloud {
   animation: clouds 60s infinite linear;
   border-radius: 10px;
@@ -68,7 +67,6 @@
   z-index: 7;
 }
 
-/* Animation keyframes */
 @keyframes clouds {
   0% {
     left: -100%;
@@ -78,7 +76,6 @@
   }
 }
 
-/* Individual cloud animations */
 .cloud-1 {
   animation-duration: 263s;
   top: 50%;

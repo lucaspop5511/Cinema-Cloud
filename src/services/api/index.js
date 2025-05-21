@@ -1,4 +1,3 @@
-// Export all API services
 import { fetchFromApi, getImageUrl } from './baseApi';
 import { getGenres, getGenreMapping, mapGenreNamesToIds, GENRE_IDS, GENRE_MAPPING } from './genreService';
 import { searchMovies, searchTvShows } from './searchService';

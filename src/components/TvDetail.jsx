@@ -1,5 +1,3 @@
-// Updated TvDetail.jsx to fix mobile menu duplication and watchlist button placement
-
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../App';
@@ -31,7 +29,6 @@ export default function TvDetail() {
 
         console.log('Fetching TV show details for ID:', id);
 
-        // Fetch multiple endpoints
         const [showData, creditsData, videosData, imagesData, providersData] = await Promise.all([
           fetchFromApi(`/tv/${id}?language=en-US`),
           fetchFromApi(`/tv/${id}/credits?language=en-US`),
@@ -71,7 +68,7 @@ export default function TvDetail() {
     return `${hours}h ${mins}m`;
   };
 
-  // Get episode runtime
+  // Episode runtime
   const getEpisodeRuntime = () => {
     if (show?.episode_run_time && show.episode_run_time.length > 0) {
       const runtime = Math.max(...show.episode_run_time);
@@ -80,7 +77,7 @@ export default function TvDetail() {
     return 'N/A';
   };
 
-  // Get primary trailer
+  // Trailer
   const getTrailer = () => {
     return videos.find(video => video.type === 'Trailer' && video.site === 'YouTube') ||
            videos.find(video => video.site === 'YouTube');
@@ -115,7 +112,7 @@ export default function TvDetail() {
           <div className="detail-header">
             <h1 className="detail-title">{show.name}</h1>
             <div className="detail-actions">
-              {/* Add watchlist button next to rating */}
+              {/* Watchlist button next to rating */}
               <WatchlistButton item={show} mediaType="tv" className="header-watchlist-button" />
               <div className="detail-rating">
                 <span className="rating-value">

@@ -26,7 +26,7 @@ export const WatchlistProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
 
-  // Function to fetch watchlist manually
+  // Fetch watchlist manually
   const fetchWatchlist = useCallback(async () => {
     if (!currentUser) {
       setWatchlist([]);
@@ -66,13 +66,13 @@ export const WatchlistProvider = ({ children }) => {
     fetchWatchlist();
   }, [currentUser, authLoading, fetchWatchlist]);
 
-  // Set up real-time listener after initial load (optional enhancement)
+  // Listener after initial load
   useEffect(() => {
     if (!currentUser || !hasLoaded) return;
 
     const watchlistRef = collection(db, 'users', currentUser.uid, 'watchlist');
     
-    // Set up listener with error handling
+    // Listener with error handling
     const unsubscribe = onSnapshot(
       watchlistRef,
       (snapshot) => {
@@ -87,8 +87,6 @@ export const WatchlistProvider = ({ children }) => {
       },
       (error) => {
         console.warn('Real-time listener error (falling back to manual fetch):', error);
-        // Don't fail completely, just fall back to manual fetching
-        // The manual add/remove operations will still refresh the list
       }
     );
 
@@ -100,7 +98,6 @@ export const WatchlistProvider = ({ children }) => {
     if (!currentUser) return false;
 
     try {
-      // Create a clean watchlist item with only the necessary fields
       const watchlistItem = {
         id: item.id,
         title: mediaType === 'movie' ? item.title : item.name,
@@ -119,11 +116,10 @@ export const WatchlistProvider = ({ children }) => {
       });
 
       const docRef = doc(db, 'users', currentUser.uid, 'watchlist', `${mediaType}_${item.id}`);
-      await setDoc(docRef, watchlistItem);
 
+      await setDoc(docRef, watchlistItem);
       console.log('Added to watchlist:', watchlistItem.title);
       
-      // Immediate UI update for better UX
       setWatchlist(prev => {
         // Check if item already exists
         const exists = prev.some(item => item.id === watchlistItem.id && item.media_type === watchlistItem.media_type);
@@ -134,7 +130,7 @@ export const WatchlistProvider = ({ children }) => {
       return true;
     } catch (error) {
       console.error('Error adding to watchlist:', error);
-      // On error, refresh to ensure consistency
+      // On error, refresh
       await fetchWatchlist();
       return false;
     }
@@ -149,14 +145,12 @@ export const WatchlistProvider = ({ children }) => {
       await deleteDoc(docRef);
       
       console.log('Removed from watchlist:', `${mediaType}_${itemId}`);
-      
-      // Immediate UI update for better UX
       setWatchlist(prev => prev.filter(item => !(item.id === itemId && item.media_type === mediaType)));
       
       return true;
     } catch (error) {
       console.error('Error removing from watchlist:', error);
-      // On error, refresh to ensure consistency
+      // On error, refresh
       await fetchWatchlist();
       return false;
     }

@@ -3,8 +3,6 @@ import { initializeApp } from 'firebase/app';
 import { getAuth } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 
-// Your web app's Firebase configuration
-// You'll need to replace these with your actual Firebase config values
 const firebaseConfig = {
   apiKey: "AIzaSyA2IYkij7D2cBnBksVZGc4qf9UswZSScDg",
   authDomain: "cinemacloud-3acc2.firebaseapp.com",

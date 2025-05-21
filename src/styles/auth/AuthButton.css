@@ -92,7 +92,7 @@
   border: 1px solid #333;
   border-radius: 6px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
-  z-index: 2000; /* Increased z-index to ensure it appears above everything */
+  z-index: 2000;
   min-width: 130px;
   margin-top: 4px;
 }
@@ -147,7 +147,6 @@
   min-width: auto;
 }
 
-/* Desktop specific positioning when in left panel */
 @media (min-width: 768px) {
   .panel-header-left .auth-container .profile-menu {
     right: auto;

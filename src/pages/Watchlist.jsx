@@ -32,7 +32,6 @@ const Watchlist = () => {
   const [detailedItems, setDetailedItems] = useState([]);
   const [loadingDetails, setLoadingDetails] = useState(false);
 
-  // Fetch detailed information for watchlist items
   useEffect(() => {
     const fetchDetailedInfo = async () => {
       if (watchlist.length === 0) return;
@@ -52,13 +51,13 @@ const Watchlist = () => {
                    ? Math.max(...details.episode_run_time) 
                    : 0),
               vote_average: details.vote_average,
-              status: details.status, // Add status for TV shows
-              last_air_date: details.last_air_date, // Add last air date for TV shows
-              release_date: details.release_date || item.release_date // Ensure we have release date
+              status: details.status,
+              last_air_date: details.last_air_date,
+              release_date: details.release_date || item.release_date 
             };
           } catch (error) {
             console.error(`Error fetching details for ${item.media_type} ${item.id}:`, error);
-            return item; // Return original item if fetch fails
+            return item; 
           }
         });
 
@@ -66,7 +65,7 @@ const Watchlist = () => {
         setDetailedItems(detailedResults);
       } catch (error) {
         console.error('Error fetching detailed info:', error);
-        setDetailedItems(watchlist); // Fallback to original items
+        setDetailedItems(watchlist);
       } finally {
         setLoadingDetails(false);
       }
@@ -95,23 +94,19 @@ const Watchlist = () => {
     );
   }
 
-  // Get release year from date string
   const getYear = (dateString) => {
     if (!dateString) return '';
     return new Date(dateString).getFullYear();
   };
 
-  // Get title based on media type
   const getTitle = (item) => {
     return item.media_type === 'movie' ? item.title : item.name || item.title;
   };
 
-  // Get release date based on media type
   const getReleaseDate = (item) => {
     return item.release_date;
   };
   
-  // Get and format overview text with character limit for all cards
   const getOverview = (item) => {
     if (!item.overview || item.overview.trim() === '') {
       return item.media_type === 'movie' 
@@ -119,17 +114,15 @@ const Watchlist = () => {
         : 'No description available for this TV show.';
     }
     
-    // Limit to 200 characters for all descriptions
-    const CHARACTER_LIMIT = 200;
+    const CHARACTER_LIMIT = 150;
     
-    // Always truncate to ensure consistent look with "see more" button
     const lastSpace = item.overview.lastIndexOf(' ', CHARACTER_LIMIT);
     const cutPoint = lastSpace > 0 ? lastSpace : CHARACTER_LIMIT;
     
     return item.overview.substring(0, cutPoint) + (item.overview.length > CHARACTER_LIMIT ? '...' : '');
   };
   
-  // Format runtime information
+  // Format runtime
   const formatRuntime = (runtime) => {
     if (!runtime || runtime <= 0) return '';
     
@@ -145,7 +138,6 @@ const Watchlist = () => {
     }
   };
 
-  // Filter function to apply filters to watchlist items
   const applyFilters = (items) => {
     return items.filter(item => {
       // Genre filter
@@ -190,14 +182,13 @@ const Watchlist = () => {
     });
   };
 
-  // Get filtered items based on current filters and view type
   const getFilteredItems = () => {
-    // Use detailed items if available, otherwise use original watchlist
+    // Use detailed items if available, else use original watchlist
     const items = detailedItems.length > 0 ? detailedItems : watchlist;
     
     let filteredByType = items;
     
-    // Filter by media type if not viewing all
+    // Filter by media type
     if (viewType === 'movies') {
       filteredByType = items.filter(item => item.media_type === 'movie');
     } else if (viewType === 'tv') {
@@ -259,7 +250,7 @@ const Watchlist = () => {
               ) : (
                 <div className="no-poster">No Poster</div>
               )}
-              {/* Remove button - repositioned to the left */}
+              {/* Remove button */}
               <button 
                 className="remove-from-watchlist-btn left-positioned"
                 onClick={(e) => handleRemove(e, item)}
@@ -275,7 +266,6 @@ const Watchlist = () => {
               />
             </div>
             
-            {/* Single expandable info section that overlays the image */}
             <div className="result-info">
               {/* Static header info (always visible) */}
               <div className="result-info-header">
@@ -292,7 +282,7 @@ const Watchlist = () => {
                   )}
                 </div>
                 
-                {/* Rating is now always visible */}
+                {/* Rating */}
                 <div className="result-rating">
                   <span className="rating-value">
                     {item.vote_average ? (item.vote_average.toFixed(1) + '/10') : 'No rating'}
@@ -326,7 +316,7 @@ const Watchlist = () => {
         <h1>My Watchlist</h1>
         <p>Total items: {watchlist.length}</p>
         
-        {/* Media Type Picker - Updated to match other pages */}
+        {/* Media Type Picker */}
         <div className="media-type-picker">
           <button 
             className={`media-type-button ${viewType === 'all' ? 'active' : ''}`}

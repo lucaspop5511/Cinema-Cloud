@@ -1,20 +1,19 @@
-/* Cinema page specific styles */
 .content-row .now-playing-button {
   top: 12px;
   left: 54px;
 }.now-playing-button {
   position: absolute;
-  top: 8px; /* Same top position as watchlist button */
-  left: 50px; /* Position to the right of the watchlist button */
-  width: auto; /* Allow button to size to content */
-  max-width: calc(100% - 58px); /* Leave room for watchlist button */
+  top: 8px;
+  left: 50px;
+  width: auto;
+  max-width: calc(100% - 58px);
   padding: 8px 15px;
   border-radius: 6px;
   font-size: 14px;
   font-weight: 500;
   text-align: center;
   transition: all 0.2s ease;
-  z-index: 9; /* One less than watchlist button to ensure proper layering */
+  z-index: 9;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -48,7 +47,6 @@
   box-shadow: 0 2px 6px rgba(46, 204, 113, 0.4);
 }
 
-/* For detail page button */
 .detail-now-playing {
   margin-top: 20px;
   margin-bottom: 20px;
@@ -66,11 +64,10 @@
   border-radius: 6px;
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .now-playing-button {
     font-size: 11px;
     padding: 4px 8px;
-    left: 46px; /* Slightly closer on mobile */
+    left: 46px;
   }
 }
