@@ -63,7 +63,8 @@
   transition: background-color .4s ,outline-width .1s;
 }
 
-.profile-name-button:hover {
+.profile-name-button:hover,
+.profile-name-button.menu-open {
   background-color: #bebebe11;
   outline: 1px #bebebe25;
   outline-style: dashed;
@@ -78,7 +79,15 @@
   margin-right: 2px;
 }
 
-.login-button:hover .cloud-icon {
+.login-button:hover .cloud-icon,
+.profile-name-button:hover .cloud-icon {
+  color: #bebebe;
+  animation: 
+    float 1.4s ease-in-out infinite,
+    colorChange 1.4s ease-in-out infinite;
+}
+
+.profile-name-button.menu-open .cloud-icon {
   color: #bebebe;
   animation: 
     float 1.4s ease-in-out infinite,
@@ -121,12 +130,17 @@
   z-index: 2000;
   min-width: 130px;
   margin-top: 4px;
+  outline: 1px #bebebe25;
+  outline-style: dashed;
+  outline-width: 2px;
 }
 
 .profile-menu-item {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 15px;
   width: 100%;
-  padding: 12px 16px;
+  padding: 12px 18px;
   background: none;
   border: none;
   color: #999;
@@ -177,5 +191,19 @@
   .panel-header-left .auth-container .profile-menu {
     right: auto;
     left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .watchlist-icon {
+    display: none;
+  }
+  .logout-icon {
+    display: none;
+  }
+
+  .profile-menu-item {
+    padding: 12px 16px;
+    gap: 0;
   }
 }

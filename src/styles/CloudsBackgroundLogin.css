@@ -1,0 +1,159 @@
+.clouds-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0; 
+}
+
+.cloud {
+  animation: clouds 60s infinite linear;
+  border-radius: 10px;
+  position: absolute;
+  width: 54px;
+  height: 5px;
+  background: rgb(231, 239, 247);
+  will-change: transform, left;
+  backface-visibility: hidden;
+}
+
+.cloud.tiny {
+  transform: scale(0.5);
+}
+
+.cloud.small {
+  transform: scale(1);
+}
+
+.cloud.normal {
+  transform: scale(2);
+}
+
+.cloud.large {
+  transform: scale(3);
+}
+
+/* Cloud parts */
+.cloud div {
+  box-shadow: inset -2px -3px 0 0 rgba(247, 231, 235);
+  position: absolute;
+  border-radius: 50%;
+  width: 12px;
+  height: 12px;
+  left: -3px;
+  bottom: 0;
+  background: rgba(250, 251, 240);
+  z-index: 10;
+}
+
+.cloud div:first-child + div {
+  transform: scale(1.6, 1.6);
+  margin: 0 0 4px 13px;
+  z-index: 9;
+}
+
+.cloud div:first-child + div + div {
+  transform: scale(2.4, 2.4);
+  margin: 0 0 9px 32px;
+  z-index: 8;
+}
+
+.cloud div:first-child + div + div + div {
+  transform: scale(1.3, 1.3);
+  margin: 0 0 2px 50px;
+  z-index: 7;
+}
+
+@keyframes clouds {
+  0% {
+    left: -100%;
+  }
+  100% {
+    left: 120%;
+  }
+}
+
+.cloud-1 {
+  animation-duration: 263s;
+  top: 50%;
+  margin-left: 20%;
+}
+
+.cloud-2 {
+  animation-duration: 99s;
+  top: 15%;
+  margin-left: 59%; 
+}
+
+.cloud-3 {
+  animation-duration: 142s;
+  top: 90%;
+  margin-left: 50%;
+}
+
+.cloud-4 {
+  animation-duration: 152s;
+  top: 45%;
+  margin-left: 43%;
+}
+
+.cloud-5 {
+  animation-duration: 215s;
+  top: 60%;
+  margin-left: 83%;
+}
+
+.cloud-6 {
+  animation-duration: 139s;
+  top: 35%;
+  margin-left: 73%;
+}
+
+.cloud-7 {
+  animation-duration: 109s;
+  top: 75%;
+  margin-left: 69%;
+}
+
+.cloud-8 {
+  animation-duration: 121s;
+  top: 20%;
+  margin-left: 100%;
+}
+
+.cloud-9 {
+  animation-duration: 101s;
+  top: 10%;
+  margin-left: 10%;
+}
+
+.cloud-10 {
+  animation-duration: 126s;
+  top: 20%;
+  margin-left: 18%;
+}
+
+.cloud-11 {
+  animation-duration: 96s;
+  top: 70%;
+  margin-left: 73%;
+}
+
+.cloud-12 {
+  animation-duration: 83s;
+  top: 80%;
+  margin-left: 51%;
+}
+
+@media (max-width: 768px) {
+    .clouds-container {
+        left: -55px;
+    }
+
+    .cloud {
+        animation: clouds 30s infinite linear;
+    }
+}

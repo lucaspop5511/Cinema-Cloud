@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { AppContext } from '../../App';
 import { createPortal } from 'react-dom';
-import CloudsBackground from '../CloudsBackground';
+import CloudsBackground from '../CloudsBackgroundLogin';
 import '../../styles/auth/LoginModal.css';
 
 const LoginModal = ({ isOpen, onClose }) => {
