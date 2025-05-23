@@ -2,7 +2,7 @@ import React, { useState, useContext } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
 import { AppContext } from '../../App';
 import { createPortal } from 'react-dom';
-import cloudsBackground from '../../assets/images/clouds-background.png';
+import CloudsBackground from '../CloudsBackground';
 import '../../styles/auth/LoginModal.css';
 
 const LoginModal = ({ isOpen, onClose }) => {
@@ -76,7 +76,7 @@ const LoginModal = ({ isOpen, onClose }) => {
   return createPortal(
     <div className="login-modal-overlay" onClick={onClose}>
       {/* Cloud background pattern */}
-      <div className="cloud-pattern-background" style={{ backgroundImage: `url(${cloudsBackground})` }}></div>
+      <CloudsBackground />
       
       <div className="login-modal" onClick={(e) => e.stopPropagation()}>
         <div className="login-modal-header">

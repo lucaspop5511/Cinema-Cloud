@@ -5,7 +5,7 @@
   justify-content: center;
   width: 100%;
   padding: 20px 0 40px 0;
-  background-color: rgba(26, 26, 26, 0.8); 
+  background-color: rgba(26, 26, 26, 0.8);
   border-radius: 12px;
   box-shadow: inset -8px -7px 15px rgba(0, 0, 0, 0.9);
   position: relative; 
@@ -98,7 +98,7 @@
   flex: 1;
   padding: 12px 20px;
   border: none;
-  font-size: 16px;
+  font-size: 20px;
   outline: none;
   background-color: #1f1f1f;
   color: #e0e0e0;
@@ -133,7 +133,7 @@
   
   .search-input {
     padding: 10px 16px;
-    font-size: 14px;
+    font-size: 16px;
   }
 }
 
