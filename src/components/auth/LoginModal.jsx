@@ -80,7 +80,7 @@ const LoginModal = ({ isOpen, onClose }) => {
       
       <div className="login-modal" onClick={(e) => e.stopPropagation()}>
         <div className="login-modal-header">
-          <h2>Cinema Cloud</h2>
+          {!isLogin ? <h2>Sing Up</h2> : <h2>Sign In</h2>}
           <button className="close-button" onClick={onClose}>
             ✕
           </button>

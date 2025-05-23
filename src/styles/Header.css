@@ -48,15 +48,15 @@
 }
 
 .logo-text {
-  font-size: clamp(1.5rem, 3vw, 2rem);
-  font-weight: bold;
+  font-size: clamp(1.5rem, 2vw, 2rem);
+  font-weight: 700;
   color: #777;
-  transition: color 0.3s ease, font-size 0.3s ease;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .logo.active .logo-text {
   color: #3498db;
-  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  transform: scale(1.05);
 }
 
 .nav-link {
@@ -71,13 +71,12 @@
   outline-style: dashed;
   outline-width: 0px;
   transition: background-color .4s ,outline-width .1s;
-  transition: color 0.3s ease, font-size 0.3s ease;
+  transition: color 0.3s ease, transform 0.3s ease;
 }
 
 .nav-link.active {
   color: #3498db;
-  font-size: clamp(1.5rem, 2.2vw, 2.5rem);
-  font-weight: bold;
+  transform: scale(1.05);
 }
 
 .nav-link:hover:not(.active) {
