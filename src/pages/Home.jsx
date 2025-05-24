@@ -2,6 +2,8 @@ import { useState, useContext, useEffect } from 'react'
 import SearchBar from '../components/SearchBar'
 import SearchResults from '../components/SearchResults'
 import FilterHeader from '../components/FilterHeader'
+import MovieDetail from '../components/MovieDetail'
+import TvDetail from '../components/TvDetail'
 import { AppContext } from '../App'
 import { searchMovies, searchTvShows, getFilteredContent } from '../services/tmdbApi'
 import '../styles/Home.css'
@@ -25,7 +27,11 @@ function Home() {
     clearFiltersCounter,
     applyFilters,
     previousSearchType,
-    setPreviousSearchType
+    setPreviousSearchType,
+    showDetailPanel,
+    selectedDetailItem,
+    detailMediaType,
+    isMobile
   } = useContext(AppContext)
   
   const [results, setResults] = useState([])
@@ -196,16 +202,27 @@ function Home() {
         )}
         
         {!loading && !error && results.length > 0 && (
-          <SearchResults 
-            results={results} 
-            searchType={searchType}
-            searchQuery={getDisplayQuery()}
-            totalResults={totalResults}
-            page={currentPage}
-            totalPages={totalPages}
-            onLoadMore={handleLoadMore}
-            isLoadingMore={isLoadingMore}
-          />
+          <div className={`results-with-detail ${showDetailPanel && !isMobile ? 'detail-open' : ''}`}>
+            <SearchResults 
+              results={results} 
+              searchType={searchType}
+              searchQuery={getDisplayQuery()}
+              totalResults={totalResults}
+              page={currentPage}
+              totalPages={totalPages}
+              onLoadMore={handleLoadMore}
+              isLoadingMore={isLoadingMore}
+            />
+            {/* Debug info */}
+            {console.log('Debug - showDetailPanel:', showDetailPanel, 'selectedDetailItem:', selectedDetailItem, 'detailMediaType:', detailMediaType, 'isMobile:', isMobile)}
+            {showDetailPanel && !isMobile && selectedDetailItem && (
+              detailMediaType === 'movie' ? (
+                <MovieDetail />
+              ) : (
+                <TvDetail />
+              )
+            )}
+          </div>
         )}
         
         {!loading && !error && results.length === 0 && (searchQuery?.trim() || hasActiveFilters()) && (

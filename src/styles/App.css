@@ -40,3 +40,18 @@
     cursor: pointer;
   }
 }
+
+/* Detail panel layout adjustments for desktop */
+@media (min-width: 1500px) {
+  /* Keep normal padding when detail panel is closed */
+  .search-results {
+    max-width: 1200px;
+    padding: 20px;
+  }
+  
+  /* Remove padding when detail panel is open to maximize space */
+  .search-results:has(.results-with-detail.detail-open) {
+    max-width: none;
+    padding: 0;
+  }
+}

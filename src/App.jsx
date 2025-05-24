@@ -35,6 +35,11 @@ function App() {
   const [filterCounter, setFilterCounter] = useState(0)
   const [clearFiltersCounter, setClearFiltersCounter] = useState(0)
   
+  // Detail panel state
+  const [selectedDetailItem, setSelectedDetailItem] = useState(null)
+  const [detailMediaType, setDetailMediaType] = useState(null)
+  const [showDetailPanel, setShowDetailPanel] = useState(false)
+  
   // Detail page state
   const [detailItem, setDetailItem] = useState(null)
   const [isDetailPage, setIsDetailPage] = useState(false)
@@ -71,7 +76,7 @@ function App() {
   // Check if the device is mobile on mount and when window resizes
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 768)
+      setIsMobile(window.innerWidth < 1500)
       
       // On desktop, panel always open 
       if (window.innerWidth >= 768 && (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist')) {
@@ -146,6 +151,19 @@ function App() {
     setFilterCounter(prev => prev + 1); 
   }
 
+  // Detail panel functions
+ const openDetailPanel = (item, mediaType) => {
+  setSelectedDetailItem(item);
+  setDetailMediaType(mediaType);
+  setShowDetailPanel(true);
+}
+
+  const closeDetailPanel = () => {
+    setShowDetailPanel(false);
+    setSelectedDetailItem(null);
+    setDetailMediaType(null);
+  }
+
   // Context value
   const contextValue = {
     isPanelOpen,
@@ -179,7 +197,15 @@ function App() {
     filterCounter,
     clearFiltersCounter,
     detailItem,
-    isDetailPage
+    isDetailPage,
+    selectedDetailItem,
+    setSelectedDetailItem,
+    detailMediaType,
+    setDetailMediaType,
+    showDetailPanel,
+    setShowDetailPanel,
+    openDetailPanel,
+    closeDetailPanel
   }
 
   return (
@@ -189,16 +215,16 @@ function App() {
           <AppContext.Provider value={contextValue}>
             <div className={`app ${isPanelOpen ? 'panel-open' : ''}`}
              onClick={handleOverlayClick}>
-              {/* Show GenrePanel on home, cinema, and watchlist pages */}
-              {(location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist') && (
+              {/* Show GenrePanel on all pages for mobile, or non-detail pages for desktop */}
+              {(isMobile || (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist')) && (
                 <GenrePanel 
                   isOpen={isPanelOpen} 
                   closePanel={closePanel}
                 />
               )}
 
-              {/* Show DetailPanel only on detail pages */}
-              {isDetailPage && (
+              {/* Show DetailPanel only on detail pages AND not mobile */}
+              {isDetailPage && !isMobile && (
                 <DetailPanel 
                   item={detailItem}
                   isOpen={isPanelOpen} 
@@ -207,13 +233,14 @@ function App() {
                 />
               )}
               
-              <div className={`content-wrapper ${!isMobile && (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist' || isDetailPage) && 'with-sidebar'}`}>
+              <div className={`content-wrapper ${!isMobile && (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist') && 'with-sidebar'} ${isDetailPage && !isMobile ? 'with-sidebar' : ''}`}>
                 <Header openPanel={openPanel} isPanelOpen={isPanelOpen} isMobile={isMobile} />
                 <main className="main-content">
                   <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/cinema" element={<Cinema />} />
                     <Route path="/watchlist" element={<Watchlist />} />
+                    {/* Detail routes work for both mobile and desktop */}
                     <Route path="/movie/:id" element={<MovieDetail />} />
                     <Route path="/tv/:id" element={<TvDetail />} />
                   </Routes>

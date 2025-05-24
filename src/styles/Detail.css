@@ -1,3 +1,4 @@
+/* Mobile and tablet view (original styles) */
 .detail-container {
   display: flex;
   flex-direction: row;
@@ -20,7 +21,191 @@
   padding: 0; 
 }
 
-/* Header section */
+/* New detail panel styles for desktop */
+@media (min-width: 1500px) {
+  .detail-panel-container {
+    width: 350px;
+    background-color: #1e1e1e;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    min-height: 800px;
+    max-height: calc(100vh - 40px);
+    animation: slideInFromRight 0.3s ease-out forwards;
+    transform: translateX(100%);
+    position: sticky;
+    top: 20px;
+    align-self: flex-start;
+    margin-right: 20px !important;
+    flex-shrink: 0;
+  }
+
+  @keyframes slideInFromRight {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  .detail-panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #333;
+    background-color: #1e1e1e;
+  }
+
+  .detail-panel-header h2 {
+    color: #e0e0e0;
+    margin: 0;
+    font-size: 1.5rem;
+  }
+
+  .detail-panel-close {
+    background: none;
+    border: none;
+    color: #777;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .detail-panel-close:hover {
+    background-color: #333;
+    color: #e74c3c;
+  }
+
+  .detail-panel-content {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    color: #e0e0e0;
+  }
+
+  .detail-panel-loading,
+  .detail-panel-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    text-align: center;
+    color: #e0e0e0;
+    padding: 20px;
+  }
+
+  .detail-panel-error h2 {
+    color: #e74c3c;
+    margin-bottom: 10px;
+  }
+
+  /* Results container adjustment when detail panel is open */
+  .results-with-detail {
+    display: flex;
+    gap: 15px;
+    align-items: flex-start;
+  }
+
+  .results-with-detail .results-container {
+    flex: 1;
+    max-width: none;
+    margin: 0;
+  }
+
+  /* When detail panel is open, ensure stable layout */
+  .results-with-detail.detail-open {
+    width: calc(100vw - 250px);
+    margin: 0;
+    padding-left: 20px;
+    box-sizing: border-box;
+  }
+
+  .results-with-detail.detail-open .results-container {
+    padding: 20px;
+    flex: 1;
+    min-width: 0; /* Prevent flex item from overflowing */
+  }
+
+  .results-with-detail.detail-open .inline-detail-panel {
+    width: 350px !important;
+    flex-shrink: 0 !important;
+    min-width: 350px;
+    max-width: 350px;
+  }
+}
+
+/* Keep mobile styles unchanged with old class names */
+@media (max-width: 1499px) {
+  .inline-detail-panel {
+    width: 100%;
+    height: 100vh;
+    background-color: #121212;
+    padding: 20px;
+    overflow-y: auto;
+  }
+
+  .inline-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #333;
+  }
+
+  .inline-detail-header h2 {
+    color: #e0e0e0;
+    margin: 0;
+    font-size: 2rem;
+  }
+
+  .inline-detail-close {
+    background: none;
+    border: none;
+    color: #777;
+    font-size: 20px;
+    cursor: pointer;
+    padding: 5px;
+    border-radius: 4px;
+    transition: background-color 0.2s, color 0.2s;
+  }
+
+  .inline-detail-close:hover {
+    background-color: #333;
+    color: #e74c3c;
+  }
+
+  .inline-detail-content {
+    color: #e0e0e0;
+  }
+
+  .inline-detail-loading,
+  .inline-detail-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 60vh;
+    text-align: center;
+    color: #e0e0e0;
+  }
+
+  .inline-detail-error h2 {
+    color: #e74c3c;
+    margin-bottom: 10px;
+  }
+}
+
+/* Original detail styles for legacy support */
 .detail-header {
   display: flex;
   justify-content: space-between;
@@ -39,7 +224,6 @@
   margin-right: 20px;
 }
 
-/* Detail actions (rating and watchlist) */
 .detail-actions {
   display: flex;
   align-items: center;
@@ -98,7 +282,6 @@
   display: none !important;
 }
 
-/* Overview section */
 .detail-overview {
   margin-bottom: 40px;
 }
@@ -110,7 +293,6 @@
   max-width: 100%;
 }
 
-/* Section styling */
 .detail-section {
   margin-bottom: 40px;
   width: 100%;
@@ -122,7 +304,6 @@
   margin-bottom: 20px;
 }
 
-/* Images grid */
 .detail-images {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -145,7 +326,6 @@
   transition: transform 0.3s ease;
 }
 
-/* Trailer video */
 .detail-trailer {
   position: relative;
   width: 100%;
@@ -164,7 +344,6 @@
   height: 100%;
 }
 
-/* Cast section */
 .detail-cast {
   display: flex;
   gap: 15px;
@@ -235,7 +414,6 @@
   font-size: 12px;
 }
 
-/* Loading and Error states */
 .detail-loading, .detail-error {
   display: flex;
   justify-content: center;
@@ -258,7 +436,6 @@
   font-weight: bold !important;
 }
 
-/* Mobile styles */
 @media (max-width: 768px) {
   .detail-content {
     margin-left: 0;
