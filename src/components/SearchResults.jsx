@@ -1,7 +1,5 @@
-import { useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { getImageUrl } from '../services/api';
-import { AppContext } from '../App';
+import { Link } from 'react-router-dom';
 import WatchlistButton from './WatchlistButton';
 import NowPlayingButton from './NowPlayingButton';
 
@@ -15,25 +13,7 @@ function SearchResults({
   onLoadMore,
   isLoadingMore = false 
 }) {
-  const { isMobile, openDetailPanel } = useContext(AppContext);
-  const navigate = useNavigate();
   const MINIMUM_VOTE_COUNT = 10; 
-
-  const handleItemClick = (e, item) => {
-    // Prevent clicks on child elements (buttons) from triggering this
-    if (e.target.closest('button') || e.target.closest('a')) {
-      return;
-    }
-    
-    if (window.innerWidth >= 1800) {
-      // Open detail panel on very large screens (1800px+)
-      console.log('Opening detail panel for:', item.title || item.name);
-      openDetailPanel(item, searchType);
-    } else {
-      // Navigate to detail page on smaller screens (under 1800px)
-      navigate(`/${searchType}/${item.id}`);
-    }
-  };
   
   const getYear = (dateString) => {
     if (!dateString) return '';
@@ -170,11 +150,11 @@ function SearchResults({
       
       <div className="results-grid">
         {filteredResults.map(item => (
-          <div 
+          <Link 
             key={item.id} 
+            to={`/${searchType}/${item.id}`}
             className="result-card"
-            style={{ textDecoration: 'none', color: 'inherit', cursor: 'pointer' }}
-            onClick={(e) => handleItemClick(e, item)}
+            style={{ textDecoration: 'none', color: 'inherit' }}
           >
             <div className="result-poster">
               {item.poster_path ? (
@@ -234,7 +214,7 @@ function SearchResults({
                 )}
               </div>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
       

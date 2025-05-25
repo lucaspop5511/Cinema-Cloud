@@ -35,11 +35,6 @@ function App() {
   const [filterCounter, setFilterCounter] = useState(0)
   const [clearFiltersCounter, setClearFiltersCounter] = useState(0)
   
-  // Detail panel state
-  const [selectedDetailItem, setSelectedDetailItem] = useState(null)
-  const [detailMediaType, setDetailMediaType] = useState(null)
-  const [showDetailPanel, setShowDetailPanel] = useState(false)
-  
   // Detail page state
   const [detailItem, setDetailItem] = useState(null)
   const [isDetailPage, setIsDetailPage] = useState(false)
@@ -151,19 +146,6 @@ function App() {
     setFilterCounter(prev => prev + 1); 
   }
 
-  // Detail panel functions
- const openDetailPanel = (item, mediaType) => {
-  setSelectedDetailItem(item);
-  setDetailMediaType(mediaType);
-  setShowDetailPanel(true);
-}
-
-  const closeDetailPanel = () => {
-    setShowDetailPanel(false);
-    setSelectedDetailItem(null);
-    setDetailMediaType(null);
-  }
-
   // Context value
   const contextValue = {
     isPanelOpen,
@@ -197,15 +179,7 @@ function App() {
     filterCounter,
     clearFiltersCounter,
     detailItem,
-    isDetailPage,
-    selectedDetailItem,
-    setSelectedDetailItem,
-    detailMediaType,
-    setDetailMediaType,
-    showDetailPanel,
-    setShowDetailPanel,
-    openDetailPanel,
-    closeDetailPanel
+    isDetailPage
   }
 
   return (
