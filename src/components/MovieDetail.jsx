@@ -1,8 +1,13 @@
+// Updated MovieDetail.jsx to fix mobile menu duplication and watchlist button placement
+
 import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { AppContext } from '../App';
 import { fetchFromApi, getImageUrl } from '../services/api';
+import NowPlayingButton from './NowPlayingButton';
+import WatchlistButton from './WatchlistButton';
 import '../styles/Detail.css';
+import '../styles/NowPlayingButton.css';
 
 export default function MovieDetail() {
   const { id } = useParams();
@@ -14,6 +19,9 @@ export default function MovieDetail() {
     closeDetailPanel 
   } = useContext(AppContext);
   const [movie, setMovie] = useState(null);
+  const [credits, setCredits] = useState(null);
+  const [videos, setVideos] = useState([]);
+  const [images, setImages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -28,27 +36,6 @@ export default function MovieDetail() {
 
     // On smaller screens (under 1800px), use URL params
     if (id) {
-      console.log('MovieDetail component mounted, ID:', id);
-      
-      const fetchMovieDetails = async () => {
-        try {
-          setLoading(true);
-          setError(null);
-
-          console.log('Fetching movie details for ID:', id);
-
-          const movieData = await fetchFromApi(`/movie/${id}?language=en-US`);
-
-          console.log('Movie data:', movieData);
-          setMovie(movieData);
-        } catch (err) {
-          console.error('Error fetching movie details:', err);
-          setError('Failed to load movie details');
-        } finally {
-          setLoading(false);
-        }
-      };
-
       fetchMovieDetails();
     }
   }, [id, selectedDetailItem]);
@@ -63,25 +50,23 @@ export default function MovieDetail() {
 
   if (loading) {
     return (
-      <div className="inline-detail-panel">
-        <div className="inline-detail-loading">
-          <p>Loading movie details...</p>
-        </div>
+      <div className="detail-loading">
+        <p>Loading movie details...</p>
       </div>
     );
   }
 
   if (error || !movie) {
     return (
-      <div className="inline-detail-panel">
-        <div className="inline-detail-error">
-          <h2>Error</h2>
-          <p>{error || 'Movie not found'}</p>
-          <button onClick={handleClose}>Close</button>
-        </div>
+      <div className="detail-error">
+        <h2>Error</h2>
+        <p>{error || 'Movie not found'}</p>
+        <button onClick={() => navigate('/')}>Return to Home</button>
       </div>
     );
   }
+
+  const trailer = getTrailer();
 
   return (
     <>
