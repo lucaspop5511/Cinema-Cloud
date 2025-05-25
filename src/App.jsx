@@ -76,9 +76,9 @@ function App() {
   // Check if the device is mobile on mount and when window resizes
   useEffect(() => {
     const checkIfMobile = () => {
-      setIsMobile(window.innerWidth < 1500)
+      setIsMobile(window.innerWidth < 768)
       
-      // On desktop, panel always open 
+      // On desktop, panel always open for main pages
       if (window.innerWidth >= 768 && (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist')) {
         setIsPanelOpen(true)
       }
@@ -214,17 +214,17 @@ function App() {
         <CinemaContentProvider>
           <AppContext.Provider value={contextValue}>
             <div className={`app ${isPanelOpen ? 'panel-open' : ''}`}
-             onClick={handleOverlayClick}>
-              {/* Show GenrePanel on all pages for mobile, or non-detail pages for desktop */}
-              {(isMobile || (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist')) && (
+            onClick={handleOverlayClick}>
+              {/* Show GenrePanel on main pages */}
+              {(location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist') && (
                 <GenrePanel 
                   isOpen={isPanelOpen} 
                   closePanel={closePanel}
                 />
               )}
 
-              {/* Show DetailPanel only on detail pages AND not mobile */}
-              {isDetailPage && !isMobile && (
+              {/* Show DetailPanel only on detail pages for mobile/tablet */}
+              {isDetailPage && isMobile && (
                 <DetailPanel 
                   item={detailItem}
                   isOpen={isPanelOpen} 
@@ -233,14 +233,13 @@ function App() {
                 />
               )}
               
-              <div className={`content-wrapper ${!isMobile && (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist') && 'with-sidebar'} ${isDetailPage && !isMobile ? 'with-sidebar' : ''}`}>
+              <div className={`content-wrapper ${(location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist') && !isMobile ? 'with-sidebar' : ''}`}>
                 <Header openPanel={openPanel} isPanelOpen={isPanelOpen} isMobile={isMobile} />
                 <main className="main-content">
                   <Routes>
                     <Route path="/" element={<Home />} />
                     <Route path="/cinema" element={<Cinema />} />
                     <Route path="/watchlist" element={<Watchlist />} />
-                    {/* Detail routes work for both mobile and desktop */}
                     <Route path="/movie/:id" element={<MovieDetail />} />
                     <Route path="/tv/:id" element={<TvDetail />} />
                   </Routes>

@@ -186,7 +186,6 @@ function Home() {
       />
       
       <div className="search-results">
-        {/* Filter header with active filters */}
         <FilterHeader />
         
         {loading && (
@@ -202,7 +201,7 @@ function Home() {
         )}
         
         {!loading && !error && results.length > 0 && (
-          <div className={`results-with-detail ${showDetailPanel && !isMobile ? 'detail-open' : ''}`}>
+          <div className={`results-with-detail ${showDetailPanel && window.innerWidth >= 1800 ? 'detail-open' : ''}`}>
             <SearchResults 
               results={results} 
               searchType={searchType}
@@ -213,14 +212,14 @@ function Home() {
               onLoadMore={handleLoadMore}
               isLoadingMore={isLoadingMore}
             />
-            {/* Debug info */}
-            {console.log('Debug - showDetailPanel:', showDetailPanel, 'selectedDetailItem:', selectedDetailItem, 'detailMediaType:', detailMediaType, 'isMobile:', isMobile)}
-            {showDetailPanel && !isMobile && selectedDetailItem && (
-              detailMediaType === 'movie' ? (
-                <MovieDetail />
-              ) : (
-                <TvDetail />
-              )
+            {showDetailPanel && window.innerWidth >= 1800 && selectedDetailItem && (
+              <div className="inline-detail-panel">
+                {detailMediaType === 'movie' ? (
+                  <MovieDetail />
+                ) : (
+                  <TvDetail />
+                )}
+              </div>
             )}
           </div>
         )}

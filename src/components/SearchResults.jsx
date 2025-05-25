@@ -25,13 +25,13 @@ function SearchResults({
       return;
     }
     
-    if (isMobile) {
-      // Navigate to detail page on mobile
-      navigate(`/${searchType}/${item.id}`);
-    } else {
-      // Open detail panel on desktop - prevent navigation
+    if (window.innerWidth >= 1800) {
+      // Open detail panel on very large screens (1800px+)
       console.log('Opening detail panel for:', item.title || item.name);
       openDetailPanel(item, searchType);
+    } else {
+      // Navigate to detail page on smaller screens (under 1800px)
+      navigate(`/${searchType}/${item.id}`);
     }
   };
   

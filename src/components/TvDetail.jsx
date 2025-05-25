@@ -10,8 +10,6 @@ export default function TvDetail() {
   const { 
     closePanel, 
     isMobile, 
-    openPanel, 
-    isPanelOpen, 
     selectedDetailItem, 
     closeDetailPanel 
   } = useContext(AppContext);
@@ -20,15 +18,15 @@ export default function TvDetail() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    // On desktop, use selectedDetailItem from context
-    if (!isMobile && selectedDetailItem) {
+    // On very large screens (1800px+), use selectedDetailItem from context
+    if (window.innerWidth >= 1800 && selectedDetailItem) {
       console.log('Using selectedDetailItem from context:', selectedDetailItem);
       setShow(selectedDetailItem);
       setLoading(false);
       return;
     }
 
-    // On mobile, use URL params
+    // On smaller screens (under 1800px), use URL params
     if (id) {
       console.log('TvDetail component mounted, ID:', id);
       
@@ -53,13 +51,13 @@ export default function TvDetail() {
 
       fetchShowDetails();
     }
-  }, [id, selectedDetailItem, isMobile]);
+  }, [id, selectedDetailItem]);
 
   const handleClose = () => {
-    if (isMobile) {
-      navigate(-1);
-    } else {
+    if (window.innerWidth >= 1800) {
       closeDetailPanel();
+    } else {
+      navigate(-1);
     }
   };
 
@@ -86,7 +84,7 @@ export default function TvDetail() {
   }
 
   return (
-    <div className="inline-detail-panel">
+    <>
       <div className="inline-detail-header">
         <h2>TV Show Details</h2>
         <button className="inline-detail-close" onClick={handleClose}>
@@ -94,9 +92,8 @@ export default function TvDetail() {
         </button>
       </div>
       <div className="inline-detail-content">
-        {/* Content will be added in next steps */}
         <p>TV show detail content for: {show.name}</p>
       </div>
-    </div>
+    </>
   );
 }
