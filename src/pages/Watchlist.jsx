@@ -114,8 +114,8 @@ function Watchlist() {
     );
   }
 
-  if (loading) {
-    return (
+  if (authLoading || watchlistLoading) {
+  return (
       <div className="watchlist-container">
         <div className="watchlist-loading">
           <p>Loading your watchlist...</p>
