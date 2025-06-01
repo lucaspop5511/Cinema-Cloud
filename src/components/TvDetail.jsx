@@ -1,6 +1,8 @@
+'use client'
+
 import React, { useState, useEffect, useContext } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { AppContext } from '../App';
+import { useRouter } from 'next/navigation';
+import { AppContext } from '../components/AppWrapper';
 import { fetchFromApi, getImageUrl } from '../services/api';
 import NowPlayingButton from './NowPlayingButton';
 import WatchlistButton from './WatchlistButton';
@@ -8,9 +10,8 @@ import '../styles/Detail.css';
 import '../styles/NowPlayingButton.css';
 import '../styles/StreamingProviders.css';
 
-export default function TvDetail() {
-  const { id } = useParams();
-  const navigate = useNavigate();
+export default function TvDetail({ params }) {
+  const router = useRouter();
   const { closePanel, isMobile, openPanel, isPanelOpen } = useContext(AppContext);
   const [show, setShow] = useState(null);
   const [credits, setCredits] = useState(null);
@@ -20,21 +21,21 @@ export default function TvDetail() {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    console.log('TvDetail component mounted, ID:', id);
+    console.log('TvDetail component mounted, ID:', params?.id);
     
     const fetchShowDetails = async () => {
       try {
         setLoading(true);
         setError(null);
 
-        console.log('Fetching TV show details for ID:', id);
+        console.log('Fetching TV show details for ID:', params?.id);
 
         const [showData, creditsData, videosData, imagesData, providersData] = await Promise.all([
-          fetchFromApi(`/tv/${id}?language=en-US`),
-          fetchFromApi(`/tv/${id}/credits?language=en-US`),
-          fetchFromApi(`/tv/${id}/videos?language=en-US`),
-          fetchFromApi(`/tv/${id}/images`),
-          fetchFromApi(`/tv/${id}/watch/providers`)
+          fetchFromApi(`/tv/${params?.id}?language=en-US`),
+          fetchFromApi(`/tv/${params?.id}/credits?language=en-US`),
+          fetchFromApi(`/tv/${params?.id}/videos?language=en-US`),
+          fetchFromApi(`/tv/${params?.id}/images`),
+          fetchFromApi(`/tv/${params?.id}/watch/providers`)
         ]);
 
         console.log('TV show data:', showData);
@@ -53,12 +54,11 @@ export default function TvDetail() {
       }
     };
 
-    if (id) {
+    if (params?.id) {
       fetchShowDetails();
     }
-  }, [id]);
+  }, [params?.id]);
 
-  // Format runtime
   const formatRuntime = (minutes) => {
     if (!minutes) return 'N/A';
     const hours = Math.floor(minutes / 60);
@@ -68,7 +68,6 @@ export default function TvDetail() {
     return `${hours}h ${mins}m`;
   };
 
-  // Episode runtime
   const getEpisodeRuntime = () => {
     if (show?.episode_run_time && show.episode_run_time.length > 0) {
       const runtime = Math.max(...show.episode_run_time);
@@ -77,7 +76,6 @@ export default function TvDetail() {
     return 'N/A';
   };
 
-  // Trailer
   const getTrailer = () => {
     return videos.find(video => video.type === 'Trailer' && video.site === 'YouTube') ||
            videos.find(video => video.site === 'YouTube');
@@ -96,7 +94,7 @@ export default function TvDetail() {
       <div className="detail-error">
         <h2>Error</h2>
         <p>{error || 'TV show not found'}</p>
-        <button onClick={() => navigate('/')}>Return to Home</button>
+        <button onClick={() => router.push('/')}>Return to Home</button>
       </div>
     );
   }
@@ -106,13 +104,10 @@ export default function TvDetail() {
   return (
     <div className="detail-container">
       <div className="detail-content">
-        {/* Main content area */}
         <div className="detail-main">
-          {/* Title row with watchlist button */}
           <div className="detail-header">
             <h1 className="detail-title">{show.name}</h1>
             <div className="detail-actions">
-              {/* Watchlist button next to rating */}
               <WatchlistButton item={show} mediaType="tv" className="header-watchlist-button" />
               <div className="detail-rating">
                 <span className="rating-value">
@@ -122,17 +117,14 @@ export default function TvDetail() {
             </div>
           </div>
 
-          {/* Currently Airing Button */}
           <div className="detail-now-playing">
-            <NowPlayingButton mediaType="tv" itemId={id} />
+            <NowPlayingButton mediaType="tv" itemId={params?.id} />
           </div>
 
-          {/* Overview */}
           <div className="detail-overview">
             <p>{show.overview || 'No overview available.'}</p>
           </div>
           
-          {/* Streaming Services */}
           {show.watch_providers && (
             <div className="detail-section streaming-services-section">
               <h3>Where to Watch</h3>
@@ -156,7 +148,6 @@ export default function TvDetail() {
             </div>
           )}
 
-          {/* Images section */}
           {images.length > 0 && (
             <div className="detail-section">
               <h3>Images</h3>
@@ -173,7 +164,6 @@ export default function TvDetail() {
             </div>
           )}
 
-          {/* Trailer section */}
           {trailer && (
             <div className="detail-section">
               <h3>Trailer</h3>
@@ -188,7 +178,6 @@ export default function TvDetail() {
             </div>
           )}
 
-          {/* Cast section */}
           {credits && credits.cast && (
             <div className="detail-section">
               <h3>Cast</h3>

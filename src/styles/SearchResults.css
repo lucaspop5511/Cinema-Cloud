@@ -30,7 +30,7 @@
 
 .results-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)) !important;
   gap: 15px;
 }
 
@@ -261,7 +261,7 @@
 
 @media (max-width: 768px) {
   .results-grid {
-    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)) !important;
     gap: 15px;
   }
   
@@ -288,7 +288,7 @@
 
 @media (max-width: 400px) {
   .results-grid {
-    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr)) !important;
     gap: 10px;
   }
 }
@@ -296,7 +296,7 @@
 @media (max-width: 480px) {
   /* Make cards more compact */
   .result-card {
-    min-height: 240px; 
+    min-height: 240px !important; 
   }
   
   .result-poster {

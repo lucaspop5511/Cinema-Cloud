@@ -1,7 +1,9 @@
+'use client'
+
 import React, { useState, useEffect, useContext } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import FilterHeader from '../components/FilterHeader';
-import { AppContext } from '../App';
+import { AppContext } from '../components/AppWrapper'; 
 import { fetchFromApi, getImageUrl, getFilteredContent } from '../services/api';
 import WatchlistButton from '../components/WatchlistButton';
 import '../styles/Cinema.css';
@@ -33,7 +35,7 @@ const STREAMING_SERVICES = [
 ];
 
 function Cinema() {
-  const navigate = useNavigate();
+  const router = useRouter()
   const {
     selectedGenres,
     minYear,
@@ -277,7 +279,7 @@ function Cinema() {
   };
 
   const handleContentClick = (item) => {
-    navigate(`/${mediaType}/${item.id}`);
+    push(`/${mediaType}/${item.id}`);
   };
 
   if (loading) {

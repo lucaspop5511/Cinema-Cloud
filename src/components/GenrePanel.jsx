@@ -1,11 +1,11 @@
 import { useEffect, useRef, useContext, useState } from 'react'
-import { useLocation } from 'react-router-dom'
-import { AppContext } from '../App'
+import { usePathname } from 'next/navigation'
+import { AppContext } from './AppWrapper'
 import AuthButton from './auth/AuthButton'
 import '../styles/panels/GenrePanel.css'
 
 function GenrePanel({ isOpen, closePanel }) {
-  const location = useLocation()
+  const pathname = usePathname()
   const { 
     selectedGenres, 
     toggleGenre, 
@@ -51,7 +51,7 @@ function GenrePanel({ isOpen, closePanel }) {
   })
   
   // Check if filters should be disabled (movies on cinema page)
-  const isFiltersDisabled = location.pathname === '/cinema' && searchType === 'movie';
+  const isFiltersDisabled = pathname === '/cinema' && searchType === 'movie';
   
   // Update initial filters when search is performed
   useEffect(() => {
@@ -266,7 +266,7 @@ function GenrePanel({ isOpen, closePanel }) {
       imdbRating,
       searchType,
       hasSearchQuery: !!(searchQuery && searchQuery.trim()),
-      currentPage: location.pathname
+      currentPage: pathname
     });
     
     applyFilters();
@@ -291,7 +291,7 @@ function GenrePanel({ isOpen, closePanel }) {
     }
     
     // Different labels based on current page
-    if (location.pathname === '/watchlist') {
+    if (pathname === '/watchlist') {
       return 'Apply Filters';
     }
     if (searchQuery && searchQuery.trim() !== '' && hasActiveFilters()) {

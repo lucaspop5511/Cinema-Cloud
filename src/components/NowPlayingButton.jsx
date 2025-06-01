@@ -1,11 +1,13 @@
+'use client'
+
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { useRouter } from 'next/navigation';
 import { useCinemaContent } from '../contexts/CinemaContentContext';
 import '../styles/NowPlayingButton.css';
 
 const NowPlayingButton = ({ mediaType, itemId }) => {
   const { isInCinema, isAiring, isLoaded } = useCinemaContent();
-  const navigate = useNavigate();
+  const router = useRouter();
   
   if (!isLoaded) return null;
   
@@ -13,7 +15,6 @@ const NowPlayingButton = ({ mediaType, itemId }) => {
     ? isInCinema(itemId) 
     : isAiring(itemId);
   
-  // If not active, don't show button
   if (!isActive) return null;
   
   const buttonText = mediaType === 'movie' ? 'Now in Cinemas' : 'Currently Airing';
@@ -22,7 +23,7 @@ const NowPlayingButton = ({ mediaType, itemId }) => {
   const handleClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
-    navigate('/cinema');
+    router.push('/cinema');
   };
   
   return (

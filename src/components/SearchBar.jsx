@@ -1,5 +1,5 @@
 import { useState, useRef, useContext } from 'react'
-import { AppContext } from '../App'
+import { AppContext } from './AppWrapper'
 import CloudsBackground from './CloudsBackground';
 import '../styles/SearchBar.css'
 

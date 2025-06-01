@@ -1,8 +1,10 @@
+'use client'
+
 import { useState, useContext, useEffect } from 'react'
 import SearchBar from '../components/SearchBar'
 import SearchResults from '../components/SearchResults'
 import FilterHeader from '../components/FilterHeader'
-import { AppContext } from '../App'
+import { AppContext } from '../components/AppWrapper'
 import { searchMovies, searchTvShows, getFilteredContent } from '../services/tmdbApi'
 import '../styles/Home.css'
 
