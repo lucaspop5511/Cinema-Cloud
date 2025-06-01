@@ -1,4 +1,7 @@
+'use client'
+
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import { fetchFromApi } from '../services/api';
 import { 
   collection, 
   doc, 

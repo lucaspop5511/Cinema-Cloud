@@ -1,24 +1,19 @@
-import { useState, createContext, useEffect } from 'react'
-import { Routes, Route, useLocation } from 'react-router-dom'
-import { AuthProvider } from './contexts/AuthContext'
-import { WatchlistProvider } from './contexts/WatchlistContext'
-import { CinemaContentProvider } from './contexts/CinemaContentContext'
-import Home from './pages/Home'
-import Cinema from './pages/Cinema'
-import Watchlist from './pages/Watchlist'
-import MovieDetail from './components/MovieDetail'
-import TvDetail from './components/TvDetail'
-import Header from './components/Header'
-import GenrePanel from './components/GenrePanel'
-import DetailPanel from './components/DetailPanel'
-import Footer from './components/Footer'
-import { getGenreMapping, fetchFromApi } from './services/api'
-import './styles/App.css'
+'use client'
 
-// Context to share state across components
+import { useState, createContext, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
+import { AuthProvider } from '../contexts/AuthContext'
+import { WatchlistProvider } from '../contexts/WatchlistContext'
+import { CinemaContentProvider } from '../contexts/CinemaContentContext'
+import Header from './Header'
+import GenrePanel from './GenrePanel'
+import DetailPanel from './DetailPanel'
+import Footer from './Footer'
+import { getGenreMapping, fetchFromApi } from '../services/api'
+
 export const AppContext = createContext(null)
 
-function App() {
+export default function AppWrapper({ children }) {
   const [isPanelOpen, setIsPanelOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
   const [selectedGenres, setSelectedGenres] = useState([])
@@ -34,22 +29,18 @@ function App() {
   const [genreIdMapping, setGenreIdMapping] = useState({})
   const [filterCounter, setFilterCounter] = useState(0)
   const [clearFiltersCounter, setClearFiltersCounter] = useState(0)
-  
-  // Detail page state
   const [detailItem, setDetailItem] = useState(null)
   const [isDetailPage, setIsDetailPage] = useState(false)
   
-  const location = useLocation()
+  const pathname = usePathname()
 
-  // Check if current route is a detail page
   useEffect(() => {
-    const isDetail = location.pathname.includes('/movie/') || location.pathname.includes('/tv/')
+    const isDetail = pathname.includes('/movie/') || pathname.includes('/tv/')
     setIsDetailPage(isDetail)
     
-    // Fetch detail item data when on detail page
     if (isDetail) {
-      const pathParts = location.pathname.split('/')
-      const mediaType = pathParts[1] // 'movie' or 'tv'
+      const pathParts = pathname.split('/')
+      const mediaType = pathParts[1]
       const id = pathParts[2]
       
       const fetchDetailItem = async () => {
@@ -66,15 +57,13 @@ function App() {
     } else {
       setDetailItem(null)
     }
-  }, [location.pathname])
+  }, [pathname])
 
-  // Check if the device is mobile on mount and when window resizes
   useEffect(() => {
     const checkIfMobile = () => {
       setIsMobile(window.innerWidth < 768)
       
-      // On desktop, panel always open for main pages
-      if (window.innerWidth >= 768 && (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist')) {
+      if (window.innerWidth >= 768 && (pathname === '/' || pathname === '/cinema' || pathname === '/watchlist')) {
         setIsPanelOpen(true)
       }
     }
@@ -82,9 +71,8 @@ function App() {
     checkIfMobile()
     window.addEventListener('resize', checkIfMobile)
     return () => window.removeEventListener('resize', checkIfMobile)
-  }, [location.pathname])
+  }, [pathname])
 
-  // Load genre mappings when search type changes
   useEffect(() => {
     const loadGenreMappings = async () => {
       try {
@@ -98,7 +86,6 @@ function App() {
     loadGenreMappings();
   }, [searchType]);
 
-  // Panel controls
   const openPanel = () => {
     if (isMobile) {
       setIsPanelOpen(true)
@@ -112,8 +99,7 @@ function App() {
   }
 
   const handleOverlayClick = (e) => {
-    if (isMobile && isPanelOpen && (location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist')) {
-      // Close panel on overlay click
+    if (isMobile && isPanelOpen && (pathname === '/' || pathname === '/cinema' || pathname === '/watchlist')) {
       const panelElement = document.querySelector('.genre-panel, .detail-panel');
       if (panelElement && !panelElement.contains(e.target)) {
         closePanel();
@@ -137,7 +123,6 @@ function App() {
     setMaxRuntime(240);
     setImdbRating('none');
     setIsFilterActive(false);
-    // Don't clear search query when clearing filters
     setClearFiltersCounter(prev => prev + 1);
   }
 
@@ -146,7 +131,6 @@ function App() {
     setFilterCounter(prev => prev + 1); 
   }
 
-  // Context value
   const contextValue = {
     isPanelOpen,
     isMobile,
@@ -187,36 +171,27 @@ function App() {
       <WatchlistProvider>
         <CinemaContentProvider>
           <AppContext.Provider value={contextValue}>
-            <div className={`app ${isPanelOpen ? 'panel-open' : ''}`}
-            onClick={handleOverlayClick}>
-              {/* Show GenrePanel on main pages */}
-              {(location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist') && (
+            <div className={`app ${isPanelOpen ? 'panel-open' : ''}`} onClick={handleOverlayClick}>
+              {(pathname === '/' || pathname === '/cinema' || pathname === '/watchlist') && (
                 <GenrePanel 
                   isOpen={isPanelOpen} 
                   closePanel={closePanel}
                 />
               )}
 
-              {/* Show DetailPanel only on detail pages for mobile/tablet */}
               {isDetailPage && isMobile && (
                 <DetailPanel 
                   item={detailItem}
                   isOpen={isPanelOpen} 
                   closePanel={closePanel}
-                  mediaType={location.pathname.includes('/movie/') ? 'movie' : 'tv'}
+                  mediaType={pathname.includes('/movie/') ? 'movie' : 'tv'}
                 />
               )}
               
-              <div className={`content-wrapper ${(location.pathname === '/' || location.pathname === '/cinema' || location.pathname === '/watchlist') && !isMobile ? 'with-sidebar' : ''}`}>
+              <div className={`content-wrapper ${(pathname === '/' || pathname === '/cinema' || pathname === '/watchlist') && !isMobile ? 'with-sidebar' : ''}`}>
                 <Header openPanel={openPanel} isPanelOpen={isPanelOpen} isMobile={isMobile} />
                 <main className="main-content">
-                  <Routes>
-                    <Route path="/" element={<Home />} />
-                    <Route path="/cinema" element={<Cinema />} />
-                    <Route path="/watchlist" element={<Watchlist />} />
-                    <Route path="/movie/:id" element={<MovieDetail />} />
-                    <Route path="/tv/:id" element={<TvDetail />} />
-                  </Routes>
+                  {children}
                 </main>
                 <Footer />
               </div>
@@ -227,5 +202,3 @@ function App() {
     </AuthProvider>
   )
 }
-
-export default App

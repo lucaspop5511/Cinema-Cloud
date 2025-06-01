@@ -1,5 +1,5 @@
 import { getImageUrl } from '../services/api';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import WatchlistButton from './WatchlistButton';
 import NowPlayingButton from './NowPlayingButton';
 
@@ -37,7 +37,6 @@ function SearchResults({
     
     const CHARACTER_LIMIT = 150;
     
-    // Truncate
     const lastSpace = item.overview.lastIndexOf(' ', CHARACTER_LIMIT);
     const cutPoint = lastSpace > 0 ? lastSpace : CHARACTER_LIMIT;
     
@@ -62,7 +61,6 @@ function SearchResults({
   const hasValidRuntime = (item) => {
     if (!item) return false;
     
-    // For TV shows check multiple sources of runtime information
     if (searchType === 'tv') {
       if (item.episode_run_time && 
           Array.isArray(item.episode_run_time) && 
@@ -103,7 +101,6 @@ function SearchResults({
     return item.runtime || 0;
   };
   
-  // Get formatted runtime 
   const getFormattedRuntime = (item) => {
     if (!hasValidRuntime(item)) {
       return '';
@@ -118,7 +115,6 @@ function SearchResults({
     }
   };
 
-  // No results
   if (results.length === 0) {
     return (
       <div className="results-container">
@@ -134,7 +130,6 @@ function SearchResults({
   }
 
   const filteredResults = results.filter(item => {
-    // Check minimum vote count
     if (item.vote_count < MINIMUM_VOTE_COUNT) {
       return false;
     }
@@ -152,9 +147,9 @@ function SearchResults({
         {filteredResults.map(item => (
           <Link 
             key={item.id} 
-            to={`/${searchType}/${item.id}`}
+            href={`/${searchType}/${item.id}`}
             className="result-card"
-            style={{ textDecoration: 'none', color: 'inherit' }}
+            style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}  // Add display: block
           >
             <div className="result-poster">
               {item.poster_path ? (
@@ -162,19 +157,15 @@ function SearchResults({
               ) : (
                 <div className="no-poster">No Poster</div>
               )}
-              {/* Watchlist Button */}
               <WatchlistButton item={item} mediaType={searchType} />
               
-              {/* Now Playing/Currently Airing Button */}
               <NowPlayingButton 
                 mediaType={searchType} 
                 itemId={item.id}
               />
             </div>
             
-            {/* Single expandable info section that overlays the image */}
             <div className="result-info">
-              {/* Static header info (always visible) */}
               <div className="result-info-header">
                 <h3 className="result-title">{getTitle(item)}</h3>
                 <div className="result-details">
@@ -189,7 +180,6 @@ function SearchResults({
                   )}
                 </div>
                 
-                {/* Rating is now always visible */}
                 <div className="result-rating">
                   <span className="rating-value">
                     {item.vote_average ? (item.vote_average.toFixed(1) + '/10') : 'No rating'}
@@ -197,10 +187,8 @@ function SearchResults({
                 </div>
               </div>
               
-              {/* Divider line */}
               <div className="result-content-divider"></div>
               
-              {/* Content that appears on hover */}
               <p className="result-overview">
                 {getOverview(item)}
                 <span className="see-more-button-inline">
@@ -218,7 +206,6 @@ function SearchResults({
         ))}
       </div>
       
-      {/* Load More Button */}
       {page < totalPages && onLoadMore && (
         <div className="load-more-container">
           <button 

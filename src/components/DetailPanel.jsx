@@ -1,8 +1,8 @@
-import { Link } from 'react-router-dom';
+import Link from 'next/link'; 
 import { getImageUrl } from '../services/api';
 import AuthButton from './auth/AuthButton';
 import { useContext } from 'react';
-import { AppContext } from '../App';
+import { AppContext } from './AppWrapper';
 import WatchlistButton from './WatchlistButton'; 
 import '../styles/panels/DetailPanel.css';
 

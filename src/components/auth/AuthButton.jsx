@@ -1,7 +1,9 @@
+'use client'
+
 import React, { useState, useRef, useEffect, useContext } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { useNavigate } from 'react-router-dom';
-import { AppContext } from '../../App';
+import { useRouter } from 'next/navigation';
+import { AppContext } from '../AppWrapper';
 import LoginModal from './LoginModal';
 import '../../styles/auth/AuthButton.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -10,7 +12,7 @@ const AuthButton = ({ isMobile = false }) => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const { currentUser, logout } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
   const profileMenuRef = useRef(null);
   const { closePanel } = useContext(AppContext);
 
@@ -25,9 +27,8 @@ const AuthButton = ({ isMobile = false }) => {
 
   const handleWatchlistClick = () => {
     setShowProfileMenu(false);
-    navigate('/watchlist');
+    router.push('/watchlist');
     
-    // Close the filter panel on mobile
     if (isMobile) {
       closePanel();
     }
@@ -47,7 +48,6 @@ const AuthButton = ({ isMobile = false }) => {
     return 'User';
   };
 
-  // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
@@ -64,7 +64,6 @@ const AuthButton = ({ isMobile = false }) => {
     };
   }, [showProfileMenu]);
 
-  // Cloud icon SVG component
   const CloudIcon = () => (
     <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" className="cloud-icon">
       <path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 

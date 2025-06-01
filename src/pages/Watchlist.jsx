@@ -1,21 +1,51 @@
+'use client'
+
 import React, { useState, useContext, useEffect } from 'react';
 import { useWatchlist } from '../contexts/WatchlistContext';
 import { useAuth } from '../contexts/AuthContext';
-import { AppContext } from '../App';
+import { AppContext } from '../components/AppWrapper';
 import { getImageUrl, fetchFromApi } from '../services/api';
-import { Link } from 'react-router-dom';
+import Link from 'next/link';
 import NowPlayingButton from '../components/NowPlayingButton';
 import '../styles/Watchlist.css';
 import '../styles/NowPlayingButton.css';
 
-const Watchlist = () => {
-  const { currentUser } = useAuth();
-  const { 
-    watchlist, 
-    removeFromWatchlist, 
-    loading,
-    getWatchlistByType 
-  } = useWatchlist();
+function Watchlist() {
+  // Guard for AppContext
+  const contextValue = useContext(AppContext);
+  if (!contextValue) {
+    return <div>Loading...</div>;
+  }
+
+  // Guard for Auth - use try/catch to handle SSR
+  let currentUser = null;
+  let authLoading = true;
+  
+  try {
+    const auth = useAuth();
+    currentUser = auth.currentUser;
+    authLoading = auth.loading;
+  } catch (error) {
+    // During SSR, auth context isn't available
+    return <div>Loading...</div>;
+  }
+
+  // Guard for Watchlist - use try/catch to handle SSR  
+  let watchlist = [];
+  let watchlistLoading = true;
+  let removeFromWatchlist = () => {};
+  let getWatchlistByType = () => [];
+  
+  try {
+    const watchlistContext = useWatchlist();
+    watchlist = watchlistContext.watchlist;
+    watchlistLoading = watchlistContext.loading;
+    removeFromWatchlist = watchlistContext.removeFromWatchlist;
+    getWatchlistByType = watchlistContext.getWatchlistByType;
+  } catch (error) {
+    // During SSR, watchlist context isn't available
+    return <div>Loading...</div>;
+  }
   
   const {
     selectedGenres,
@@ -26,7 +56,7 @@ const Watchlist = () => {
     imdbRating,
     searchType,
     setSearchType
-  } = useContext(AppContext);
+  } = contextValue;
 
   const [viewType, setViewType] = useState('all');
   const [detailedItems, setDetailedItems] = useState([]);
@@ -122,7 +152,6 @@ const Watchlist = () => {
     return item.overview.substring(0, cutPoint) + (item.overview.length > CHARACTER_LIMIT ? '...' : '');
   };
   
-  // Format runtime
   const formatRuntime = (runtime) => {
     if (!runtime || runtime <= 0) return '';
     
@@ -140,7 +169,6 @@ const Watchlist = () => {
 
   const applyFilters = (items) => {
     return items.filter(item => {
-      // Genre filter
       if (selectedGenres.length > 0 && item.genres) {
         const itemGenreNames = item.genres.map(genre => genre.name);
         const hasMatchingGenre = selectedGenres.some(selectedGenre => 
@@ -149,18 +177,15 @@ const Watchlist = () => {
         if (!hasMatchingGenre) return false;
       }
 
-      // Year filter
       if (item.release_date) {
         const year = new Date(item.release_date).getFullYear();
         if (year < minYear || year > maxYear) return false;
       }
 
-      // Runtime filter
       if (item.runtime) {
         if (item.runtime < minRuntime || item.runtime > maxRuntime) return false;
       }
 
-      // IMDB rating filter
       if (imdbRating !== 'none' && item.vote_average) {
         switch (imdbRating) {
           case '<6':
@@ -183,19 +208,16 @@ const Watchlist = () => {
   };
 
   const getFilteredItems = () => {
-    // Use detailed items if available, else use original watchlist
     const items = detailedItems.length > 0 ? detailedItems : watchlist;
     
     let filteredByType = items;
     
-    // Filter by media type
     if (viewType === 'movies') {
       filteredByType = items.filter(item => item.media_type === 'movie');
     } else if (viewType === 'tv') {
       filteredByType = items.filter(item => item.media_type === 'tv');
     }
     
-    // Apply additional filters
     return applyFilters(filteredByType);
   };
 
@@ -240,7 +262,7 @@ const Watchlist = () => {
         {items.map(item => (
           <Link 
             key={`${item.media_type}_${item.id}`} 
-            to={`/${item.media_type}/${item.id}`}
+            href={`/${item.media_type}/${item.id}`}
             className="result-card"
             style={{ textDecoration: 'none', color: 'inherit' }}
           >
@@ -250,7 +272,6 @@ const Watchlist = () => {
               ) : (
                 <div className="no-poster">No Poster</div>
               )}
-              {/* Remove button */}
               <button 
                 className="remove-from-watchlist-btn left-positioned"
                 onClick={(e) => handleRemove(e, item)}
@@ -259,7 +280,6 @@ const Watchlist = () => {
                 ✕
               </button>
               
-              {/* Now Playing/Currently Airing Button */}
               <NowPlayingButton 
                 mediaType={item.media_type} 
                 itemId={item.id} 
@@ -267,7 +287,6 @@ const Watchlist = () => {
             </div>
             
             <div className="result-info">
-              {/* Static header info (always visible) */}
               <div className="result-info-header">
                 <h3 className="result-title">{getTitle(item)}</h3>
                 <div className="result-details">
@@ -282,7 +301,6 @@ const Watchlist = () => {
                   )}
                 </div>
                 
-                {/* Rating */}
                 <div className="result-rating">
                   <span className="rating-value">
                     {item.vote_average ? (item.vote_average.toFixed(1) + '/10') : 'No rating'}
@@ -290,10 +308,8 @@ const Watchlist = () => {
                 </div>
               </div>
               
-              {/* Divider line */}
               <div className="result-content-divider"></div>
               
-              {/* Content that appears on hover */}
               <p className="result-overview">
                 {getOverview(item)}
                 <span className="see-more-button-inline">
@@ -316,7 +332,6 @@ const Watchlist = () => {
         <h1>My Watchlist</h1>
         <p>Total items: {watchlist.length}</p>
         
-        {/* Media Type Picker */}
         <div className="media-type-picker">
           <button 
             className={`media-type-button ${viewType === 'all' ? 'active' : ''}`}
@@ -343,7 +358,7 @@ const Watchlist = () => {
         <div className="empty-watchlist">
           <h2>Your watchlist is empty</h2>
           <p>Start adding movies and TV shows to build your personal collection!</p>
-          <Link to="/" className="browse-link">Browse Movies & TV Shows</Link>
+          <Link href="/" className="browse-link">Browse Movies & TV Shows</Link>
         </div>
       ) : (
         <div className="watchlist-content">

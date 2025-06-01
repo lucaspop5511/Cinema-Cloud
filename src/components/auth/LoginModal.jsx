@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { useAuth } from '../../contexts/AuthContext';
-import { AppContext } from '../../App';
+import { AppContext } from '../AppWrapper';
 import { createPortal } from 'react-dom';
 import CloudsBackground from '../CloudsBackgroundLogin';
 import '../../styles/auth/LoginModal.css';
