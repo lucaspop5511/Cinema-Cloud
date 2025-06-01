@@ -10,18 +10,42 @@ import NowPlayingButton from '../components/NowPlayingButton';
 import '../styles/Watchlist.css';
 import '../styles/NowPlayingButton.css';
 
-const Watchlist = () => {
-  const { currentUser } = useAuth();
+function Watchlist() {
+  // Guard for AppContext
   const contextValue = useContext(AppContext);
   if (!contextValue) {
     return <div>Loading...</div>;
   }
-  const { 
-    watchlist, 
-    removeFromWatchlist, 
-    loading,
-    getWatchlistByType 
-  } = useWatchlist();
+
+  // Guard for Auth - use try/catch to handle SSR
+  let currentUser = null;
+  let authLoading = true;
+  
+  try {
+    const auth = useAuth();
+    currentUser = auth.currentUser;
+    authLoading = auth.loading;
+  } catch (error) {
+    // During SSR, auth context isn't available
+    return <div>Loading...</div>;
+  }
+
+  // Guard for Watchlist - use try/catch to handle SSR  
+  let watchlist = [];
+  let watchlistLoading = true;
+  let removeFromWatchlist = () => {};
+  let getWatchlistByType = () => [];
+  
+  try {
+    const watchlistContext = useWatchlist();
+    watchlist = watchlistContext.watchlist;
+    watchlistLoading = watchlistContext.loading;
+    removeFromWatchlist = watchlistContext.removeFromWatchlist;
+    getWatchlistByType = watchlistContext.getWatchlistByType;
+  } catch (error) {
+    // During SSR, watchlist context isn't available
+    return <div>Loading...</div>;
+  }
   
   const {
     selectedGenres,
