@@ -9,6 +9,10 @@ import { searchMovies, searchTvShows, getFilteredContent } from '../services/tmd
 import '../styles/Home.css'
 
 function Home() {
+  const contextValue = useContext(AppContext);
+  if (!contextValue) {
+    return <div>Loading...</div>;
+  }
   const { 
     selectedGenres,
     searchQuery, 
@@ -28,7 +32,7 @@ function Home() {
     applyFilters,
     previousSearchType,
     setPreviousSearchType
-  } = useContext(AppContext)
+  } = contextValue;
   
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)

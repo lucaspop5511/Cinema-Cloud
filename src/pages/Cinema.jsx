@@ -36,6 +36,10 @@ const STREAMING_SERVICES = [
 
 function Cinema() {
   const router = useRouter()
+  const contextValue = useContext(AppContext);
+  if (!contextValue) {
+    return <div>Loading...</div>;
+  }
   const {
     selectedGenres,
     minYear,
@@ -49,7 +53,7 @@ function Cinema() {
     isFilterActive,
     setSearchType,
     searchType
-  } = useContext(AppContext);
+  } = contextValue;
 
   const [mediaType, setMediaType] = useState('movie');
   const [selectedCity, setSelectedCity] = useState(CINEMA_CITIES[0]);

@@ -192,7 +192,7 @@
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	!function() {
-/******/ 		__webpack_require__.h = function() { return "eef99bac043db792"; }
+/******/ 		__webpack_require__.h = function() { return "f644c7432b0eac7a"; }
 /******/ 	}();
 /******/ 	
 /******/ 	/* webpack/runtime/global */
@@ -830,7 +830,8 @@
 /******/ 		// [resolve, reject, Promise] = chunk loading, 0 = chunk loaded
 /******/ 		var installedChunks = __webpack_require__.hmrS_jsonp = __webpack_require__.hmrS_jsonp || {
 /******/ 			"webpack": 0,
-/******/ 			"css-src_styles_App_css-src_styles_Cinema_css-src_styles_CloudsBackground_css-src_styles_Cloud-e4b9b8": 0
+/******/ 			"css-src_styles_CloudsBackground_css-src_styles_CloudsBackgroundLogin_css-src_styles_Detail_cs-411e7d": 0,
+/******/ 			"css-src_styles_App_css-src_styles_Cinema_css-src_styles_Footer_css-src_styles_Header_css-src_-5c37fa": 0
 /******/ 		};
 /******/ 		
 /******/ 		__webpack_require__.f.j = function(chunkId, promises) {
@@ -842,7 +843,7 @@
 /******/ 					if(installedChunkData) {
 /******/ 						promises.push(installedChunkData[2]);
 /******/ 					} else {
-/******/ 						if(/^(app(\/(((cinema|movie\/\[id\]|watchlist)\/|)page|layout)|\-pages\-internals)|main\-app)$/.test(chunkId)) {
+/******/ 						if(/^(app(\/((|movie\/\[id\]\/)page|layout)|\-pages\-internals)|main\-app)$/.test(chunkId)) {
 /******/ 							// setup Promise in chunk cache
 /******/ 							var promise = new Promise(function(resolve, reject) { installedChunkData = installedChunks[chunkId] = [resolve, reject]; });
 /******/ 							promises.push(installedChunkData[2] = promise);

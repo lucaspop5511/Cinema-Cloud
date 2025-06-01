@@ -12,6 +12,10 @@ import '../styles/NowPlayingButton.css';
 
 const Watchlist = () => {
   const { currentUser } = useAuth();
+  const contextValue = useContext(AppContext);
+  if (!contextValue) {
+    return <div>Loading...</div>;
+  }
   const { 
     watchlist, 
     removeFromWatchlist, 
@@ -28,7 +32,7 @@ const Watchlist = () => {
     imdbRating,
     searchType,
     setSearchType
-  } = useContext(AppContext);
+  } = contextValue;
 
   const [viewType, setViewType] = useState('all');
   const [detailedItems, setDetailedItems] = useState([]);
