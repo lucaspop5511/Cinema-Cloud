@@ -47,6 +47,19 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
       }
     }, 500)
   }
+
+  const handleClearSearch = () => {
+    setLocalSearchQuery('')
+  setSearchQuery('')
+  
+  // Clear timeout if exists
+  if (searchTimeout.current) {
+    clearTimeout(searchTimeout.current)
+  }
+  
+  // Focus back on input
+  document.querySelector('.search-input').focus()
+  }
   
   // Media type switch
   const handleMediaTypeChange = (type) => {
@@ -96,6 +109,14 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
           value={localSearchQuery}
           onChange={handleInputChange}
         />
+          <button 
+            type="button"
+            className={`clear-search-btn ${!localSearchQuery ? 'empty' : ''}`}
+            onClick={handleClearSearch}
+            aria-label="Clear search"
+          >
+            ✕
+          </button>
       </div>
     </div>
   )
