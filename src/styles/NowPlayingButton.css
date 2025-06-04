@@ -1,73 +1,94 @@
-.content-row .now-playing-button {
-  top: 12px;
-  left: 54px;
-}.now-playing-button {
+.now-playing-button {
   position: absolute;
   top: 8px;
-  left: 50px;
-  width: auto;
-  max-width: calc(100% - 58px);
-  padding: 8px 15px;
-  border-radius: 6px;
-  font-size: 14px;
-  font-weight: 500;
-  text-align: center;
-  transition: all 0.2s ease;
+  right: 8px;
+  background-color: rgba(52, 152, 219, 0.85);
+  color: white;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
   z-index: 9;
   display: flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
   backdrop-filter: blur(2px);
-  box-shadow: none;
-  border: none;
-  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+.now-playing-button:hover .camera-icon .film-reel-1 {
+  animation: spinReel 1s linear infinite;
+}
+
+.now-playing-button:hover .camera-icon .film-reel-2 {
+  animation: spinReel 0.8s linear infinite reverse;
+}
+
+.now-playing-button.icon-only {
+  width: 34px;
+  height: 34px;
+  padding: 0px;
+}
+
+.now-playing-button:hover {
+  background-color: rgba(52, 152, 219, 0.95);
+  width: auto;
+}
+
+.now-playing-button:hover .camera-icon {
+  padding-right: 5px;
+}
+
+.now-playing-button .camera-icon {
+  flex-shrink: 0;
+  transform: scale(0.7);
+  transition: padding-right 0.2s ease-in-out;
+  order: 2;
   color: white;
+  padding-right: 10px;
 }
 
-.now-playing-button.cinema-button {
-  background-color: rgba(82, 154, 207, 0.85);
-  color: white;
-  border: none;
+.now-playing-button .button-text {
+  font-size: 12px;
+  font-weight: 500;
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  order: 1;
+  white-space: nowrap;
+  padding-left: 10px;
 }
 
-.now-playing-button.cinema-button:hover {
-  background-color: rgba(52, 152, 219, 0.85);
-  box-shadow: 0 2px 6px rgba(52, 152, 219, 0.4);
-}
-
-.now-playing-button.airing-button {
-  background-color: rgba(46, 204, 113, 0.7);
-  color: white;
-  border: 1px solid rgba(46, 204, 113, 0.5);
-}
-
-.now-playing-button.airing-button:hover {
-  background-color: rgba(46, 204, 113, 0.85);
-  box-shadow: 0 2px 6px rgba(46, 204, 113, 0.4);
-}
-
-.detail-now-playing {
-  margin-top: 20px;
-  margin-bottom: 20px;
-  width: 100%;
-}
-
-.detail-now-playing .now-playing-button {
-  position: relative;
-  top: auto;
-  left: auto;
-  right: auto;
-  padding: 12px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 6px;
+.now-playing-button:hover .button-text {
+  opacity: 1;
+  width: auto;
 }
 
 @media (max-width: 768px) {
-  .now-playing-button {
-    font-size: 11px;
-    padding: 4px 8px;
-    left: 46px;
+  .now-playing-button.icon-only {
+    width: 34px;
+    height: 34px;
+    padding: 6px;
+  }
+  
+  .now-playing-button .camera-icon {
+    width: 30px;
+    height: 30px;
+  }
+  
+  .now-playing-button .button-text {
+    font-size: 12px;
+  }
+}
+
+@keyframes spinReel {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
   }
 }

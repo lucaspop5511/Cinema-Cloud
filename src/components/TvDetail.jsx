@@ -117,10 +117,6 @@ export default function TvDetail({ params }) {
             </div>
           </div>
 
-          <div className="detail-now-playing">
-            <NowPlayingButton mediaType="tv" itemId={params?.id} />
-          </div>
-
           <div className="detail-overview">
             <p>{show.overview || 'No overview available.'}</p>
           </div>

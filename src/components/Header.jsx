@@ -1,26 +1,46 @@
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 
 function Header({ openPanel, isPanelOpen, isMobile }) {
   const pathname = usePathname();
+  const router = useRouter();
   const isHome = pathname === '/';
   const isCinema = pathname === '/cinema';
+  const isDetailPage = pathname.includes('/movie/') || pathname.includes('/tv/');
+
+  const handleBackClick = () => {
+    router.back();
+  };
 
   return (
     <header className="header">
       <div className="header-content">
         <div className="left-section">
-          {isMobile && !isPanelOpen && (
+          {isDetailPage ? (
             <button 
               type="button"
-              className="hamburger-button"
-              onClick={openPanel}
-              aria-label="Open menu"
+              className="back-button"
+              onClick={handleBackClick}
+              aria-label="Go back"
             >
-              <span className="hamburger-line"></span>
-              <span className="hamburger-line"></span>
-              <span className="hamburger-line"></span>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 12H5M12 19L5 12L12 5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              </svg>
+              <span className="back-text">Back</span>
             </button>
+          ) : (
+            isMobile && !isPanelOpen && (
+              <button 
+                type="button"
+                className="hamburger-button"
+                onClick={openPanel}
+                aria-label="Open menu"
+              >
+                <span className="hamburger-line"></span>
+                <span className="hamburger-line"></span>
+                <span className="hamburger-line"></span>
+              </button>
+            )
           )}
         </div>
         
