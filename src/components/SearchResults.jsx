@@ -109,7 +109,7 @@ function SearchResults({
     const runtime = getRuntimeValue(item);
     
     if (searchType === 'tv') {
-      return `${formatRuntime(runtime)} / episode`;
+      return `${formatRuntime(runtime)}`;
     } else {
       return formatRuntime(runtime);
     }
@@ -149,7 +149,7 @@ function SearchResults({
             key={item.id} 
             href={`/${searchType}/${item.id}`}
             className="result-card"
-            style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}  // Add display: block
+            style={{ textDecoration: 'none', color: 'inherit', display: 'block' }}
           >
             <div className="result-poster">
               {item.poster_path ? (
@@ -172,10 +172,10 @@ function SearchResults({
                   <span className="result-year">{getYear(getReleaseDate(item))}</span>
                   {hasValidRuntime(item) && (
                     <>
-                      •
-                      <div className="result-runtime-display">
+                      <span className="content-separator">•</span>
+                      <span className="result-runtime-display">
                         {getFormattedRuntime(item)}
-                      </div>
+                      </span>
                     </>
                   )}
                 </div>
@@ -197,9 +197,6 @@ function SearchResults({
               </p>
               <div className="result-id" style={{ fontSize: '10px', color: '#666', marginTop: '4px' }}>
                 ID: {item.id}
-                {item.runtime !== undefined && (
-                  <span> | Runtime: {item.runtime}m</span>
-                )}
               </div>
             </div>
           </Link>

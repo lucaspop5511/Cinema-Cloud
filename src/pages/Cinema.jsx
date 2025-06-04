@@ -283,7 +283,7 @@ function Cinema() {
   };
 
   const handleContentClick = (item) => {
-    push(`/${mediaType}/${item.id}`);
+    router.push(`/${mediaType}/${item.id}`);
   };
 
   if (loading) {
