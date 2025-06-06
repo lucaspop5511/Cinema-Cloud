@@ -79,7 +79,7 @@
 
 .media-type-button:hover:not(.active) {
   color: #e0e0e0;
-  background-color: #333;
+  background-color: #333 !important;
 }
 
 /* Search Bar */

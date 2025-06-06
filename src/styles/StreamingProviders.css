@@ -1,5 +1,25 @@
+.streaming-services-section {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  background-color: #242424;
+  border-radius: 8px;
+  padding: 10px;
+  padding-left: 15px;
+  margin-bottom: 30px;
+  outline: 1px #bebebe25;
+  outline-style: dashed;
+  outline-width: 4px;
+}
+
+.streaming-services-section .where-to-watch {
+  margin: 0 !important;
+  color: gray;
+}
+
 .streaming-providers {
-  margin-top: 10px;
+  margin-top: 0px;
   margin-bottom: 0px;
 }
 
@@ -41,10 +61,6 @@
 }
 
 /* Styles specific to the detail page */
-.detail-providers {
-  margin-top: 10px;
-}
-
 .detail-providers .provider-logos {
   gap: 15px;
 }
@@ -69,14 +85,7 @@
 }
 
 .detail-providers .provider-logo:hover .provider-name {
-  display: block;
-}
-
-.streaming-services-section {
-  background-color: #242424;
-  border-radius: 8px;
-  padding: 15px;
-  margin-bottom: 30px;
+    display: none;
 }
 
 @media (max-width: 768px) {

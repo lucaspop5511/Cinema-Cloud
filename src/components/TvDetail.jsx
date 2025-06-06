@@ -123,7 +123,7 @@ export default function TvDetail({ params }) {
           
           {show.watch_providers && (
             <div className="detail-section streaming-services-section">
-              <h3>Where to Watch</h3>
+              <h3 className="where-to-watch">Where to Watch</h3>
               <div className="streaming-providers detail-providers">
                 {show.watch_providers?.flatrate && show.watch_providers.flatrate.length > 0 ? (
                   <div className="provider-logos">
