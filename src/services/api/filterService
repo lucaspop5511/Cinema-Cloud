@@ -69,20 +69,20 @@ const applyClientSideFilters = (results, filters) => {
   if (!results || !Array.isArray(results)) return [];
   
   return results.filter(item => {
-    // Year filter
-    const releaseDate = filters.mediaType === 'movie' ? item.release_date : item.first_air_date;
-    if (releaseDate) {
-      const year = new Date(releaseDate).getFullYear();
-      if (year < filters.minYear || year > filters.maxYear) {
-        return false;
-      }
-    }
-    
     // Genre filter
     if (filters.genres && filters.genres.length > 0) {
       const itemGenres = item.genre_ids || [];
       const hasMatchingGenre = filters.genres.some(genreId => itemGenres.includes(genreId));
       if (!hasMatchingGenre) {
+        return false;
+      }
+    }
+
+    // Year filter
+    const releaseDate = filters.mediaType === 'movie' ? item.release_date : item.first_air_date;
+    if (releaseDate) {
+      const year = new Date(releaseDate).getFullYear();
+      if (year < filters.minYear || year > filters.maxYear) {
         return false;
       }
     }
