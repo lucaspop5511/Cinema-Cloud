@@ -195,9 +195,6 @@ function SearchResults({
                   see more
                 </span>
               </p>
-              <div className="result-id" style={{ fontSize: '10px', color: '#666', marginTop: '4px' }}>
-                ID: {item.id}
-              </div>
             </div>
           </Link>
         ))}
