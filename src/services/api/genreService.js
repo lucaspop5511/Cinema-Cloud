@@ -1,7 +1,5 @@
-// Genre Service for TMDb API
 import { fetchFromApi } from './baseApi';
 
-// TMDb API genre IDs for reference
 export const GENRE_IDS = {
   // Movie genres
   ACTION: 28,
@@ -56,11 +54,6 @@ export const GENRE_MAPPING = {
   'Western': { movie: GENRE_IDS.WESTERN, tv: GENRE_IDS.WESTERN },
 };
 
-/**
- * Get genre list for movies or TV shows
- * @param {string} mediaType - 'movie' or 'tv'
- * @returns {Promise} - Promise with genre list
- */
 export const getGenres = async (mediaType) => {
   try {
     const data = await fetchFromApi(`/genre/${mediaType}/list?language=en-US`);
@@ -71,11 +64,6 @@ export const getGenres = async (mediaType) => {
   }
 };
 
-/**
- * Get genre name to ID mapping
- * @param {string} mediaType - 'movie' or 'tv'
- * @returns {Promise} - Promise with genre mapping object
- */
 export const getGenreMapping = async (mediaType) => {
   const genres = await getGenres(mediaType);
   const mapping = {};
@@ -88,12 +76,6 @@ export const getGenreMapping = async (mediaType) => {
   return mapping;
 };
 
-/**
- * Map application genre names to TMDb genre IDs
- * @param {Array} genreNames - Array of genre names from the application
- * @param {string} mediaType - 'movie' or 'tv'
- * @returns {Array} - Array of TMDb genre IDs
- */
 export const mapGenreNamesToIds = (genreNames, mediaType) => {
   if (!genreNames || !Array.isArray(genreNames)) return [];
   

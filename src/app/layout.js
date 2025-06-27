@@ -21,11 +21,17 @@ import '../styles/WatchlistButton.css'
 import '../styles/NowPlayingButton.css'
 import '../styles/StreamingProviders.css'
 
+export const metadata = {
+  title: 'Cinema Cloud',
+  icons: {
+    icon: '/cloud.png',
+  },
+}
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <head>
-        <title>Cinema Cloud</title>
         <script
           src="https://kit.fontawesome.com/fdca3800c7.js"
           crossOrigin="anonymous"

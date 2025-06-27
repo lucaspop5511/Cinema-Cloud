@@ -19,7 +19,6 @@
   padding: 0;
 }
 
-/* Hero Section with Background Image */
 .detail-hero {
   position: relative;
   min-height: 500px;
@@ -231,7 +230,6 @@
   border: 1px solid rgba(52, 152, 219, 0.3);
 }
 
-/* Content Sections */
 .detail-sections {
   padding: 0 40px;
 }
@@ -248,7 +246,6 @@
   font-weight: 600;
 }
 
-/* Streaming Services Section */
 .streaming-services-section {
   display: flex;
   flex-direction: row;
@@ -277,7 +274,6 @@
   border-radius: 8px;
 }
 
-/* Images Section */
 .detail-images-container {
   position: relative;
   width: 100%;
@@ -313,11 +309,10 @@
   object-fit: cover;
 }
 
-/* Image Navigation Arrows */
 .images-nav-arrow {
   position: absolute;
   top: 0;
-  bottom: 15px; /* Account for scrollbar padding */
+  bottom: 15px;
   width: 80px;
   background: transparent;
   color: white;
@@ -357,7 +352,6 @@
   padding-right: 20px;
 }
 
-/* Trailer Section */
 .detail-trailer {
   position: relative;
   width: 100%;
@@ -376,7 +370,6 @@
   height: 100%;
 }
 
-/* Cast Section */
 .detail-cast {
   display: flex;
   gap: 20px;
@@ -454,7 +447,6 @@
   line-height: 1.3;
 }
 
-/* Loading and Error states */
 .detail-loading, .detail-error {
   display: flex;
   justify-content: center;
@@ -469,7 +461,6 @@
   margin-bottom: 10px;
 }
 
-/* Mobile Responsive */
 @media (max-width: 768px) {
   .detail-hero-content {
     flex-direction: column;

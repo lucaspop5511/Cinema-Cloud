@@ -55,7 +55,6 @@
     margin-top: 20px;
   }
     
-  /* Year control buttons */
   .year-controls {
     display: flex;
     flex-direction: column;

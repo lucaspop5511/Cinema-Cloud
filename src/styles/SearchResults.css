@@ -11,7 +11,6 @@
   border-bottom: 1px solid #333;
   padding-bottom: 10px;
   display: flex;
-  align-items: baseline;
   flex-wrap: wrap;
   gap: 5px;
 }
@@ -82,6 +81,10 @@
   z-index: 10;
 }
 
+.result-card:hover .result-poster img {
+  filter: blur(3px) brightness(50%);
+}
+
 .result-poster {
   position: relative;
   aspect-ratio: 3/6;
@@ -97,6 +100,7 @@
   height: 100%;
   object-fit: cover;
   display: block;
+  transition: all 0.3s ease-in-out;
 }
 
 .no-poster {
@@ -112,6 +116,7 @@
 
 .result-info {
   padding: 12px;
+  padding-top: 9px;
   display: flex;
   flex-direction: column;
   background-color: #242424;
@@ -120,58 +125,78 @@
   left: 0;
   right: 0;
   z-index: 2;
-  min-height: 120px;
+  min-height: 100px;
   max-height: 120px;
   overflow: hidden;
   transition: max-height 0.3s ease-out;
 }
 
 .result-card:hover .result-info {
-  max-height: 85%; /* Expand */
+  max-height: 300px;
+}
+
+.result-card:hover .result-info-header {
+  min-height: 0px;
 }
 
 .result-info-header {
-  margin-bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  flex: 1;
+  min-height: 100px;
+  transition: min-height 0.3s ease-in-out;
+  margin: 0 !important;
 }
 
 .result-title {
-  font-size: 16px;
+  font-size: 19px;
   color: #e0e0e0;
-  font-weight: 500;
+  font-weight: 600;
   display: -webkit-box;
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 8px;
+  margin: 0;
 }
 
 .result-details {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   margin-bottom: 0px;
   font-size: 14px;
   color: #999;
   flex-wrap: wrap;
-  gap: 8px;
 }
 
-.result-year, .result-runtime {
-  margin-right: 5px;
+.result-year {
+  margin: 0 0 0 5px;
+  padding: 0;
+  font-size: 14px;
+  color: #626262;
 }
 
 .result-rating {
   display: flex;
   align-items: center;
-  margin-bottom: 0px;
+  margin: 0px;
   opacity: 1;
   transform: none;
 }
 
+.result-rating .star-icon {
+  color: #f39c12;
+  font-size: 0.8rem;
+  margin-right: 5px;
+}
+
 .rating-value {
-  color: #3498db;
-  font-weight: 500;
-  font-size: 13px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  color: #f39c12;
+  margin: 0;
 }
 
 .result-content-divider {
@@ -182,7 +207,7 @@
 }
 
 .result-overview {
-  font-size: 12px;
+  font-size: 14px;
   color: #999;
   margin: 8px 0;
   line-height: 1.4;
@@ -193,13 +218,11 @@
   overflow-y: auto;
 }
 
-/* Show the overview on hover */
 .result-card:hover .result-overview {
   opacity: 1;
   transform: translateY(0);
 }
 
-/* Scrollbar for overview text */
 .result-overview::-webkit-scrollbar {
   width: 4px;
 }
@@ -217,15 +240,13 @@
   background-color: #444;
 }
 
-/* Runtime display */
 .result-runtime-display {
   font-size: 13px;
-  color: #3498db;
+  color: #2c93d8;
   font-weight: 400;
-  margin-left: 5px;
+  margin: 0 0 3px 0;
 }
 
-/* Inline See More button */
 .see-more-button-inline {
   display: inline;
   color: #3498db;
@@ -257,7 +278,6 @@
   border-left: 4px solid #e74c3c;
 }
 
-/* Load More Button */
 .load-more-container {
   display: flex;
   justify-content: center;
@@ -296,7 +316,7 @@
   }
   
   .result-runtime-display {
-    font-size: 11px;
+    font-size: 12px;
   }
   
   .result-details {
@@ -304,11 +324,31 @@
   }
   
   .result-overview {
-    font-size: 11px;
+    font-size: 12px;
   }
   
   .rating-value {
     font-size: 12px;
+  }
+
+  .result-info-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    min-height: 100px;
+  }
+
+  .result-card:hover .result-title {
+    opacity: 0;
+  }
+
+  .result-card:hover .result-info {
+    max-height: 150px;
+  }
+
+  .result-card:hover .result-info-header {
+    min-height: 0px;
   }
 }
 
@@ -320,7 +360,6 @@
 }
 
 @media (max-width: 480px) {
-  /* Make cards more compact */
   .result-card {
     min-height: 240px !important; 
   }
@@ -329,24 +368,39 @@
     aspect-ratio: 2/3;
   }
   
-  .result-title {
-    font-size: 14px;
-    -webkit-line-clamp: 1;
-  }
-  
   .result-details, 
   .result-rating .rating-value {
     font-size: 12px;
   }
   
   .result-info {
-    padding: 5px;
+    padding: 8px;
     min-height: 80px;
     max-height: 80px;
   }
   
   .result-overview {
     -webkit-line-clamp: 2;
-    font-size: 11px;
+    font-size: 12px;
+  }
+
+  .result-info-header {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex: 1;
+    min-height: 70px;
+  }
+
+  .result-card:hover .result-title {
+    opacity: 0;
+  }
+
+  .result-card:hover .result-info {
+    max-height: 140px;
+  }
+
+  .result-card:hover .result-info-header {
+    min-height: 0px;
   }
 }

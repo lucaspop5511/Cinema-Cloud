@@ -16,7 +16,6 @@ function FilterHeader() {
     searchQuery
   } = useContext(AppContext);
 
-  // Format runtime for display
   const formatRuntime = (minutes) => {
     const hours = Math.floor(minutes / 60);
     const mins = minutes % 60;

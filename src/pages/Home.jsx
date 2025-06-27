@@ -58,7 +58,6 @@ function Home() {
     }
   };
 
-  // Check if non-default filters are applied
   const hasActiveFilters = () => {
     return selectedGenres.length > 0 || 
            minYear !== 1990 || 
@@ -68,7 +67,6 @@ function Home() {
            imdbRating !== 'none';
   };
 
-  // Fetch content based on current state
   const fetchContent = async (page = 1, append = false) => {
     if (!append) {
       setLoading(true);
@@ -122,7 +120,6 @@ function Home() {
     }
   };
 
-  // Load more
   const handleLoadMore = () => {
     const nextPage = currentPage + 1;
     if (nextPage <= totalPages) {
@@ -131,13 +128,11 @@ function Home() {
     }
   };
 
-  // Fetch content whenever search, filters change, or clear filters
   useEffect(() => {
     console.log('Home useEffect triggered - fetchContent');
     fetchContent();
   }, [searchQuery, searchType, filterCounter, clearFiltersCounter]);
 
-  // Media type changes when filters are active
   useEffect(() => {
     if (
       previousSearchType && 
@@ -164,7 +159,6 @@ function Home() {
     }
   }, [searchQuery, selectedGenres, minYear, maxYear, minRuntime, maxRuntime, imdbRating]);
 
-  // Display query for results
   const getDisplayQuery = () => {
     if (searchQuery && searchQuery.trim() !== '') {
       return hasActiveFilters() 

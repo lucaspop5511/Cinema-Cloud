@@ -128,21 +128,16 @@ export default function TvDetail({ params }) {
     <div className="detail-container">
       <div className="detail-content">
         <div className="detail-main">
-          {/* Hero Section */}
           <div className="detail-hero">
-            {/* Background Image */}
             {backdropImage && (
               <div className="detail-hero-background">
                 <img src={backdropImage} alt={show.name} />
               </div>
             )}
             
-            {/* Overlay */}
             <div className="detail-hero-overlay"></div>
             
-            {/* Content */}
             <div className="detail-hero-content">
-              {/* Poster */}
               <div className="detail-hero-poster">
                 {show.poster_path ? (
                   <img src={getImageUrl(show.poster_path)} alt={show.name} />
@@ -151,7 +146,6 @@ export default function TvDetail({ params }) {
                 )}
               </div>
               
-              {/* Show Info */}
               <div className="detail-hero-info">
                 <h1 className="detail-hero-title">{show.name}</h1>
                 
@@ -215,9 +209,7 @@ export default function TvDetail({ params }) {
             </div>
           </div>
 
-          {/* Content Sections */}
           <div className="detail-sections">
-            {/* Where to Watch */}
             {show.watch_providers && (
               <div className="detail-section streaming-services-section">
                 <h3 className="where-to-watch">Where to Watch</h3>
@@ -241,7 +233,6 @@ export default function TvDetail({ params }) {
               </div>
             )}
 
-            {/* Images */}
             {images.length > 1 && (
               <div className="detail-section">
                 <h3>Images</h3>
@@ -271,7 +262,6 @@ export default function TvDetail({ params }) {
                     ))}
                   </div>
                   
-                  {/* Navigation Arrows */}
                   <button 
                     className="images-nav-arrow prev"
                     onClick={(e) => {
@@ -294,7 +284,6 @@ export default function TvDetail({ params }) {
               </div>
             )}
 
-            {/* Trailer */}
             {trailer && (
               <div className="detail-section">
                 <h3>Trailer</h3>
@@ -309,7 +298,6 @@ export default function TvDetail({ params }) {
               </div>
             )}
 
-            {/* Cast */}
             {credits && credits.cast && (
               <div className="detail-section">
                 <h3>Cast</h3>

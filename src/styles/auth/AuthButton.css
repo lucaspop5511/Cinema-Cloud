@@ -1,4 +1,3 @@
-/* Auth Button Styles */
 .auth-container {
   display: flex;
   align-items: center;
@@ -35,7 +34,6 @@
   outline-width: 2px;
 }
 
-/* User Profile Styles */
 .user-profile {
   position: relative;
 }
@@ -71,7 +69,6 @@
   outline-width: 2px;
 }
 
-/* Cloud icon styling */
 .cloud-icon {
   color: #999;
   flex-shrink: 0;
@@ -109,7 +106,6 @@
   color: #bebebe;
 }
 
-/* Profile text */
 .login-button-text {
   flex: 1;
   font-size: 20px;
@@ -118,7 +114,6 @@
   text-align: left;
 }
 
-/* Profile Menu Dropdown */
 .profile-menu {
   position: absolute;
   top: 100%;
@@ -164,7 +159,6 @@
   background-color: rgba(231, 76, 60, 0.1);
 }
 
-/* Mobile specific styles */
 .auth-container.mobile .profile-name-button {
   width: 100%;
   text-align: center;

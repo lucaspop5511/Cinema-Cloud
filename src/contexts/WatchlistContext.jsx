@@ -29,7 +29,6 @@ export const WatchlistProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
   const [hasLoaded, setHasLoaded] = useState(false);
 
-  // Fetch watchlist manually
   const fetchWatchlist = useCallback(async () => {
     if (!currentUser) {
       setWatchlist([]);
@@ -63,19 +62,17 @@ export const WatchlistProvider = ({ children }) => {
     }
   }, [currentUser]);
 
-  // Load user's watchlist when they log in
+  // Load users watchlist when they log in
   useEffect(() => {
     if (authLoading) return;
     fetchWatchlist();
   }, [currentUser, authLoading, fetchWatchlist]);
 
-  // Listener after initial load
   useEffect(() => {
     if (!currentUser || !hasLoaded) return;
 
     const watchlistRef = collection(db, 'users', currentUser.uid, 'watchlist');
     
-    // Listener with error handling
     const unsubscribe = onSnapshot(
       watchlistRef,
       (snapshot) => {
@@ -96,7 +93,6 @@ export const WatchlistProvider = ({ children }) => {
     return () => unsubscribe();
   }, [currentUser, hasLoaded]);
 
-  // Add item to watchlist
   const addToWatchlist = async (item, mediaType) => {
     if (!currentUser) return false;
 
@@ -133,13 +129,12 @@ export const WatchlistProvider = ({ children }) => {
       return true;
     } catch (error) {
       console.error('Error adding to watchlist:', error);
-      // On error, refresh
+      // Refresh on error
       await fetchWatchlist();
       return false;
     }
   };
 
-  // Remove item from watchlist
   const removeFromWatchlist = async (itemId, mediaType) => {
     if (!currentUser) return false;
 
@@ -153,18 +148,16 @@ export const WatchlistProvider = ({ children }) => {
       return true;
     } catch (error) {
       console.error('Error removing from watchlist:', error);
-      // On error, refresh
+      // Refresh on error
       await fetchWatchlist();
       return false;
     }
   };
 
-  // Check if item is in watchlist
   const isInWatchlist = (itemId, mediaType) => {
     return watchlist.some(item => item.id === itemId && item.media_type === mediaType);
   };
 
-  // Get watchlist grouped by media type
   const getWatchlistByType = (mediaType) => {
     return watchlist.filter(item => item.media_type === mediaType);
   };

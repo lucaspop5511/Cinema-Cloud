@@ -11,7 +11,6 @@ function DetailPanel({ item, isOpen, closePanel, mediaType }) {
   
   if (!item) return null;
 
-  // Format runtime
   const formatRuntime = (minutes) => {
     if (!minutes) return 'N/A';
     const hours = Math.floor(minutes / 60);
@@ -21,7 +20,6 @@ function DetailPanel({ item, isOpen, closePanel, mediaType }) {
     return `${hours}h ${mins}m`;
   };
 
-  // Get episode runtime for TV shows
   const getEpisodeRuntime = () => {
     if (item.episode_run_time && item.episode_run_time.length > 0) {
       const runtime = Math.max(...item.episode_run_time);
@@ -30,24 +28,20 @@ function DetailPanel({ item, isOpen, closePanel, mediaType }) {
     return 'N/A';
   };
 
-  // Get release year
   const getYear = () => {
     const date = mediaType === 'movie' ? item.release_date : item.first_air_date;
     return date ? new Date(date).getFullYear() : 'N/A';
   };
 
-  // Get title
   const getTitle = () => {
     return mediaType === 'movie' ? item.title : item.name;
   };
 
-  // Get genres
   const getGenres = () => {
     if (!item.genres || item.genres.length === 0) return 'N/A';
     return item.genres.map(genre => genre.name).join(', ');
   };
 
-  // Get directors/creators
   const getDirectorOrCreator = () => {
     if (mediaType === 'movie' && item.director) {
       return `Director: ${item.director}`;
@@ -80,12 +74,10 @@ function DetailPanel({ item, isOpen, closePanel, mediaType }) {
       </div>
       
       <div className="detail-panel-content">
-        {/* Poster with Watchlist Button */}
         <div className="detail-poster">
           {item.poster_path ? (
             <div className="detail-poster-container">
               <img src={getImageUrl(item.poster_path)} alt={getTitle()} />
-              {/* Add WatchlistButton */}
               <WatchlistButton item={item} mediaType={mediaType} />
             </div>
           ) : (
@@ -93,7 +85,6 @@ function DetailPanel({ item, isOpen, closePanel, mediaType }) {
           )}
         </div>
 
-        {/* Movie/TV Show Info */}
         <div className="detail-info">
           <div className="detail-info-item">
             <span className="info-label">Release Year:</span>

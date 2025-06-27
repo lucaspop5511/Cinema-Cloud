@@ -1,15 +1,8 @@
-// Filter Service for TMDb API
 import { fetchFromApi } from './baseApi';
 import { filterContent } from './contentFilters';
 import { searchMovies, searchTvShows } from './searchService';
 import { mapGenreNamesToIds } from './genreService';
 
-/**
- * Get additional details for a movie/show to get runtime
- * @param {string} mediaType - 'movie' or 'tv'
- * @param {number} id - Movie or TV show ID
- * @returns {Promise} - Promise with detailed item data
- */
 const getItemDetails = async (mediaType, id) => {
   try {
     return await fetchFromApi(`/${mediaType}/${id}`);
@@ -19,12 +12,6 @@ const getItemDetails = async (mediaType, id) => {
   }
 };
 
-/**
- * Enhance search results with runtime information
- * @param {Array} results - The search results to enhance
- * @param {string} mediaType - 'movie' or 'tv'
- * @returns {Promise<Array>} - Promise with enhanced results
- */
 const enhanceResultsWithRuntime = async (results, mediaType) => {
   if (!results || results.length === 0) return [];
   
@@ -59,17 +46,10 @@ const enhanceResultsWithRuntime = async (results, mediaType) => {
   return detailedItems;
 };
 
-/**
- * Apply filters to an array of results
- * @param {Array} results - Array of movies/TV shows to filter
- * @param {Object} filters - Filter options
- * @returns {Array} - Filtered results
- */
 const applyClientSideFilters = (results, filters) => {
   if (!results || !Array.isArray(results)) return [];
   
   return results.filter(item => {
-    // Genre filter
     if (filters.genres && filters.genres.length > 0) {
       const itemGenres = item.genre_ids || [];
       const hasMatchingGenre = filters.genres.some(genreId => itemGenres.includes(genreId));
@@ -78,7 +58,6 @@ const applyClientSideFilters = (results, filters) => {
       }
     }
 
-    // Year filter
     const releaseDate = filters.mediaType === 'movie' ? item.release_date : item.first_air_date;
     if (releaseDate) {
       const year = new Date(releaseDate).getFullYear();
@@ -87,7 +66,6 @@ const applyClientSideFilters = (results, filters) => {
       }
     }
     
-    // Runtime filter
     if (filters.minRuntime !== undefined && filters.maxRuntime !== undefined) {
       if (item.runtime === null || item.runtime === undefined || isNaN(item.runtime)) {
         return false;
@@ -99,7 +77,6 @@ const applyClientSideFilters = (results, filters) => {
       }
     }
     
-    // IMDB rating filter
     if (filters.imdbRating && filters.imdbRating !== null) {
       const rating = item.vote_average || 0;
       if (rating < filters.imdbRating.min || rating > filters.imdbRating.max) {
@@ -111,21 +88,6 @@ const applyClientSideFilters = (results, filters) => {
   });
 };
 
-/**
- * Get movie or TV show by filters with optional search query
- * @param {Object} filters - Filter options
- * @param {string} filters.mediaType - 'movie' or 'tv'
- * @param {Array} filters.genres - Array of genre names or IDs
- * @param {number} filters.minYear - Minimum release year
- * @param {number} filters.maxYear - Maximum release year
- * @param {number} filters.minRuntime - Minimum runtime in minutes
- * @param {number} filters.maxRuntime - Maximum runtime in minutes
- * @param {Object} filters.imdbRating - Object with min and max rating values
- * @param {string} filters.query - Optional search query to combine with filters
- * @param {string} filters.streamingService - Optional streaming service ID for TV shows
- * @param {number} page - Page number (default: 1)
- * @returns {Promise} - Promise with results
- */
 export const getFilteredContent = async (filters, page = 1) => {
   try {
     console.log('getFilteredContent called with filters:', filters);
@@ -195,7 +157,6 @@ export const getFilteredContent = async (filters, page = 1) => {
         'vote_count.gte=100'
       ];
       
-      // Year filters
       if (filters.mediaType === 'movie') {
         queryParams.push(`primary_release_date.gte=${minDate}`);
         queryParams.push(`primary_release_date.lte=${maxDate}`);
@@ -210,7 +171,6 @@ export const getFilteredContent = async (filters, page = 1) => {
         }
       }
       
-      // Runtime filters
       if (filters.minRuntime !== undefined) {
         queryParams.push(`with_runtime.gte=${filters.minRuntime}`);
       }
@@ -218,18 +178,15 @@ export const getFilteredContent = async (filters, page = 1) => {
         queryParams.push(`with_runtime.lte=${filters.maxRuntime}`);
       }
       
-      // genre filters
       if (genreIds.length > 0) {
         queryParams.push(`with_genres=${genreIds.join(',')}`);
       }
       
-      // Streaming service filter for TV shows
       if (filters.mediaType === 'tv' && filters.streamingService) {
         queryParams.push(`with_watch_providers=${filters.streamingService}`);
         queryParams.push('watch_region=US');
       }
       
-      // IMDB rating filters
       if (filters.imdbRating && filters.imdbRating !== null) {
         queryParams.push(`vote_average.gte=${filters.imdbRating.min}`);
         if (filters.imdbRating.max < 10) {
@@ -246,7 +203,6 @@ export const getFilteredContent = async (filters, page = 1) => {
       
       console.log('API response:', { total_results: data.total_results, results_count: data.results?.length });
       
-      // Additional content filtering
       if (data.results && Array.isArray(data.results)) {
         let filteredResults = filterContent(data.results, {
           excludeTalkShows: filters.mediaType === 'tv'
@@ -266,7 +222,6 @@ export const getFilteredContent = async (filters, page = 1) => {
           });
         }
         
-        // Update data results
         data.results = filteredResults;
         data.total_results = filteredResults.length;
       }

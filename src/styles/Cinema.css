@@ -24,7 +24,6 @@
   color: #e0e0e0;
 }
 
-/* Media Type Picker */
 .media-type-picker {
   display: flex;
   justify-content: center;
@@ -59,7 +58,6 @@
   background-color: #333;
 }
 
-/* Dropdowns */
 .cinema-city-selector,
 .streaming-selector {
   margin-top: 20px;
@@ -96,7 +94,6 @@
   color: #e0e0e0;
 }
 
-/* Content Section */
 .content-section {
   background-color: #1e1e1e;
   border-radius: 8px;
@@ -224,19 +221,16 @@
   flex: 1;
 }
 
-/* "see more" */
 .see-more {
   color: #3498db;
   font-size: 14px;
   white-space: nowrap;
 }
 
-/* "Available on:" text */
 .streaming-label {
   display: none;
 }
 
-/* Streaming providers container */
 .streaming-providers {
   padding: 0px;
 }
@@ -271,7 +265,6 @@
   font-size: 12px;
 }
 
-/* Cinema Link */
 .cinema-link {
   color: #3498db;
   text-decoration: none;
@@ -292,14 +285,12 @@
   max-width: 300px;
 }
 
-/* No Content */
 .no-content {
   text-align: center;
   padding: 40px;
   color: #999;
 }
 
-/* Loading and Error States */
 .cinema-loading,
 .cinema-error {
   display: flex;
@@ -327,7 +318,6 @@
   color: #e74c3c;
 }
 
-/* Responsive design */
 @media (max-width: 768px) {
   .cinema-container {
     padding: 15px;

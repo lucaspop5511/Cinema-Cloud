@@ -121,7 +121,6 @@ function GenrePanel({ isOpen, closePanel }) {
     { value: '8+', label: '8+' }
   ];
   
-  // Escape key to close panel on mobile
   useEffect(() => {
     const handleEscKey = (event) => {
       if (event.key === 'Escape' && isOpen && window.innerWidth < 768) {
@@ -165,13 +164,11 @@ function GenrePanel({ isOpen, closePanel }) {
   
   // Year increment/decrement
   const incrementYear = (setter, currentValue) => {
-    // Round up to nearest multiple of 5
     const nextValue = Math.ceil((parseInt(currentValue) + 1) / 5) * 5;
     setter(nextValue > currentYear ? currentYear : nextValue);
   }
   
   const decrementYear = (setter, currentValue) => {
-    // Round down to nearest multiple of 5
     const nextValue = Math.floor((parseInt(currentValue) - 1) / 5) * 5;
     setter(nextValue < 1900 ? 1900 : nextValue);
   }
@@ -233,10 +230,8 @@ function GenrePanel({ isOpen, closePanel }) {
   // Limit genre selection to 3
   const handleGenreToggle = (genre) => {
     if (selectedGenres.includes(genre)) {
-      // If genre is already selected, remove it
       toggleGenre(genre);
     } else if (selectedGenres.length < 3) {
-      // If less than 3 genres are selected, add the genre
       toggleGenre(genre);
     }
   }
@@ -252,7 +247,7 @@ function GenrePanel({ isOpen, closePanel }) {
   
   // Handle search button click
   const handleSearch = () => {
-    // Don't do anything if filters are disabled
+    // Dont do anything if filters are disabled
     if (isFiltersDisabled) {
       return;
     }
@@ -290,7 +285,6 @@ function GenrePanel({ isOpen, closePanel }) {
       return 'Not Available';
     }
     
-    // Different labels based on current page
     if (pathname === '/watchlist') {
       return 'Apply Filters';
     }

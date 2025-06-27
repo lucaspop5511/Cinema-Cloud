@@ -32,7 +32,6 @@
   z-index: 2;
 }
 
-/* Page title */
 .search-page-title {
   font-size: 2rem;
   font-weight: bold;
@@ -43,7 +42,6 @@
   margin-bottom: 25px;
 }
 
-/* Media Type Picker */
 .media-type-picker {
   display: flex;
   justify-content: center;
@@ -82,7 +80,6 @@
   background-color: #333 !important;
 }
 
-/* Search Bar */
 .search-bar {
   display: flex;
   max-width: 500px;
@@ -175,7 +172,6 @@
   }
 }
 
-/* Extra small devices */
 @media (max-width: 480px) {
   .search-page-title {
     width: 80%;

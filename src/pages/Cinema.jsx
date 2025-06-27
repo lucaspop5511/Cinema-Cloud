@@ -139,7 +139,6 @@ function Cinema() {
             const data = await getFilteredContent(filterParams, 1);
             console.log('Results:', data);
             
-            // Watch providers for each filtered item
             const resultsWithProviders = await Promise.all(
               data.results.map(async (item) => {
                 try {
@@ -312,7 +311,6 @@ function Cinema() {
       <div className="cinema-header">
         <h1>Now Playing & Currently Airing</h1>
         
-        {/* Media Type Picker */}
         <div className="media-type-picker">
           <button 
             className={`media-type-button ${mediaType === 'movie' ? 'active' : ''}`}
@@ -328,7 +326,6 @@ function Cinema() {
           </button>
         </div>
 
-        {/* Conditional Dropdowns */}
         {mediaType === 'movie' ? (
           <div className="cinema-city-selector">
             <label htmlFor="city-select">Choose your city:</label>
@@ -366,7 +363,6 @@ function Cinema() {
 
       <FilterHeader />
 
-      {/* Content Section */}
       <div className="content-section">
         <h2>
           {mediaType === 'movie' 
@@ -392,7 +388,6 @@ function Cinema() {
                   ) : (
                     <div className="no-poster">No Poster</div>
                   )}
-                  {/* Watchlist Button */}
                   <WatchlistButton item={item} mediaType={mediaType} />
                 </div>
                 

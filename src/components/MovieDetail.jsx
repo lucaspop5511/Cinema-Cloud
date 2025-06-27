@@ -115,21 +115,16 @@ export default function MovieDetail({ params }) {
     <div className="detail-container">
       <div className="detail-content">
         <div className="detail-main">
-          {/* Hero Section */}
           <div className="detail-hero">
-            {/* Background Image */}
             {backdropImage && (
               <div className="detail-hero-background">
                 <img src={backdropImage} alt={movie.title} />
               </div>
             )}
             
-            {/* Overlay */}
             <div className="detail-hero-overlay"></div>
             
-            {/* Content */}
             <div className="detail-hero-content">
-              {/* Poster */}
               <div className="detail-hero-poster">
                 {movie.poster_path ? (
                   <img src={getImageUrl(movie.poster_path)} alt={movie.title} />
@@ -138,7 +133,6 @@ export default function MovieDetail({ params }) {
                 )}
               </div>
               
-              {/* Movie Info */}
               <div className="detail-hero-info">
                 <h1 className="detail-hero-title">{movie.title}</h1>
                 
@@ -194,9 +188,7 @@ export default function MovieDetail({ params }) {
             </div>
           </div>
 
-          {/* Content Sections */}
           <div className="detail-sections">
-            {/* Where to Watch */}
             {movie.watch_providers && (
               <div className="detail-section streaming-services-section">
                 <h3 className="where-to-watch">Where to Watch</h3>
@@ -220,7 +212,6 @@ export default function MovieDetail({ params }) {
               </div>
             )}
 
-            {/* Images */}
             {images.length > 1 && (
               <div className="detail-section">
                 <h3>Images</h3>
@@ -250,7 +241,6 @@ export default function MovieDetail({ params }) {
                     ))}
                   </div>
                   
-                  {/* Navigation Arrows */}
                   <button 
                     className="images-nav-arrow prev"
                     onClick={(e) => {
@@ -273,7 +263,6 @@ export default function MovieDetail({ params }) {
               </div>
             )}
 
-            {/* Trailer */}
             {trailer && (
               <div className="detail-section">
                 <h3>Trailer</h3>
@@ -288,7 +277,6 @@ export default function MovieDetail({ params }) {
               </div>
             )}
 
-            {/* Cast */}
             {credits && credits.cast && (
               <div className="detail-section">
                 <h3>Cast</h3>

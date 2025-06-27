@@ -5,7 +5,6 @@
 @import './RuntimeSlider.css';
 @import './SegmentedControl.css';
 
-/* Panel header layout */
 .genre-panel-header {
   padding: 20px;
   background-color: #1a1a1a;
@@ -38,7 +37,6 @@
   display: none;
 }
 
-/* Mobile specific */
 @media (max-width: 767px) {
   .genre-panel-header {
     padding: 15px;
@@ -74,7 +72,6 @@
   background-color: #1a1a1a;
 }
 
-/* Disabled input styles */
 input:disabled {
   background-color: #1a1a1a;
   color: #666;
@@ -92,7 +89,6 @@ input:disabled {
   background-color: transparent;
 }
 
-/* Disabled slider styles */
 .slider-track.disabled {
   background-color: #1a1a1a;
 }
@@ -117,7 +113,6 @@ input:disabled {
   cursor: not-allowed;
 }
 
-/* Disabled segmented control */
 .segmented-control.disabled {
   opacity: 0.5;
 }
@@ -131,7 +126,6 @@ input:disabled {
   color: #444;
 }
 
-/* Disabled search button */
 .search-button.disabled {
   background-color: #333;
   color: #666;

@@ -1,16 +1,16 @@
 const ADULT_CONTENT_KEYWORDS = [
-    // 'sex', 'xxx', 'adult', 'porn', 'erotic', 'erotica', 'nude', 'nudity', 
-    // 'naked', 'sexologist', 'sexual', 'intercourse', 'nsfw', '18+', 'x-rated',
-    // 'desire', 'torture', 'fetish', 'lust', 'virgin', 'hot girls',
-    // 'horny', 'kinky', 'orgasm', 'sensual', 'seduction','clitoris', 'provocative', 'brothel',
-    // 'hentai', 'lover', 'escort', 'immoral', 'taboo', 'pleasure', 'carnal'
+    'sex', 'xxx', 'adult', 'porn', 'erotic', 'erotica', 'nude', 'nudity', 
+    'naked', 'sexologist', 'sexual', 'intercourse', 'nsfw', '18+', 'x-rated',
+    'desire', 'torture', 'fetish', 'lust', 'virgin', 'hot girls',
+    'horny', 'kinky', 'orgasm', 'sensual', 'seduction','clitoris', 'provocative', 'brothel',
+    'hentai', 'lover', 'escort', 'immoral', 'taboo', 'pleasure', 'carnal'
   ];
   
 const TALK_SHOW_KEYWORDS = [
   'late night', 'talk show', 'tonight show', 'late show', 'live with', 
-  'daily show', 'conan', 'kimmel', 'colbert', 'fallon', 'leno', 'letterman',
-  'ellen', 'oprah', 'view', 'kelly and', 'interview', 'a conversation with',
-  'with james corden', 'with jimmy', 'with seth', 'host', 'hosted by'
+  'daily show', 'conan', 'kimmel', 'colbert', 'fallon',
+  'ellen', 'oprah', 'kelly and', 'interview', 'a conversation with',
+  'with james corden', 'with jimmy', 'with seth', 'hosted by'
 ];
 
 const BLACKLISTED_TITLES = [
@@ -45,9 +45,6 @@ const BLACKLISTED_IDS = [
   44983, 118285, 2003, 8224, 7295, 8675, 15276, 76815, 5674, 287954, 326262, 391901, 70905, 150787, 94901, 852370,
   416148, 700979, 830884, 496353, 47519, 11179, 66036, 304657, 356300, 934605, 670129, 429838, 1057491, 800378,
   173129, 55580, 166634, 123338, 926771, 67120,
-  
-  // Talk shows
-  1900, 2518, 2224, 1489, 1991
 ];
 
 const scoreAdultContent = (item) => {
@@ -97,7 +94,7 @@ const scoreAdultContent = (item) => {
   }
   
   if (BLACKLISTED_IDS.includes(item.id)) {
-    score += 10; // Automatic high score for blacklisted items
+    score += 10;
   }
   
   return score;
@@ -108,7 +105,6 @@ const isTalkShow = (item) => {
     return true;
   }
   
-  // Check title for talk show keywords
   const title = (item.title || item.name || '').toLowerCase();
   for (const keyword of TALK_SHOW_KEYWORDS) {
     if (title.includes(keyword)) {
@@ -130,12 +126,6 @@ const isBlacklistedTitle = (item) => {
   );
 };
 
-/**
- * Advanced filter for adult content and talk shows
- * @param {Array} results - Results to filter
- * @param {Object} options - Filtering options
- * @returns {Array} - Filtered results
- */
 export const filterContent = (results, options = {}) => {
   if (!results || !Array.isArray(results)) return [];
   
@@ -154,12 +144,9 @@ export const filterContent = (results, options = {}) => {
       return false;
     }
     
-    // Skip adult content if option is enabled
     if (excludeAdultContent) {
-      // Calculate content score
       const adultContentScore = scoreAdultContent(item);
       
-      // Reject items with a high score
       if (adultContentScore >= 3) {
         return false;
       }

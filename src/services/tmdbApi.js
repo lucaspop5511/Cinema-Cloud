@@ -1,4 +1,3 @@
-// TMDb API Service - Main entry point
 import {
   getImageUrl,
   getGenres,

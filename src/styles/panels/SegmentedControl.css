@@ -8,7 +8,6 @@
   overflow: hidden;
 }
 
-/* Sliding background indicator */
 .segmented-control::before {
   content: '';
   position: absolute;
@@ -21,7 +20,6 @@
   box-shadow: 0 2px 4px rgba(52, 152, 219, 0.3);
 }
 
-/* Calculate position for each option */
 .segmented-control[data-selected="none"]::before {
   left: 4px;
   width: calc(20% - 2px);

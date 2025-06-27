@@ -19,28 +19,23 @@ export const CinemaContentProvider = ({ children }) => {
   const [isLoaded, setIsLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  // Check if a movie is in the cinema list
   const isInCinema = (movieId) => {
     return cinemaMovieIds.includes(Number(movieId));
   };
 
-  // Check if a TV show is in the currently airing list
   const isAiring = (showId) => {
     return airingShowIds.includes(Number(showId));
   };
 
-  // Load the cinema content
   const loadCinemaContent = async () => {
     if (loading) return;
     
     setLoading(true);
     try {
-      // Fetch movies now playing in cinemas
       const moviesResponse = await fetchFromApi('/movie/now_playing?language=en-US&region=RO&page=1');
       const movieIds = moviesResponse.results.map(movie => movie.id);
       setCinemaMovieIds(movieIds);
       
-      // Fetch TV shows currently airing
       const tvResponse = await fetchFromApi('/tv/on_the_air?language=en-US&page=1');
       const tvIds = tvResponse.results.map(show => show.id);
       setAiringShowIds(tvIds);
@@ -74,7 +69,6 @@ export const CinemaContentProvider = ({ children }) => {
   );
 };
 
-// Custom hook to use the cinema content context
 export const useCinemaContent = () => {
   const context = useContext(CinemaContentContext);
   if (!context) {

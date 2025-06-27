@@ -72,7 +72,7 @@ const LoginModal = ({ isOpen, onClose }) => {
     </svg>
   );
 
-  // Use createPortal to render modal directly to document.body
+  // Render modal directly to document.body
   return createPortal(
     <div className="login-modal-overlay" onClick={onClose}>
       {/* Cloud background pattern */}

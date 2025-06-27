@@ -1,12 +1,6 @@
 import { fetchFromApi } from './baseApi';
 import { filterContent } from './contentFilters';
 
-/**
- * Search for movies by query
- * @param {string} query - Search term
- * @param {number} page - Page number (default: 1)
- * @returns {Promise} - Promise with search results
- */
 export const searchMovies = async (query, page = 1) => {
   try {
     const data = await fetchFromApi(
@@ -25,12 +19,6 @@ export const searchMovies = async (query, page = 1) => {
   }
 };
 
-/**
- * Search for TV shows by query
- * @param {string} query - Search term
- * @param {number} page - Page number (default: 1)
- * @returns {Promise} - Promise with search results
- */
 export const searchTvShows = async (query, page = 1) => {
   try {
     const data = await fetchFromApi(

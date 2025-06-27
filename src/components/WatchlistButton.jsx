@@ -7,7 +7,7 @@ const WatchlistButton = ({ item, mediaType, className = '' }) => {
   const { currentUser } = useAuth();
   const { isInWatchlist, addToWatchlist, removeFromWatchlist } = useWatchlist();
 
-  // Don't show button if user is not logged in
+  // Dont show button if user is not logged in
   if (!currentUser) return null;
 
   const inWatchlist = isInWatchlist(item.id, mediaType);
@@ -33,7 +33,6 @@ const WatchlistButton = ({ item, mediaType, className = '' }) => {
     }
   };
 
-  // Bookmark icon SVG
   const BookmarkIcon = () => (
     <svg 
       width="24" 

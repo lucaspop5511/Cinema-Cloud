@@ -27,13 +27,12 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
   const [authError, setAuthError] = useState(null);
 
-  // Sign up with email and password
   const signup = async (email, password, displayName) => {
     try {
       setAuthError(null);
       const { user } = await createUserWithEmailAndPassword(auth, email, password);
       
-      // Update user profile with display name
+      // Update user profile name
       if (displayName) {
         await updateProfile(user, { displayName });
       }
@@ -45,7 +44,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Login with email and password
   const login = async (email, password) => {
     try {
       setAuthError(null);
@@ -57,7 +55,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Login with Google
   const loginWithGoogle = async () => {
     try {
       setAuthError(null);
@@ -70,7 +67,6 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Logout
   const logout = async () => {
     try {
       setAuthError(null);

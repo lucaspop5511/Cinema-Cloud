@@ -227,7 +227,6 @@
   }
 }
 
-/* Responsive adjustments */
 @media (max-width: 768px) {
   .camera-icon {
     width: 36px;

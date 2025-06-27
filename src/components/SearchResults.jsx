@@ -13,7 +13,7 @@ function SearchResults({
   onLoadMore,
   isLoadingMore = false 
 }) {
-  const MINIMUM_VOTE_COUNT = 10; 
+  const MINIMUM_VOTE_COUNT = 100; 
   
   const getYear = (dateString) => {
     if (!dateString) return '';
@@ -35,7 +35,7 @@ function SearchResults({
         : 'No description available for this TV show.';
     }
     
-    const CHARACTER_LIMIT = 150;
+    const CHARACTER_LIMIT = 250;
     
     const lastSpace = item.overview.lastIndexOf(' ', CHARACTER_LIMIT);
     const cutPoint = lastSpace > 0 ? lastSpace : CHARACTER_LIMIT;
@@ -167,24 +167,28 @@ function SearchResults({
             
             <div className="result-info">
               <div className="result-info-header">
-                <h3 className="result-title">{getTitle(item)}</h3>
+                <h3 className="result-title">
+                  {getTitle(item)}
+                  <span className="result-year">({getYear(getReleaseDate(item))})</span>
+                </h3>
                 <div className="result-details">
-                  <span className="result-year">{getYear(getReleaseDate(item))}</span>
+                  
                   {hasValidRuntime(item) && (
                     <>
-                      <span className="content-separator">•</span>
                       <span className="result-runtime-display">
                         {getFormattedRuntime(item)}
                       </span>
                     </>
                   )}
+
+                  <div className="result-rating">
+                    <span className="star-icon">★</span>
+                    <span className="rating-value">
+                      {item.vote_average.toFixed(1)}
+                    </span>
+                  </div>
                 </div>
-                
-                <div className="result-rating">
-                  <span className="rating-value">
-                    {item.vote_average ? (item.vote_average.toFixed(1) + '/10') : 'No rating'}
-                  </span>
-                </div>
+              
               </div>
               
               <div className="result-content-divider"></div>

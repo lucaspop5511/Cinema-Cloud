@@ -18,7 +18,6 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
   const [localSearchQuery, setLocalSearchQuery] = useState(searchQuery)
   const searchTimeout = useRef(null)
   
-  // Check if any filters are applied (non-default values)
   const hasActiveFilters = () => {
     return selectedGenres.length > 0 || 
            minYear !== 1990 || 
@@ -32,7 +31,6 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
     const newValue = e.target.value
     setLocalSearchQuery(newValue)
     
-    // Clear existing timeout
     if (searchTimeout.current) {
       clearTimeout(searchTimeout.current)
     }
@@ -40,7 +38,7 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
     searchTimeout.current = setTimeout(() => {
       setSearchQuery(newValue)
       
-      // If we have active filters and we're searching, apply filters to combine them
+      // If we have active filters and were searching, apply filters to combine
       if (hasActiveFilters() && newValue.trim() !== '') {
         console.log('Search with active filters, applying filters');
         applyFilters();
@@ -52,7 +50,6 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
     setLocalSearchQuery('')
   setSearchQuery('')
   
-  // Clear timeout if exists
   if (searchTimeout.current) {
     clearTimeout(searchTimeout.current)
   }
@@ -61,14 +58,13 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
   document.querySelector('.search-input').focus()
   }
   
-  // Media type switch
   const handleMediaTypeChange = (type) => {
     if (type !== searchType) {
       setSearchType(type)
       
-      // If filters active, automatically apply them when switching media type
+      // If filters active, automatically apply when switching media type
       if (isFilterActive || hasActiveFilters() || (searchQuery && searchQuery.trim() !== '')) {
-        // Use a small timeout to ensure the type change happens first
+        // Use a small timeout to make sure the type change happens first
         setTimeout(() => {
           console.log('Media type changed, applying filters/search');
           applyFilters()
@@ -82,7 +78,6 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
       <CloudsBackground />
       <h1 className="search-page-title">Find your favourite {searchType === 'movie' ? 'movies' : 'TV shows'}</h1>
       
-      {/* Media Type Picker - matches cinema page style */}
       <div className="media-type-picker">
         <button 
           type="button"
@@ -100,7 +95,6 @@ function SearchBar({ searchQuery, setSearchQuery, searchType, setSearchType }) {
         </button>
       </div>
       
-      {/* Search Bar */}
       <div className="search-bar">
         <input 
           type="text" 

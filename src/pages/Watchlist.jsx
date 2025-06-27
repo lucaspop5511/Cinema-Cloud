@@ -288,24 +288,29 @@ function Watchlist() {
             
             <div className="result-info">
               <div className="result-info-header">
-                <h3 className="result-title">{getTitle(item)}</h3>
+                <h3 className="result-title">
+                  {getTitle(item)}
+                  <span className="result-year">({getYear(getReleaseDate(item))})</span>
+                </h3>
                 <div className="result-details">
-                  <span className="result-year">{getYear(getReleaseDate(item))}</span>
+                  
                   {item.runtime && item.runtime > 0 && (
                     <>
-                      •
                       <div className="result-runtime-display">
                         {item.media_type === 'tv' ? `${formatRuntime(item.runtime)} / episode` : formatRuntime(item.runtime)}
                       </div>
                     </>
                   )}
+
+                  <div className="result-rating">
+                    <span className="star-icon">★</span>
+                    <span className="rating-value">
+                      {item.vote_average.toFixed(1)}
+                    </span>
+                  </div>
                 </div>
                 
-                <div className="result-rating">
-                  <span className="rating-value">
-                    {item.vote_average ? (item.vote_average.toFixed(1) + '/10') : 'No rating'}
-                  </span>
-                </div>
+                
               </div>
               
               <div className="result-content-divider"></div>
@@ -316,9 +321,6 @@ function Watchlist() {
                   see more
                 </span>
               </p>
-              <div className="result-id" style={{ fontSize: '10px', color: '#666', marginTop: '4px' }}>
-                ID: {item.id}
-              </div>
             </div>
           </Link>
         ))}
